@@ -1,9 +1,9 @@
-package cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.comment;
+package cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.comment;
 
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.ParserTransitionState;
 import cz.cvut.fel.task_evaluator.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.ParserStateMachine;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.ParserState;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.transition.ParserTransitionState;
 
 public class MultiLineCommentState extends ParserState {
     public MultiLineCommentState(ParserStateMachine context) {

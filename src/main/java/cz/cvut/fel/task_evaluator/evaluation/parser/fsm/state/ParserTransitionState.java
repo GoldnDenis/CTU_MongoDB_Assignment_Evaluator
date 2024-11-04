@@ -1,11 +1,10 @@
-package cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.transition;
+package cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state;
 
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.comment.MultiLineCommentState;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.comment.SingleLineCommentState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.comment.MultiLineCommentState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.comment.SingleLineCommentState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.query.QueryState;
 import cz.cvut.fel.task_evaluator.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.ParserStateMachine;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.ParserState;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.query.QueryState;
 
 public class ParserTransitionState extends ParserState {
 

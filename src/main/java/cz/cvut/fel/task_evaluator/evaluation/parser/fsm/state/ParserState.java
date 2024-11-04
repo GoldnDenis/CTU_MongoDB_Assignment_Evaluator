@@ -1,16 +1,14 @@
-package cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state;
+package cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state;
 
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.task_evaluator.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.ParserStateMachine;
 
 public abstract class ParserState {
     protected final ParserStateMachine context;
-
     protected final StringBuilder valueAccumulator;
 
     public ParserState(ParserStateMachine context) {
         this.context = context;
-
         this.valueAccumulator = new StringBuilder();
     }
 

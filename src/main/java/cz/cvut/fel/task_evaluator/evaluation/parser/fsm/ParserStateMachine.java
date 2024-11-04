@@ -1,13 +1,11 @@
-package cz.cvut.fel.task_evaluator.evaluation.parser.tokenization;
+package cz.cvut.fel.task_evaluator.evaluation.parser.fsm;
 
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.ParserState;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.transition.ParserTransitionState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.ParserTransitionState;
 import cz.cvut.fel.task_evaluator.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.task_evaluator.model.query.Query;
 import cz.cvut.fel.task_evaluator.model.query.QueryBuilder;
 import cz.cvut.fel.task_evaluator.model.query.modifier.ModifierBuilder;
-import cz.cvut.fel.task_evaluator.model.query.modifier.QueryModifier;
-import cz.cvut.fel.task_evaluator.model.query.parameter.EmptyParameter;
 import cz.cvut.fel.task_evaluator.model.query.parameter.QueryParameter;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,14 +25,12 @@ public class ParserStateMachine {
     private String lastQueryOperation;
     @Setter
     private String lastComment;
-//    private QueryParameter currentQueryParameter;
 
     public ParserStateMachine() {
         this.state = new ParserTransitionState(this);
         this.queryList = new ArrayList<>();
         this.queryBuilder = new QueryBuilder();
         this.modifierBuilder = new ModifierBuilder();
-//        this.currentQueryParameter = new EmptyParameter();
     }
 
     public void parseLine(LineIterator line) {

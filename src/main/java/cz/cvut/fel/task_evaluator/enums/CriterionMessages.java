@@ -5,9 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum Criteria {
-    INSERTED_DOCUMENTS("Insert 10 documents into each collection."),
-    INSERT_ONE_MANY("Use both insertOne and insertMany.");
+public enum CriterionMessages {
+    COMMENT("Describe the real-world meaning of all your queries in comments.");
 
     private final String message;
 }

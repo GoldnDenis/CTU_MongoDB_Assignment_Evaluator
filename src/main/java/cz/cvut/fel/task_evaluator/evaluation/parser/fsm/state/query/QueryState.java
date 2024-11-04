@@ -1,11 +1,11 @@
-package cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.query;
+package cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.query;
 
-import cz.cvut.fel.task_evaluator.enums.TokenTypes;
+
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.ParserTransitionState;
+import cz.cvut.fel.task_evaluator.evaluation.parser.fsm.state.query.parameter.ParameterState;
 import cz.cvut.fel.task_evaluator.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.ParserStateMachine;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.ParserState;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.query.parameter.ParameterState;
-import cz.cvut.fel.task_evaluator.evaluation.parser.tokenization.state.transition.ParserTransitionState;
 
 public class QueryState extends ParserState {
     private boolean isModifier;

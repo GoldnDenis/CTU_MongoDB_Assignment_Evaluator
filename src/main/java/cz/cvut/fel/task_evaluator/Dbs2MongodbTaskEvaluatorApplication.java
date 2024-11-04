@@ -16,8 +16,6 @@ public class Dbs2MongodbTaskEvaluatorApplication {
 //		String path = "t1.json";
         String path = "t7.js";
 
-
-
         AssignmentEvaluator.evaluate(path);
 //        AssignmentEvaluatorOld assignmentEvaluatorOld = new AssignmentEvaluatorOld();
 //        assignmentEvaluatorOld.evaluate(path);
