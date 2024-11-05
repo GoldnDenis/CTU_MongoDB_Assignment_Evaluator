@@ -7,10 +7,10 @@ import cz.cvut.fel.task_evaluator.model.query.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneralStrategy {
+public class CheckerStrategy {
     protected final List<Criterion> criteria;
 
-    public GeneralStrategy() {
+    public CheckerStrategy() {
         this.criteria = new ArrayList<>();
         criteria.add(new CommentCriterion());
 
@@ -19,6 +19,12 @@ public class GeneralStrategy {
     public void checkCriteria(Query query) {
         for (Criterion criterion : criteria) {
             criterion.check(query);
+        }
+    }
+
+    public void collectAllFeedback() {
+        for (Criterion criterion : criteria) {
+            criterion.generateFeedback();
         }
     }
 }

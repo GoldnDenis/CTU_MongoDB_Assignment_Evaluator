@@ -30,4 +30,14 @@ public final class Query {
         this.parameters = new ArrayList<>(parameters);
         this.modifiers = new ArrayList<>(modifiers);
     }
+
+    @Override
+    public String toString() {
+        String query = !collection.isBlank() ? collection + "." + operation : operation;
+        return "Query{" +
+                "query='" + query + '\'' +
+                " at " + lineNumber +
+                ":" + columnNumber +
+                '}';
+    }
 }

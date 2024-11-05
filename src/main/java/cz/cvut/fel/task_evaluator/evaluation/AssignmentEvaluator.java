@@ -13,8 +13,7 @@ public class AssignmentEvaluator {
         try {
             List<String> fileLines = FileReader.readAllLines(path);
             List<Query> queryList = ScriptParser.parse(fileLines);
-            CriteriaChecker.checkQueries(queryList);
-            System.out.println(queryList.size());
+            new CriteriaChecker().checkQueries(queryList);
         } catch (IOException e) {
             //todo work out exception logic
             throw new RuntimeException(e);

@@ -20,11 +20,20 @@ public class CommentCriterion extends Criterion {
         if (query.getComment().isBlank()) {
             failedQueryList.add(query);
         }
-        System.out.println("test");
+    }
+
+    @Override
+    public void generateFeedback() {
+
     }
 
     @Override
     public boolean isFulfilled() {
+        for (Query query : failedQueryList) {
+//            String position = query.getLineNumber() + ":" + query.getColumnNumber();
+//            System.err.println("Query at " + position + " missing a comment");
+            System.err.println(query.toString() + " missing a comment.");
+        }
         return failedQueryList.isEmpty();
     }
 }

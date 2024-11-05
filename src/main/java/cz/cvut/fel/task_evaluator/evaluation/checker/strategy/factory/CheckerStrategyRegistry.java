@@ -4,15 +4,15 @@ import cz.cvut.fel.task_evaluator.enums.QueryTypes;
 import cz.cvut.fel.task_evaluator.evaluation.checker.strategy.*;
 
 public class CheckerStrategyRegistry {
-    private final static GeneralStrategy generalStrategy = new GeneralStrategy();
-    private final static GeneralStrategy createCollectionStrategy = new CreateCollectionStrategy();
-    private final static GeneralStrategy insertStrategy = new InsertStrategy();
-    private final static GeneralStrategy updateStrategy = new UpdateStrategy();
-    private final static GeneralStrategy replaceOneStrategy = new ReplaceOneStrategy();
-    private final static GeneralStrategy findStrategy = new FindStrategy();
-    private final static GeneralStrategy aggregateStrategy = new AggregateStrategy();
+    private final static CheckerStrategy CHECKER_STRATEGY = new CheckerStrategy();
+    private final static CheckerStrategy createCollectionStrategy = new CreateCollectionStrategy();
+    private final static CheckerStrategy insertStrategy = new InsertStrategy();
+    private final static CheckerStrategy updateStrategy = new UpdateStrategy();
+    private final static CheckerStrategy replaceOneStrategy = new ReplaceOneStrategy();
+    private final static CheckerStrategy findStrategy = new FindStrategy();
+    private final static CheckerStrategy aggregateStrategy = new AggregateStrategy();
 
-    public static GeneralStrategy createGeneralStrategy(QueryTypes type) {
+    public static CheckerStrategy createGeneralStrategy(QueryTypes type) {
         switch (type) {
             case CREATE_COLLECTION -> {
                 return createCollectionStrategy;
@@ -33,7 +33,7 @@ public class CheckerStrategyRegistry {
                 return aggregateStrategy;
             }
             default -> {
-                return generalStrategy;
+                return CHECKER_STRATEGY;
             }
         }
     }
