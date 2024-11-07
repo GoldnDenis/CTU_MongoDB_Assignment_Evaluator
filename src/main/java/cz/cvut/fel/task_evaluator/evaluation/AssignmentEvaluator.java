@@ -11,9 +11,11 @@ import java.util.List;
 public class AssignmentEvaluator {
     public static void evaluate(String path) {
         try {
-            List<String> fileLines = FileReader.readAllLines(path);
-            List<Query> queryList = ScriptParser.parse(fileLines);
-            new CriteriaChecker().checkQueries(queryList);
+            for (int i = 0; i < 10; i++) {
+                List<String> fileLines = FileReader.readAllLines(path + i + ".js");
+                List<Query> queryList = ScriptParser.parse(fileLines);
+                new CriteriaChecker().checkQueries(queryList);
+            }
         } catch (IOException e) {
             //todo work out exception logic
             throw new RuntimeException(e);

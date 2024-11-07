@@ -19,4 +19,12 @@ public abstract class ParserState {
         int columnNumber = iterator.getCurrentColumnIndex() + 1;
         context.setQueryPosition(lineNumber, columnNumber);
     }
+
+    protected void processSyntaxError(String message, LineIterator iterator) {
+        int lineNumber = iterator.getRowIndex() + 1;
+        int columnNumber = iterator.getCurrentColumnIndex() + 1;
+        message = "Parsing error: " + message + " at " + lineNumber + ":" + columnNumber;
+        System.err.println(message);
+        context.setState(new ParserTransitionState(context));
+    }
 }

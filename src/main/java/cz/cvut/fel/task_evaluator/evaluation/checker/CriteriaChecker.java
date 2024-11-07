@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class CriteriaChecker {
     private final Map<QueryTypes, CheckerStrategy> checkerStrategies;
+    private final GeneralStrategy generalStrategy;
 //    private final FeedbackGenerator feedbackCollector;
 
     public CriteriaChecker() {
@@ -21,23 +22,22 @@ public class CriteriaChecker {
         checkerStrategies.put(QueryTypes.REPLACE_ONE, new ReplaceOneStrategy());
         checkerStrategies.put(QueryTypes.FIND, new FindStrategy());
         checkerStrategies.put(QueryTypes.AGGREGATE, new AggregateStrategy());
-        checkerStrategies.put(QueryTypes.UNKNOWN, new CheckerStrategy());
+        this.generalStrategy = new GeneralStrategy();
     }
 
     public void checkQueries(List<Query> queries) {
         for (Query query : queries) {
             QueryTypes currentType = query.getType();
+            generalStrategy.checkCriteria(query);
             if (checkerStrategies.containsKey(currentType)) {
                 checkerStrategies.get(currentType).checkCriteria(query);
-            } else {
-                //todo cant happen, look into it
-                System.err.println("Query type: " + currentType + " is not supported.");
             }
         }
         collectAllFeedback();
     }
 
     private void collectAllFeedback() {
+        generalStrategy.collectAllFeedback();
         for (CheckerStrategy s : checkerStrategies.values()) {
             s.collectAllFeedback();
 //            feedbackCollector.addAllFeedback(s.checkCriteria());

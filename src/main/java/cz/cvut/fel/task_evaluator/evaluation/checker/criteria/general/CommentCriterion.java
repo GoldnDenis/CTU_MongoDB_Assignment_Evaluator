@@ -23,17 +23,19 @@ public class CommentCriterion extends Criterion {
     }
 
     @Override
-    public void generateFeedback() {
-
+    public boolean isFulfilled() {
+        return failedQueryList.isEmpty();
     }
 
     @Override
-    public boolean isFulfilled() {
+    protected void generatePositiveFeedback() {
+        System.out.println("All queries are properly commented.");
+    }
+
+    @Override
+    protected void generateNegativeFeedback() {
         for (Query query : failedQueryList) {
-//            String position = query.getLineNumber() + ":" + query.getColumnNumber();
-//            System.err.println("Query at " + position + " missing a comment");
-            System.err.println(query.toString() + " missing a comment.");
+            System.out.println("\t" + query.toString() + " missing a comment.");
         }
-        return failedQueryList.isEmpty();
     }
 }

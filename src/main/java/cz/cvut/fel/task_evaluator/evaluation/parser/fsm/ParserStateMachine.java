@@ -31,6 +31,8 @@ public class ParserStateMachine {
         this.queryList = new ArrayList<>();
         this.queryBuilder = new QueryBuilder();
         this.modifierBuilder = new ModifierBuilder();
+        this.lastQueryOperation = "";
+        this.lastComment = "";
     }
 
     public void parseLine(LineIterator line) {

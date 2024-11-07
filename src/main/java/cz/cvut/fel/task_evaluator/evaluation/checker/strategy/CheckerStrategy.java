@@ -1,19 +1,16 @@
 package cz.cvut.fel.task_evaluator.evaluation.checker.strategy;
 
 import cz.cvut.fel.task_evaluator.evaluation.checker.criteria.Criterion;
-import cz.cvut.fel.task_evaluator.evaluation.checker.criteria.general.CommentCriterion;
 import cz.cvut.fel.task_evaluator.model.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckerStrategy {
+public abstract class CheckerStrategy {
     protected final List<Criterion> criteria;
 
     public CheckerStrategy() {
         this.criteria = new ArrayList<>();
-        criteria.add(new CommentCriterion());
-
     }
 
     public void checkCriteria(Query query) {

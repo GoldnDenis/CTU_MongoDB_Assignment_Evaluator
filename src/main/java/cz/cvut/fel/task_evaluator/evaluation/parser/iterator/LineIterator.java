@@ -106,6 +106,12 @@ public class LineIterator implements Iterator<Character> {
         return text.substring(this.currentColumnIndex).startsWith(substring);
     }
 
+    public boolean startsWithCaseInsensitive(String substring) {
+        String subtext = text.substring(this.currentColumnIndex).toLowerCase();
+        substring = substring.toLowerCase();
+        return subtext.startsWith(substring);
+    }
+
     public boolean endsWith(String substring) {
         return text.substring(this.currentColumnIndex).endsWith(substring);
     }

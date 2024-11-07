@@ -26,25 +26,19 @@ public class CreateCollectionCriterion extends Criterion {
     }
 
     @Override
-    public void generateFeedback() {
-        System.out.println();
-        System.out.print("Criteria - \"");
-        System.out.print(assignmentMessage);
-        System.out.print("\": ");
-        if (isFulfilled()) {
-            System.out.print("\nCreated collections: [ ");
-            for (String collectionName : createdCollections) {
-                System.out.print(collectionName + " ");
-            }
-            System.out.println("]");
-        } else {
-            System.err.println("No collections were created.");
-        }
+    protected boolean isFulfilled() {
+        return !createdCollections.isEmpty();
     }
 
     @Override
-    protected boolean isFulfilled() {
-        return !createdCollections.isEmpty();
+    protected void generatePositiveFeedback() {
+        System.out.print("\tcreatedCollections=");
+        System.out.println(createdCollections);
+    }
+
+    @Override
+    protected void generateNegativeFeedback() {
+        System.out.println("No collections were created.");
     }
 
     @Override

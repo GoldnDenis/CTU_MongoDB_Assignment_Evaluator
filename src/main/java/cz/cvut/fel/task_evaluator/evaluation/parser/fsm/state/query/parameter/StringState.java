@@ -32,7 +32,7 @@ public class StringState extends ParserState {
             valueAccumulator.append(strConstruct.substring(1, strConstruct.length() - 1));
         } else if (iterator.hasNext()) {
             // todo syntax error
-            context.setState(new ParserTransitionState(context));
+            processSyntaxError("invalid character '" + iterator.peek() + "'", iterator);
         }
     }
 }

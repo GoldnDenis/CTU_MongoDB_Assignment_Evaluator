@@ -25,6 +25,7 @@ public class QueryState extends ParserState {
         } else if (iterator.startsWith(")")) {
             if (isModifier) {
                 context.saveModifier();
+                isModifier = false;
             }
             iterator.next();
             if (iterator.startsWith(";")) {
@@ -33,10 +34,13 @@ public class QueryState extends ParserState {
                 context.setState(new ParserTransitionState(context));
             } else if (iterator.startsWith(".")) {
                 isModifier = true;
+            } else {
+                // todo syntax error
+                processSyntaxError("Invalid query syntax", iterator);
             }
         } else {
             // todo syntax error
-            context.setState(new ParserTransitionState(context));
+            processSyntaxError("Invalid query syntax", iterator);
         }
     }
 }
