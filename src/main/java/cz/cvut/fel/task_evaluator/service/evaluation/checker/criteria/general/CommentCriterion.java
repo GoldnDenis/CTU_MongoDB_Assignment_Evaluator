@@ -1,13 +1,13 @@
 package cz.cvut.fel.task_evaluator.service.evaluation.checker.criteria.general;
 
 import cz.cvut.fel.task_evaluator.service.enums.CriterionMessages;
-import cz.cvut.fel.task_evaluator.service.evaluation.checker.criteria.Criterion;
+import cz.cvut.fel.task_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentCriterion extends Criterion {
+public class CommentCriterion extends AssignmentCriterion {
     private final List<Query> failedQueryList;
 
     public CommentCriterion() {

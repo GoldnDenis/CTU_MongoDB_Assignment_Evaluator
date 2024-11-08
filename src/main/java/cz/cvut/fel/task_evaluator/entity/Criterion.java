@@ -1,15 +1,18 @@
 package cz.cvut.fel.task_evaluator.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="criteria")
+@Table(name = "criteria")
 //@NotNull
 @Getter @Setter
 public class Criterion extends AbstractEntity {

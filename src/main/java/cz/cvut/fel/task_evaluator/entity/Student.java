@@ -3,7 +3,7 @@ package cz.cvut.fel.task_evaluator.entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity

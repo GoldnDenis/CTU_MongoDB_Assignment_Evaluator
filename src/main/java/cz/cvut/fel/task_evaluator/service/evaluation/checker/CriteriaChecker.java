@@ -2,7 +2,6 @@ package cz.cvut.fel.task_evaluator.service.evaluation.checker;
 
 
 import cz.cvut.fel.task_evaluator.service.enums.QueryTypes;
-import cz.cvut.fel.task_evaluator.evaluation.checker.strategy.*;
 import cz.cvut.fel.task_evaluator.service.evaluation.checker.strategy.*;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.Query;
 

@@ -3,16 +3,15 @@ package cz.cvut.fel.task_evaluator.service.evaluation.checker.criteria;
 
 import cz.cvut.fel.task_evaluator.service.evaluation.checker.visitor.QueryParameterVisitor;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.Query;
-import cz.cvut.fel.task_evaluator.evaluation.query.parameter.*;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.parameter.*;
 
 
-public abstract class Criterion implements QueryParameterVisitor {
+public abstract class AssignmentCriterion implements QueryParameterVisitor {
     private final String assignmentMessage;
 //    private boolean fulfilled;
 
 
-    public Criterion(String assignmentMessage) {
+    public AssignmentCriterion(String assignmentMessage) {
         this.assignmentMessage = assignmentMessage;
 //        this.fulfilled = false;
     }
