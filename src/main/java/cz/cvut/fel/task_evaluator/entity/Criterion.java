@@ -1,0 +1,34 @@
+package cz.cvut.fel.task_evaluator.entity;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name="criteria")
+//@NotNull
+@Getter @Setter
+public class Criterion extends AbstractEntity {
+    private String description;
+
+    @ManyToOne
+    private CriterionGroup criterionGroup;
+
+    @OneToMany
+    private Set<CriterionFulfillment> criterionFulfillmentSet;
+
+    public Criterion() {}
+
+    public Criterion(String description) {
+        this.description = description;
+    }
+
+    public Criterion(String description, CriterionGroup criterionGroup) {
+        this.description = description;
+        this.criterionGroup = criterionGroup;
+    }
+}

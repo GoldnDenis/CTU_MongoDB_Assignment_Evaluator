@@ -1,6 +1,6 @@
 package cz.cvut.fel.task_evaluator;
 
-import cz.cvut.fel.task_evaluator.evaluation.AssignmentEvaluator;
+import cz.cvut.fel.task_evaluator.service.evaluation.AssignmentEvaluator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
