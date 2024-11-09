@@ -2,7 +2,7 @@ package cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.comment;
 
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserState;
-import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserTransitionState;
+import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.iterator.LineIterator;
 
 public class MultiLineCommentState extends ParserState {
@@ -17,7 +17,7 @@ public class MultiLineCommentState extends ParserState {
         if (valueAccumulator.toString().endsWith("*/")) {
             context.setLastComment(valueAccumulator.toString());
             context.setLastQueryOperation("");
-            context.setState(new ParserTransitionState(context));
+            context.setState(new ScriptState(context));
         }
     }
 }

@@ -25,6 +25,7 @@ public abstract class ParserState {
         int columnNumber = iterator.getCurrentColumnIndex() + 1;
         message = "Parsing error: " + message + " at " + lineNumber + ":" + columnNumber;
         System.err.println(message);
-        context.setState(new ParserTransitionState(context));
+        context.resetAccumulators();
+        context.setState(new ScriptState(context));
     }
 }

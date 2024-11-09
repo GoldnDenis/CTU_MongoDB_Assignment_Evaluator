@@ -16,7 +16,7 @@ public class AssignmentEvaluator {
 //                List<Query> queryList = ScriptParser.parse(fileLines);
 //                new CriteriaChecker().checkQueries(queryList);
 //            }
-            List<String> fileLines = FileReader.readAllLines(path + ".js");
+            List<String> fileLines = FileReader.readAllLines(path + "0.js");
             List<Query> queryList = ScriptParser.parse(fileLines);
             new CriteriaChecker().checkQueries(queryList);
         } catch (IOException e) {

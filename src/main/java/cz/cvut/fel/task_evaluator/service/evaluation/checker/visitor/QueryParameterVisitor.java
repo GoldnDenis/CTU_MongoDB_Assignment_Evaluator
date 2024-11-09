@@ -6,6 +6,6 @@ public interface QueryParameterVisitor {
     void visitDocumentParameter(DocumentParameter parameter);
     void visitStringParameter(StringParameter parameter);
     void visitPipelineParameter(PipelineParameter parameter);
-    void visitStringLiteralParameter(StringLiteralParameter parameter);
+    void visitStringLiteralParameter(FunctionParameter parameter);
     void visitEmptyParameter(EmptyParameter parameter);
 }

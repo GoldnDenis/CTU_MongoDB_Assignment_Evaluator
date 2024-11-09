@@ -19,7 +19,7 @@ public class ParameterState extends ParserState {
     @Override
     public void process(LineIterator iterator) {
         if (iterator.startsWith("(") || iterator.startsWith(",")) {
-            iterator.next();
+            context.appendToQuery(iterator.next());
             iterator.skipWhitespaces();
             if (iterator.startsWith(")") || iterator.startsWith(",")) {
                 context.addParameter(new EmptyParameter(), isModifier);
@@ -30,14 +30,15 @@ public class ParameterState extends ParserState {
         if (iterator.startsWith("{")) {
             context.setState(new DocumentState(context, isModifier, false));
         } else if (iterator.startsWith("[")) {
-            iterator.next();
+            context.appendToQuery(iterator.next());
             context.setState(new DocumentState(context, isModifier, true));
         } else if (iterator.startsWith(")")) {
             context.setState(new QueryState(context, isModifier));
         } else if (iterator.startsWithStringConstruct()) {
             context.setState(new StringState(context, isModifier));
         } else if (iterator.hasNext()) {
-            context.setState(new StringLiteralState(context, isModifier));
+            context.setState(new FunctionState(context, isModifier));
+//            context.setState(new StringLiteralState(context, isModifier));
         }
     }
 }

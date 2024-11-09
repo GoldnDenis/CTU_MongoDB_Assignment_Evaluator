@@ -18,17 +18,20 @@ public class StringState extends ParserState {
     public void process(LineIterator iterator) {
         iterator.skipWhitespaces();
         if (iterator.startsWith(",") || iterator.startsWith(")")) {
-            context.addParameter(new StringParameter(valueAccumulator.toString()), isModifier);
+            String value = valueAccumulator.toString();
+            context.addParameter(new StringParameter(value), isModifier);
             context.setState(new ParameterState(context, isModifier));
         } else if (iterator.startsWith("+")) {
             iterator.next();
-            iterator.skipWhitespaces();
         } else if (iterator.startsWithStringConstruct()) {
-            String strConstruct = iterator.extractStringConstruct();
+            String value = iterator.nextStringConstruct();
             if (!valueAccumulator.isEmpty()) {
                 valueAccumulator.append(" ");
+                context.appendToQuery(" ");
             }
-            valueAccumulator.append(strConstruct.substring(1, strConstruct.length() - 1));
+            context.appendToQuery(value);
+            value = value.substring(1, value.length() - 1);
+            valueAccumulator.append(value);
         } else if (iterator.hasNext()) {
             // todo syntax error
             processSyntaxError("invalid character '" + iterator.peek() + "'", iterator);

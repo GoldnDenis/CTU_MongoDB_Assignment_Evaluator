@@ -2,9 +2,10 @@ package cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.query;
 
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.query.parameter.ParameterState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.task_evaluator.service.evaluation.query.parameter.StringLiteralParameter;
+import cz.cvut.fel.task_evaluator.service.evaluation.query.parameter.FunctionParameter;
 
 public class StringLiteralState extends ParserState {
     private final Boolean isModifier;
@@ -16,27 +17,36 @@ public class StringLiteralState extends ParserState {
 
     @Override
     public void process(LineIterator iterator) {
-        if (iterator.startsWith(")") || iterator.startsWith(",")) {
-            context.addParameter(new StringLiteralParameter(valueAccumulator.toString()), isModifier);
-            context.setState(new ParameterState(context, isModifier));
-        } else if (iterator.startsWith(".") || iterator.startsWith("(")) {
+        iterator.skipWhitespaces();
+
+        if (iterator.startsWith(".") || iterator.startsWith("(")) {
             String value = valueAccumulator.toString();
+
             if (iterator.startsWith(".")) {
+                if (value.equals("system")) {
+                    // todo syntax error
+                    processSyntaxError("'system.' prefix isn't allowed. (Reserved for internal use.)", iterator);
+                    return;
+                }
                 context.setQueryCollection(value);
             } else if (isModifier) {
                 context.setModifierOperator(value);
             } else {
                 context.setQueryOperator(value);
             }
+            context.appendToQuery(value);
             context.setState(new QueryState(context, isModifier));
-        } else {
+        } else if (iterator.hasNext()) {
             char c = iterator.next();
             if (!Character.isLetterOrDigit(c) && c != '_') {
-                // todo syntax error
-                processSyntaxError("invalid character '" + c + "'", iterator);
-            } else {
-                valueAccumulator.append(c);
+                //todo syntax error
+//                if (c == '$') {
+//                    processSyntaxError("'$' шs not allowed in collection, operation names", iterator);
+//                }
+                processSyntaxError("'" + c + "' шs not allowed in collection, operation names", iterator);
+                return;
             }
+            valueAccumulator.append(c);
         }
     }
 }

@@ -7,6 +7,7 @@ public enum QueryTypes {
     AGGREGATE,
     CREATE_COLLECTION,
     REPLACE_ONE,
+    FUNCTION,
     UNKNOWN;
 
     public static QueryTypes fromString(String queryName) {

@@ -35,14 +35,32 @@ public class LineIterator implements Iterator<Character> {
         return text.charAt(currentColumnIndex++);
     }
 
-    public void skipWhitespaces() {
+    public String nextStringConstruct() {
+        int start = currentColumnIndex;
+        char quote = peek();
+        String escapeSequence = "\\" + quote;
+        next();
+        while (hasNext()) {
+            char c = next();
+            if (startsWith(escapeSequence)) {
+                consumeMatch(escapeSequence);
+            } else if (c == quote) {
+                break;
+            }
+        }
+        return text.substring(start, currentColumnIndex);
+    }
+
+    public String nextUntilWhitespace() {
+        int start = currentColumnIndex;
         while (hasNext()) {
             char c = peek();
-            if (!Character.isWhitespace(c)) {
+            if (Character.isWhitespace(c)) {
                 break;
             }
             next();
         }
+        return text.substring(start, currentColumnIndex);
     }
 
     public String nextAll() {
@@ -78,20 +96,14 @@ public class LineIterator implements Iterator<Character> {
         return text.charAt(currentColumnIndex);
     }
 
-    public String extractStringConstruct() {
-        int start = currentColumnIndex;
-        char quote = peek();
-        String escapeSequence = "\\" + quote;
-        next();
+    public void skipWhitespaces() {
         while (hasNext()) {
-            char c = next();
-            if (startsWith(escapeSequence)) {
-                consumeMatch(escapeSequence);
-            } else if (c == quote) {
+            char c = peek();
+            if (!Character.isWhitespace(c)) {
                 break;
             }
+            next();
         }
-        return text.substring(start, currentColumnIndex);
     }
 
     public boolean startsWithStringConstruct() {
@@ -106,11 +118,11 @@ public class LineIterator implements Iterator<Character> {
         return text.substring(this.currentColumnIndex).startsWith(substring);
     }
 
-    public boolean startsWithCaseInsensitive(String substring) {
-        String subtext = text.substring(this.currentColumnIndex).toLowerCase();
-        substring = substring.toLowerCase();
-        return subtext.startsWith(substring);
-    }
+//    public boolean startsWithCaseInsensitive(String substring) {
+//        String subtext = text.substring(this.currentColumnIndex).toLowerCase();
+//        substring = substring.toLowerCase();
+//        return subtext.startsWith(substring);
+//    }
 
     public boolean endsWith(String substring) {
         return text.substring(this.currentColumnIndex).endsWith(substring);

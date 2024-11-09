@@ -8,10 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
 
-@Getter
-@MappedSuperclass
-public class AbstractEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    protected Long id;
-}
+//@Getter
+//@MappedSuperclass
+//public class AbstractEntity implements Serializable {
+//    @Id
+//    @GeneratedValue(strategy= GenerationType.IDENTITY)
+//    protected Long id;
+//}

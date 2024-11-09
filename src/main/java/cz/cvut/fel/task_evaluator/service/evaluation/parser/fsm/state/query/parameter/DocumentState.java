@@ -28,43 +28,45 @@ public class DocumentState extends ParserState {
 
     @Override
     public void process(LineIterator iterator) {
-        while (iterator.hasNext()) {
-            if (iterator.startsWith("'") || iterator.startsWith("\"")) {
-                if (iterator.startsWithStringConstruct()) {
-                    valueAccumulator.append(iterator.extractStringConstruct());
-                    continue;
-                }
-            }
-            char c = iterator.next();
-            if (Character.isWhitespace(c) && valueAccumulator.toString().endsWith(" ")) {
-                continue;
-            }
+        //todo hashmap first level
+        if (iterator.startsWith("{")) {
+            parenthesisCount++;
+            depth = Math.max(depth, parenthesisCount);
+        } else if (iterator.startsWith("}")) {
+            parenthesisCount--;
+        }
 
-            if (c == '{') {
-                parenthesisCount++;
-                depth = Math.max(depth, parenthesisCount);
-            } else if (c == '}') {
-                parenthesisCount--;
-            }
+        char c = iterator.next();
+        if (Character.isWhitespace(c) && valueAccumulator.toString().endsWith(" ")) {
+            iterator.skipWhitespaces();
+            return;
+        }
 
-            if (parenthesisCount > 0) {
+        if (parenthesisCount > 0) {
+            if (iterator.startsWithStringConstruct()) {
+                String value = iterator.nextStringConstruct();
+                valueAccumulator.append(value);
+            }else {
                 valueAccumulator.append(c);
-            } else if (!valueAccumulator.isEmpty()) {
-                valueAccumulator.append(c);
-                DocumentParameter document = new DocumentParameter(valueAccumulator.toString(), depth);
-                resetDocument();
-                if (!isPipeline) {
-                    context.addParameter(document, isModifier);
-                    context.setState(new ParameterState(context, isModifier));
-                    break;
-                }
+            }
+        } else if (!valueAccumulator.isEmpty()) {
+            valueAccumulator.append(c);
+            String value = valueAccumulator.toString();
+            context.appendToQuery(value);
+
+            DocumentParameter document = new DocumentParameter(value, depth);
+            resetDocument();
+
+            if (!isPipeline) {
+                context.addParameter(document, isModifier);
+                context.setState(new ParameterState(context, isModifier));
+            } else {
                 pipeline.add(document);
                 iterator.skipWhitespaces();
-            } else if (c == ']') {
-                context.addParameter(new PipelineParameter(pipeline), isModifier);
-                context.setState(new ParameterState(context, isModifier));
-                break;
             }
+        } else if (c == ']') {
+            context.addParameter(new PipelineParameter(pipeline), isModifier);
+            context.setState(new ParameterState(context, isModifier));
         }
     }
 

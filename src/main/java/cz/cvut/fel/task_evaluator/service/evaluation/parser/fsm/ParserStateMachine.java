@@ -1,7 +1,8 @@
 package cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm;
 
+import cz.cvut.fel.task_evaluator.service.enums.QueryTypes;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserState;
-import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserTransitionState;
+import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.Query;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.QueryBuilder;
@@ -18,8 +19,10 @@ public class ParserStateMachine {
     private ParserState state;
     @Getter
     private final List<Query> queryList;
+
     private final QueryBuilder queryBuilder;
     private final ModifierBuilder modifierBuilder;
+    private final StringBuilder queryAccumulator;
 
     @Setter
     private String lastQueryOperation;
@@ -27,10 +30,13 @@ public class ParserStateMachine {
     private String lastComment;
 
     public ParserStateMachine() {
-        this.state = new ParserTransitionState(this);
+        this.state = new ScriptState(this);
         this.queryList = new ArrayList<>();
+
         this.queryBuilder = new QueryBuilder();
         this.modifierBuilder = new ModifierBuilder();
+        this.queryAccumulator = new StringBuilder();
+
         this.lastQueryOperation = "";
         this.lastComment = "";
     }
@@ -41,9 +47,21 @@ public class ParserStateMachine {
         }
     }
 
+    public void appendToQuery(String string) {
+        queryAccumulator.append(string);
+    }
+
+    public void appendToQuery(Character character) {
+        queryAccumulator.append(character);
+    }
+
     public void setQueryPosition(int lineNumber, int columnNumber) {
         queryBuilder.setLineNumber(lineNumber)
                 .setColumnNumber(columnNumber);
+    }
+
+    public void setQueryOperator(QueryTypes type) {
+        queryBuilder.setType(type);
     }
 
     public void setQueryOperator(String operator) {
@@ -52,6 +70,7 @@ public class ParserStateMachine {
         }
         lastQueryOperation = operator;
         queryBuilder.setOperation(operator);
+        queryBuilder.setType(QueryTypes.fromString(operator));
     }
 
     public void setQueryCollection(String collection) {
@@ -59,14 +78,6 @@ public class ParserStateMachine {
     }
 
     public void resetQueryBuilder() {
-        queryBuilder.reset();
-    }
-
-    public void saveQuery() {
-        queryList.add(
-                queryBuilder.setComment(lastComment)
-                        .build()
-        );
         queryBuilder.reset();
     }
 
@@ -82,8 +93,24 @@ public class ParserStateMachine {
         modifierBuilder.setModifier(modifier);
     }
 
+    public void resetAccumulators() {
+        queryBuilder.reset();
+        modifierBuilder.reset();
+        queryAccumulator.setLength(0);
+    }
+
     public void saveModifier() {
         queryBuilder.addModifier(modifierBuilder.build());
         modifierBuilder.reset();
+    }
+
+    public void saveQuery() {
+        queryList.add(
+                queryBuilder.setComment(lastComment)
+                        .setQuery(queryAccumulator.toString())
+                        .build()
+        );
+        queryBuilder.reset();
+        queryAccumulator.setLength(0);
     }
 }

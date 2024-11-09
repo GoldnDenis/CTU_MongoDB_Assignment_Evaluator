@@ -11,20 +11,20 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
 
-@Entity
-@Table(name="criterionGroups")
-//@NotNull
-@Getter @Setter
-public class CriterionGroup extends AbstractEntity {
-    @Column(unique=true)
-    private String name;
-
-    @OneToMany
-    private Set<Criterion> criteria;
-
-    public CriterionGroup() {}
-
-    public CriterionGroup(String name) {
-        this.name = name;
-    }
-}
+//@Entity
+//@Table(name="criterionGroups")
+////@NotNull
+//@Getter @Setter
+//public class CriterionGroup extends AbstractEntity {
+//    @Column(unique=true)
+//    private String name;
+//
+//    @OneToMany
+//    private Set<Criterion> criteria;
+//
+//    public CriterionGroup() {}
+//
+//    public CriterionGroup(String name) {
+//        this.name = name;
+//    }
+//}

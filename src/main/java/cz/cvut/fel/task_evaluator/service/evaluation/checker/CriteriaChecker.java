@@ -27,13 +27,16 @@ public class CriteriaChecker {
 
     public void checkQueries(List<Query> queries) {
         for (Query query : queries) {
-            QueryTypes currentType = query.getType();
-            generalStrategy.checkCriteria(query);
-            if (checkerStrategies.containsKey(currentType)) {
-                checkerStrategies.get(currentType).checkCriteria(query);
-            }
+            System.out.println("\n===================");
+            System.out.println(query);
+
+//            QueryTypes currentType = query.getType();
+//            generalStrategy.checkCriteria(query);
+//            if (checkerStrategies.containsKey(currentType)) {
+//                checkerStrategies.get(currentType).checkCriteria(query);
+//            }
         }
-        collectAllFeedback();
+//        collectAllFeedback();
     }
 
     private void collectAllFeedback() {

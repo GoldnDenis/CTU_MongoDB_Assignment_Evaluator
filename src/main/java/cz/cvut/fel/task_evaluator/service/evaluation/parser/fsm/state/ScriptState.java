@@ -6,9 +6,9 @@ import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.comment.Si
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.query.QueryState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.iterator.LineIterator;
 
-public class ParserTransitionState extends ParserState {
+public class ScriptState extends ParserState {
 
-    public ParserTransitionState(ParserStateMachine context) {
+    public ScriptState(ParserStateMachine context) {
         super(context);
     }
 
@@ -24,9 +24,13 @@ public class ParserTransitionState extends ParserState {
             context.setState(new MultiLineCommentState(context));
         } else if (iterator.startsWith("db.")) {
             context.resetQueryBuilder();
+
             setQueryPosition(iterator);
-            iterator.consumeMatch("db");
+            context.appendToQuery(iterator.consumeMatch("db"));
+
             context.setState(new QueryState(context, false));
+        } else if (iterator.startsWithStringConstruct()) {
+            iterator.nextStringConstruct();
         } else {
             iterator.next();
         }

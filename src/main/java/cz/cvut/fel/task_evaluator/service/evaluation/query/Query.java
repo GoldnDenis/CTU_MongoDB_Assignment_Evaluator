@@ -12,6 +12,7 @@ import java.util.List;
 public final class Query {
     private final int lineNumber;
     private final int columnNumber;
+    private final String query;
     private final QueryTypes type;
     private final String comment;
     private final String operation;
@@ -19,11 +20,12 @@ public final class Query {
     private final List<QueryParameter> parameters;
     private final List<QueryModifier> modifiers;
 
-    public Query(int lineNumber, int columnNumber, String comment, String operation, String collection,
+    public Query(int lineNumber, int columnNumber, String comment, String query, QueryTypes type, String operation, String collection,
                  List<QueryParameter> parameters, List<QueryModifier> modifiers) {
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
-        this.type = QueryTypes.fromString(operation);
+        this.query = query;
+        this.type = type;
         this.comment = comment;
         this.operation = operation;
         this.collection = collection;
@@ -33,11 +35,13 @@ public final class Query {
 
     @Override
     public String toString() {
-        String query = !collection.isBlank() ? collection + "." + operation : operation;
-        return "Query{" +
-                "query='" + query + '\'' +
+//        String query = !collection.isBlank() ? collection + "." + operation : operation;
+        return "Query" +
                 " at " + lineNumber +
-                ":" + columnNumber +
+                ":" + columnNumber + ' ' +
+                '{' + '\n' +
+                '\t' + "comment='" + comment + '\'' + '\n' +
+                '\t' + "query='" + query + '\'' + '\n' +
                 '}';
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class StringLiteralParameter implements QueryParameter {
+public class FunctionParameter implements QueryParameter {
     private String value;
 
     @Override

@@ -47,7 +47,7 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
     }
 
     @Override
-    public void visitStringLiteralParameter(StringLiteralParameter parameter) {
+    public void visitStringLiteralParameter(FunctionParameter parameter) {
         // todo :: standard implementation
     }
 

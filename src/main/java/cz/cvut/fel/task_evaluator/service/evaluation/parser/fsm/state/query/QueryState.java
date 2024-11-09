@@ -3,7 +3,7 @@ package cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.query;
 
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserState;
-import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ParserTransitionState;
+import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.fsm.state.query.parameter.ParameterState;
 import cz.cvut.fel.task_evaluator.service.evaluation.parser.iterator.LineIterator;
 
@@ -18,30 +18,24 @@ public class QueryState extends ParserState {
     @Override
     public void process(LineIterator iterator) {
         iterator.skipWhitespaces();
-        if (iterator.startsWith(".")) {
-            iterator.next();
+
+        if (iterator.startsWith(".system.")) {
+            // todo syntax error
+            processSyntaxError("'.system.' isn't allowed in collection or operation", iterator);
+        } else if (iterator.startsWith(".")) {
+            context.appendToQuery(iterator.next());
             context.setState(new StringLiteralState(context, isModifier));
         } else if (iterator.startsWith("(")) {
             context.setState(new ParameterState(context, isModifier));
         } else if (iterator.startsWith(")")) {
             if (isModifier) {
                 context.saveModifier();
-                isModifier = false;
             }
-            iterator.next();
-            if (iterator.startsWith(";")) {
-                iterator.next();
-                context.saveQuery();
-                context.setState(new ParserTransitionState(context));
-            } else if (iterator.startsWith(".")) {
-                isModifier = true;
-            } else {
-                // todo syntax error
-                processSyntaxError("Invalid query syntax", iterator);
-            }
-        } else if (!Character.isWhitespace(iterator.peek())) {
+            context.appendToQuery(iterator.next());
+            context.setState(new QueryEndState(context));
+        } else if (iterator.hasNext()) {
             // todo syntax error
-            processSyntaxError("Invalid query syntax", iterator);
+            processSyntaxError("Invalid query syntax. Expected '.', '(' or ')'", iterator);
         }
     }
 }

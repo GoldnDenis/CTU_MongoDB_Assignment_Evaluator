@@ -1,5 +1,6 @@
 package cz.cvut.fel.task_evaluator.service.evaluation.query;
 
+import cz.cvut.fel.task_evaluator.service.enums.QueryTypes;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.modifier.QueryModifier;
 import cz.cvut.fel.task_evaluator.service.evaluation.query.parameter.QueryParameter;
 
@@ -10,6 +11,9 @@ public class QueryBuilder {
     private int lineNumber;
     private int columnNumber;
     private String comment;
+
+    private String query;
+    private QueryTypes type;
 
     private String operation;
     private String collection;
@@ -38,6 +42,16 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder setQuery(String query) {
+        this.query = query;
+        return this;
+    }
+
+    public QueryBuilder setType(QueryTypes type) {
+        this.type = type;
+        return this;
+    }
+
     public QueryBuilder setOperation(String operation) {
         this.operation = operation;
         return this;
@@ -59,13 +73,15 @@ public class QueryBuilder {
     }
 
     public Query build() {
-        return new Query(lineNumber, columnNumber, comment, operation, collection, parameters, modifiers);
+        return new Query(lineNumber, columnNumber, comment, query, type, operation, collection, parameters, modifiers);
     }
 
     public void reset() {
         this.lineNumber = -1;
         this.columnNumber = -1;
         this.comment = "";
+        this.query = "";
+        this.type = QueryTypes.UNKNOWN;
         this.operation = "";
         this.collection = "";
         this.parameters.clear();
