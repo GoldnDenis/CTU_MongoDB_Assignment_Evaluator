@@ -7,6 +7,7 @@ import cz.cvut.fel.task_evaluator.service.evaluation.query.Query;
 import java.util.List;
 
 public class ScriptParser {
+    // regex for queries db\.([._0-9a-zA-Z]+)\(([\s\S]*?)(\)(\.[\s\S]*?\)))*;
     public static List<Query> parse(List<String> fileLines) {
         ParserStateMachine stateMachine = new ParserStateMachine();
 

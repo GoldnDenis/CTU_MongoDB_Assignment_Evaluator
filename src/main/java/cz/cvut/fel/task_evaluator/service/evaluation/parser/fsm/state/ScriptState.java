@@ -24,10 +24,8 @@ public class ScriptState extends ParserState {
             context.setState(new MultiLineCommentState(context));
         } else if (iterator.startsWith("db.")) {
             context.resetQueryBuilder();
-
             setQueryPosition(iterator);
             context.appendToQuery(iterator.consumeMatch("db"));
-
             context.setState(new QueryState(context, false));
         } else if (iterator.startsWithStringConstruct()) {
             iterator.nextStringConstruct();

@@ -21,7 +21,7 @@ public class QueryEndState extends ParserState {
             context.setState(new QueryState(context, true));
         } else if (iterator.hasNext()) {
             // todo syntax error
-            processSyntaxError("Invalid query syntax", iterator);
+            processSyntaxError("After ')' was expecting '.' or ';'", iterator);
         }
     }
 }
