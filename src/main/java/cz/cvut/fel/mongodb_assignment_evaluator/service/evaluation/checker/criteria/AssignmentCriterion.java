@@ -31,12 +31,6 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
                 '\'' + assignmentMessage + '\'' +
                         " - " + satisfiedQueries.size() +
                         "/" + requiredCount + ':');
-//        if (isFulfilled()) {
-//            generatePositiveFeedback();
-//        } else {
-//            generateNegativeFeedback();
-//        }
-
         System.out.println("\tSatisfied:");
         for (int i = 1; i <= satisfiedQueries.size(); i++) {
             System.out.println("\t\t" + i + ") " + satisfiedQueries.get(i - 1));
@@ -45,6 +39,11 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
         for (int i = 1; i <= failedQueries.size(); i++) {
             System.out.println("\t\t" + i + ") " + failedQueries.get(i - 1));
         }
+//        if (isFulfilled()) {
+//            generatePositiveFeedback();
+//        } else {
+//            generateNegativeFeedback();
+//        }
     }
 
     public void check(Query query) {
