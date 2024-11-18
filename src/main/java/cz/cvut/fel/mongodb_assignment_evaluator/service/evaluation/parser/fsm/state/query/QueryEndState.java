@@ -17,6 +17,8 @@ public class QueryEndState extends ParserState {
             context.appendToQuery(iterator.next());
             context.saveQuery();
             context.setState(new ScriptState(context));
+        } else if (iterator.startsWith("//")) {
+            iterator.nextAll();
         } else if (iterator.startsWith(".")) {
             context.setState(new QueryState(context, true));
         } else if (iterator.hasNext()) {

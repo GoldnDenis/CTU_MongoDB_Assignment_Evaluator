@@ -35,10 +35,10 @@ public final class Query {
 
     @Override
     public String toString() {
-        return "Query{" +
-                lineNumber + ":" + columnNumber +
-                ", comment='" + comment + '\'' +
-                ", query='" + query + '\'' +
-                '}';
+        return "Comment:" + '\n' +
+                comment + '\n' +
+                "Query at " + lineNumber +
+                ":" + columnNumber + ":" +
+                '\n' + query;
     }
 }

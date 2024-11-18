@@ -7,12 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+//public class PipelineParameter implements QueryParameter<PipelineParameter> {
 public class PipelineParameter implements QueryParameter {
     private final List<DocumentParameter> parameterList;
 
     public PipelineParameter(List<DocumentParameter> parameterList) {
         this.parameterList = new ArrayList<>(parameterList);
     }
+
+//    @Override
+//    public PipelineParameter get() {
+//        return this;
+//    }
 
     @Override
     public void accept(QueryParameterVisitor visitor) {

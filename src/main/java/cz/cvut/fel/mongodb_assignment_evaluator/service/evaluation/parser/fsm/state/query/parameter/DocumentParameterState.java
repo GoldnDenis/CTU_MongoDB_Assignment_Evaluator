@@ -44,6 +44,9 @@ public class DocumentParameterState extends ParserState {
         String value = "";
         if (iterator.startsWithStringConstruct()) {
             value = iterator.nextStringConstruct();
+        }  else if (iterator.startsWith("//")) {
+            iterator.nextAll();
+            return;
         } else {
             value = String.valueOf(iterator.next());
         }

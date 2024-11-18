@@ -7,9 +7,15 @@ import org.bson.Document;
 
 @AllArgsConstructor
 @Getter
+//public class DocumentParameter implements QueryParameter<DocumentParameter> {
 public class DocumentParameter implements QueryParameter {
     private Document document;
     private int depth;
+
+//    @Override
+//    public DocumentParameter get() {
+//        return this;
+//    }
 
     @Override
     public void accept(QueryParameterVisitor visitor) {

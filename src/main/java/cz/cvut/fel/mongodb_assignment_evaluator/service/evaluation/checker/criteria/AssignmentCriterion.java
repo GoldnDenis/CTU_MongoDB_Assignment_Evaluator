@@ -8,17 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AssignmentCriterion implements QueryParameterVisitor {
-    private final String assignmentMessage;
-    private final int requiredCount;
+//public abstract class AssignmentCriterion {
+    protected final String assignmentMessage;
 
-    private final List<Query> satisfiedQueries;
-    private final List<Query> failedQueries;
+    protected final int requiredCount;
+    protected int currentCount;
+
+    protected final List<Query> satisfiedQueries;
+    protected final List<Query> failedQueries;
     protected boolean satisfied;
 
 
     public AssignmentCriterion(String assignmentMessage, int requiredCount) {
         this.assignmentMessage = assignmentMessage;
+
         this.requiredCount = requiredCount;
+        this.currentCount = 0;
 
         this.satisfiedQueries = new ArrayList<>();
         this.failedQueries = new ArrayList<>();
@@ -27,23 +32,31 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
 
     public void generateFeedback() {
         System.out.println("\n=======================================");
-        System.out.println(
-                '\'' + assignmentMessage + '\'' +
-                        " - " + satisfiedQueries.size() +
-                        "/" + requiredCount + ':');
-        System.out.println("\tSatisfied:");
-        for (int i = 1; i <= satisfiedQueries.size(); i++) {
-            System.out.println("\t\t" + i + ") " + satisfiedQueries.get(i - 1));
+        System.out.println('"' + assignmentMessage + "\":");
+
+        if (isFulfilled()) {
+            for (int i = 1; i <= satisfiedQueries.size(); i++) {
+                System.out.println(i + ") " + satisfiedQueries.get(i - 1));
+            }
+        } else {
+            System.out.println("Not fulfilled");
         }
-        System.out.println("\tFailed:");
-        for (int i = 1; i <= failedQueries.size(); i++) {
-            System.out.println("\t\t" + i + ") " + failedQueries.get(i - 1));
-        }
+
+//        System.out.println("\tFailed:");
+//        for (int i = 1; i <= failedQueries.size(); i++) {
+//            System.out.println("\t\t" + i + ") " + failedQueries.get(i - 1));
+//        }
+
 //        if (isFulfilled()) {
 //            generatePositiveFeedback();
 //        } else {
 //            generateNegativeFeedback();
 //        }
+    }
+
+    protected boolean isFulfilled() {
+        System.out.println(currentCount + "/" + requiredCount);
+        return currentCount >= requiredCount;
     }
 
     public void check(Query query) {
@@ -57,7 +70,6 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
     }
 
     protected abstract void concreteCheck(Query query);
-//    protected abstract boolean isFulfilled();
 //    protected abstract void generatePositiveFeedback();
 //    protected abstract void generateNegativeFeedback();
 

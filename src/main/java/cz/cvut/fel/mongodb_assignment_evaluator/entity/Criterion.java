@@ -16,6 +16,7 @@ import java.util.Set;
 @Setter
 public class Criterion extends AbstractEntity {
     private String description;
+    private int requiredCount;
 
     @ManyToOne
     private CriterionGroup criterionGroup;
@@ -25,12 +26,19 @@ public class Criterion extends AbstractEntity {
 
     public Criterion() {}
 
-    public Criterion(String description) {
+    public Criterion(String description, int requiredCount) {
         this.description = description;
+        this.requiredCount = requiredCount;
     }
 
     public Criterion(String description, CriterionGroup criterionGroup) {
         this.description = description;
+        this.criterionGroup = criterionGroup;
+    }
+
+    public Criterion(String description, int requiredCount, CriterionGroup criterionGroup) {
+        this.description = description;
+        this.requiredCount = requiredCount;
         this.criterionGroup = criterionGroup;
     }
 }

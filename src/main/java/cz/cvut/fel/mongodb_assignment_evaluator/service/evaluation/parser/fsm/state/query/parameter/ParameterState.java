@@ -27,6 +27,8 @@ public class ParameterState extends ParserState {
 
         if (iterator.startsWith("{")) {
             context.setState(new DocumentParameterState(context, isModifier, false));
+        }  else if (iterator.startsWith("//")) {
+            iterator.nextAll();
         } else if (iterator.startsWith("[")) {
             context.appendToQuery(iterator.next());
             context.setState(new DocumentParameterState(context, isModifier, true));

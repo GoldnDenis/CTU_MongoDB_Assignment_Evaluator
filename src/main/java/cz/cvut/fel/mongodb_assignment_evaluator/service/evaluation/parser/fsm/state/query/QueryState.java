@@ -20,6 +20,8 @@ public class QueryState extends ParserState {
         if (iterator.startsWith(".system.")) {
             // todo syntax error
             processSyntaxError("'.system.' isn't allowed in collection or operation", iterator);
+        }  else if (iterator.startsWith("//")) {
+            iterator.nextAll();
         } else if (iterator.startsWith(".")) {
             context.appendToQuery(iterator.next());
             context.setState(new StringLiteralState(context, isModifier));

@@ -6,8 +6,14 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
+//public class StringParameter implements QueryParameter<StringParameter> {
 public class StringParameter implements QueryParameter {
     private String value;
+
+//    @Override
+//    public StringParameter get() {
+//        return this;
+//    }
 
     @Override
     public void accept(QueryParameterVisitor visitor) {

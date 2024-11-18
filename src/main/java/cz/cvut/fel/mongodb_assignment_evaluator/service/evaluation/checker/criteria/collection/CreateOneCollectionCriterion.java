@@ -9,17 +9,21 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateCollectionCriterion extends AssignmentCriterion {
+public class CreateOneCollectionCriterion extends AssignmentCriterion {
     private final List<String> createdCollections;
 
-    public CreateCollectionCriterion() {
-        super(CriterionDescription.CREATE_COLLECTION.getDescription(), 2);
+    public CreateOneCollectionCriterion() {
+        super(
+                CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
+                CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
+        );
         this.createdCollections = new ArrayList<>();
     }
 
     @Override
     public void concreteCheck(Query query) {
         List<QueryParameter> queryParameters = query.getParameters();
+
         if (!queryParameters.isEmpty()) {
             queryParameters.get(0).accept(this);
         }
@@ -46,6 +50,8 @@ public class CreateCollectionCriterion extends AssignmentCriterion {
         String collection = parameter.getValue();
         if (!createdCollections.contains(collection)) {
             createdCollections.add(parameter.getValue());
+
+            currentCount++;
             satisfied = true;
         }
     }

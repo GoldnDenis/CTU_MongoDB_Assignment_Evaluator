@@ -20,6 +20,8 @@ public class StringParameterState extends ParserState {
             String value = valueAccumulator.toString();
             context.addParameter(new StringParameter(value), isModifier);
             context.setState(new ParameterState(context, isModifier));
+        } else if (iterator.startsWith("//")) {
+            iterator.nextAll();
         } else if (iterator.startsWith("+")) {
             iterator.next();
         } else if (iterator.startsWithStringConstruct()) {

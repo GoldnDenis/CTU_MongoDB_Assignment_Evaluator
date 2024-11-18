@@ -35,16 +35,14 @@ public class CriteriaChecker {
                 .filter(q -> q.getType() == QueryTypes.UNKNOWN)
                 .forEach(System.out::println);
 
-        System.out.println("\n==========================================");
         queries.stream()
                 .filter(q -> q.getType() != QueryTypes.UNKNOWN)
                 .forEach(query ->
                         checkerStrategies.get(query.getType()).checkCriteria(query)
                 );
 
-        System.out.println("\n==========================================");
-//        generalStrategy.collectAllFeedback();
         checkerStrategies.values().forEach(CheckerStrategy::collectAllFeedback);
+//        generalStrategy.collectAllFeedback();
     }
 
 
