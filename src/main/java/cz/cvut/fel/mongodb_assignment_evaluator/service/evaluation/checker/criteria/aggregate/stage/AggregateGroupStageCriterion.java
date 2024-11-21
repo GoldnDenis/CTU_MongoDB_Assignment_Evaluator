@@ -1,10 +1,14 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.stage;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +16,24 @@ import java.util.List;
 public class AggregateGroupStageCriterion extends AssignmentCriterion {
     public AggregateGroupStageCriterion() {
         super(
-                CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
-                CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
+                CriterionDescription.AGGREGATE_GROUP_STAGE.getDescription(),
+                CriterionDescription.AGGREGATE_GROUP_STAGE.getRequiredCount()
         );
     }
 
     @Override
     public void concreteCheck(Query query) {
+        List<QueryParameter> parameters = query.getParameters();
+        if (!parameters.isEmpty()) {
+            parameters.get(0).accept(this);
+        }
+    }
+
+    @Override
+    public void visitPipelineParameter(PipelineParameter parameter) {
+        if (parameter.firstLevelContains("$group")) {
+            currentCount++;
+            satisfied = true;
+        }
     }
 }

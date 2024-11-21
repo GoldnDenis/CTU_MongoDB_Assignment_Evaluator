@@ -1,13 +1,11 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.insert.document;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
-import org.bson.Document;
 
 import java.util.List;
 
@@ -29,18 +27,15 @@ public class InsertDocumentEmbeddedObjectsCriterion extends AssignmentCriterion 
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        checkDocument(parameter.getDocument());
+        if (parameter.containsEmbeddedObject()) {
+            currentCount++;
+            satisfied = true;
+        }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            checkDocument(documentParameter.getDocument());
-        }
-    }
-
-    private void checkDocument(Document document) {
-        if (BsonChecker.containsEmbeddedObjects(document)) {
+        if (parameter.containsEmbeddedObjects()) {
             currentCount++;
             satisfied = true;
         }

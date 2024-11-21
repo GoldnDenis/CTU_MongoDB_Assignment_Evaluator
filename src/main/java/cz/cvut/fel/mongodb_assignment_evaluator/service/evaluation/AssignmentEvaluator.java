@@ -12,7 +12,7 @@ import java.util.List;
 public class AssignmentEvaluator {
     public static void evaluate(String path) {
         try {
-            path = path + ".js";
+            path = path + "1.js";
 
             List<String> fileLines = Files.readAllLines(Paths.get(path));
             List<Query> queryList = ScriptParser.parse(fileLines);

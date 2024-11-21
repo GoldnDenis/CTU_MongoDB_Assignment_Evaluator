@@ -12,8 +12,8 @@ import java.util.List;
 public class FindConditionCriterion extends AssignmentCriterion {
     public FindConditionCriterion() {
         super(
-                CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
-                CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
+                CriterionDescription.FIND_CONDITION.getDescription(),
+                CriterionDescription.FIND_CONDITION.getRequiredCount()
         );
     }
 

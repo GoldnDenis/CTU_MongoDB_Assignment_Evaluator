@@ -24,4 +24,49 @@ public class PipelineParameter implements QueryParameter {
     public void accept(QueryParameterVisitor visitor) {
         visitor.visitPipelineParameter(this);
     }
+
+    public boolean containsNonTrivialDocument() {
+        for (DocumentParameter documentParameter : parameterList) {
+            if (!documentParameter.isTrivial()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsArray() {
+        for (DocumentParameter documentParameter : parameterList) {
+            if (documentParameter.containsArray()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsEmbeddedObjects() {
+        for (DocumentParameter documentParameter : parameterList) {
+            if (documentParameter.containsEmbeddedObject()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean contains(String fieldName) {
+        for (DocumentParameter documentParameter : parameterList) {
+            if (documentParameter.contains(fieldName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean firstLevelContains(String fieldName) {
+        for (DocumentParameter documentParameter : parameterList) {
+            if (documentParameter.firstLevelContains(fieldName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

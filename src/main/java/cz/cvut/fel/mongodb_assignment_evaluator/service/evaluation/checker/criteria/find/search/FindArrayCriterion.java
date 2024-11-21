@@ -12,8 +12,8 @@ import java.util.List;
 public class FindArrayCriterion extends AssignmentCriterion {
     public FindArrayCriterion() {
         super(
-                CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
-                CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
+                CriterionDescription.FIND_ARRAY.getDescription(),
+                CriterionDescription.FIND_ARRAY.getRequiredCount()
         );
     }
 

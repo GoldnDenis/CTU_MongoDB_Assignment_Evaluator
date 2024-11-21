@@ -2,6 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
@@ -19,15 +20,17 @@ public class ReplaceValueCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
-        currentCount++;
-        satisfied = true;
-//        List<QueryParameter> queryParameters = query.getParameters();
-//        if (query.getParameters().size() >= 2) {
-//            queryParameters.get(0).accept(this);
-//        }
+        List<QueryParameter> queryParameters = query.getParameters();
+        if (query.getParameters().size() >= 2) {
+            queryParameters.get(1).accept(this);
+        }
     }
 
-//    @Override
-//    public void visitStringParameter(StringParameter parameter) {
-//    }
+    @Override
+    public void visitDocumentParameter(DocumentParameter parameter) {
+        if (!parameter.isTrivial()) {
+            currentCount++;
+            satisfied = true;
+        }
+    }
 }

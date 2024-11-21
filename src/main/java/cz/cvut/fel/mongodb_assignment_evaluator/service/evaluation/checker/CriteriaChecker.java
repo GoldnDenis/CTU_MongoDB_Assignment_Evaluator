@@ -38,9 +38,13 @@ public class CriteriaChecker {
         queries.stream()
                 .filter(q -> q.getType() != QueryTypes.UNKNOWN)
                 .forEach(query ->
-                        checkerStrategies.get(query.getType()).checkCriteria(query)
+                        {
+                            generalStrategy.checkCriteria(query);
+                            checkerStrategies.get(query.getType()).checkCriteria(query);
+                        }
                 );
 
+        generalStrategy.collectAllFeedback();
         checkerStrategies.values().forEach(CheckerStrategy::collectAllFeedback);
 //        generalStrategy.collectAllFeedback();
     }

@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -44,8 +45,12 @@ public class UpdateOneDocumentCriterion extends AssignmentCriterion {
 
     private void checkDocument(Document document) {
         if (document.containsKey("$set")) {
-            currentCount++;
-            satisfied = true;
+            Object value = document.get("$set");
+            if (value instanceof Document &&
+                    !((Document) value).isEmpty()) {
+                currentCount++;
+                satisfied = true;
+            }
         }
     }
 }

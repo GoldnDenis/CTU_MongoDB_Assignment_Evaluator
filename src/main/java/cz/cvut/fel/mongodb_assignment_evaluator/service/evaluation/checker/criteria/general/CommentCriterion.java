@@ -7,12 +7,16 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 public class CommentCriterion extends AssignmentCriterion {
     public CommentCriterion() {
         //todo
-        super(CriterionDescription.COMMENT.getDescription(), 0);
+        super(CriterionDescription.COMMENT.getDescription(), 1);
     }
 
     @Override
     public void concreteCheck(Query query) {
-        satisfied = !query.getComment().isBlank();
+        requiredCount++;
+        if (!query.getComment().isBlank()) {
+            satisfied = true;
+            currentCount++;
+        }
     }
 
 //    @Override

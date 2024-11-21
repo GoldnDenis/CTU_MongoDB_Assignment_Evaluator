@@ -30,8 +30,7 @@ public class FindFiveQueriesCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document document = parameter.getDocument();
-        if (!document.isEmpty()) {
+        if (!parameter.isTrivial()) {
             currentCount++;
             satisfied = true;
         }

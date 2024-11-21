@@ -34,6 +34,10 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
                 return;
             }
 
+            if (!insertedDocumentsMap.containsKey(currentCollection)) {
+                insertedDocumentsMap.put(currentCollection, 0);
+            }
+
             queryParameters.get(0).accept(this);
         }
     }
@@ -59,21 +63,18 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        checkDocument(parameter.getDocument());
+        checkDocumentParameter(parameter);
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            checkDocument(documentParameter.getDocument());
+            checkDocumentParameter(documentParameter);
         }
     }
 
-    private void checkDocument(Document document) {
-        if (!document.isEmpty()) {
-            if (!insertedDocumentsMap.containsKey(currentCollection)) {
-                insertedDocumentsMap.put(currentCollection, 0);
-            }
+    private void checkDocumentParameter(DocumentParameter parameter) {
+        if (!parameter.isTrivial()) {
             insertedDocumentsMap.put(currentCollection, insertedDocumentsMap.get(currentCollection) + 1);
             satisfied = true;
         }

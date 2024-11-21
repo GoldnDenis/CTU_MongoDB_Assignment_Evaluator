@@ -13,15 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FindSortModifierCriterion extends AssignmentCriterion {
+    private boolean isTrivial;
+
     public FindSortModifierCriterion() {
         super(
                 CriterionDescription.FIND_SORT_MODIFIER.getDescription(),
                 CriterionDescription.FIND_SORT_MODIFIER.getRequiredCount()
         );
+        this.isTrivial = true;
     }
 
     @Override
     public void concreteCheck(Query query) {
+        List<QueryParameter> parameters = query.getParameters();
+        if (parameters.isEmpty()) {
+            return;
+        }
+        parameters.get(0).accept(this);
         List<QueryModifier> modifiers = query.getModifiers();
         modifiers.stream()
                 .filter(modifier -> modifier.getModifier().equals("sort"))
@@ -30,10 +38,14 @@ public class FindSortModifierCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document document = parameter.getDocument();
-        if (!document.isEmpty()) {
-            currentCount++;
+        if (isTrivial) {
+            isTrivial = parameter.isTrivial();
+            return;
+        }
+
+        if (!parameter.isTrivial()) {
             satisfied = true;
+            currentCount++;
         }
     }
 }

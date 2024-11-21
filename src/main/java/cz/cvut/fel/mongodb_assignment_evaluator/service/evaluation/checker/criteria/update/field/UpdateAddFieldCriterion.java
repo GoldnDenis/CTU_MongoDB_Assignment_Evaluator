@@ -31,18 +31,15 @@ public class UpdateAddFieldCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        checkDocument(parameter.getDocument());
+        if (parameter.firstLevelContains("$set")) {
+            currentCount++;
+            satisfied = true;
+        }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            checkDocument(documentParameter.getDocument());
-        }
-    }
-
-    private void checkDocument(Document document) {
-        if (document.containsKey("$set")) {
+        if (parameter.firstLevelContains("$set")) {
             currentCount++;
             satisfied = true;
         }

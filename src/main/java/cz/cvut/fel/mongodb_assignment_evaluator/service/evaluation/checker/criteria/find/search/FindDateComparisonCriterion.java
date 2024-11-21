@@ -12,8 +12,8 @@ import java.util.List;
 public class FindDateComparisonCriterion extends AssignmentCriterion {
     public FindDateComparisonCriterion() {
         super(
-                CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
-                CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
+                CriterionDescription.FIND_DATE_COMPARISON.getDescription(),
+                CriterionDescription.FIND_DATE_COMPARISON.getRequiredCount()
         );
     }
 

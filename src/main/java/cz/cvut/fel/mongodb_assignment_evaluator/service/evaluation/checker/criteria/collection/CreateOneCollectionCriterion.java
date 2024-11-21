@@ -48,9 +48,9 @@ public class CreateOneCollectionCriterion extends AssignmentCriterion {
     @Override
     public void visitStringParameter(StringParameter parameter) {
         String collection = parameter.getValue();
-        if (!createdCollections.contains(collection)) {
-            createdCollections.add(parameter.getValue());
-
+        if (!collection.isEmpty() &&
+                !createdCollections.contains(collection)) {
+            createdCollections.add(collection);
             currentCount++;
             satisfied = true;
         }

@@ -11,7 +11,7 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
 //public abstract class AssignmentCriterion {
     protected final String assignmentMessage;
 
-    protected final int requiredCount;
+    protected int requiredCount;
     protected int currentCount;
 
     protected final List<Query> satisfiedQueries;

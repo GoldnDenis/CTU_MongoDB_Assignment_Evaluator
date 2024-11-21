@@ -30,10 +30,9 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document document = parameter.getDocument();
-        if (document.containsKey("and") ||
-                document.containsKey("$or") ||
-                BsonChecker.contains(document, "$not")) {
+        if (parameter.firstLevelContains("and") ||
+                parameter.firstLevelContains("$or") ||
+                parameter.contains("$not")) {
             currentCount++;
             satisfied = true;
         }

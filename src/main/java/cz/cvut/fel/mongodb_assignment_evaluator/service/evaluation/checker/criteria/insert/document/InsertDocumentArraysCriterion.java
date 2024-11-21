@@ -29,18 +29,15 @@ public class InsertDocumentArraysCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        checkDocument(parameter.getDocument());
+        if (parameter.containsArray()) {
+            currentCount++;
+            satisfied = true;
+        }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            checkDocument(documentParameter.getDocument());
-        }
-    }
-
-    private void checkDocument(Document document) {
-        if (BsonChecker.containsArray(document)) {
+        if (parameter.containsArray()) {
             currentCount++;
             satisfied = true;
         }

@@ -30,8 +30,7 @@ public class FindElemMatchUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document document = parameter.getDocument();
-        if (BsonChecker.contains(document, "$elemMatch")) {
+        if (parameter.contains("$elemMatch")) {
             currentCount++;
             satisfied = true;
         }

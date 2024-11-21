@@ -12,8 +12,8 @@ import java.util.List;
 public class FindValueCriterion extends AssignmentCriterion {
     public FindValueCriterion() {
         super(
-                CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
-                CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
+                CriterionDescription.FIND_VALUE.getDescription(),
+                CriterionDescription.FIND_VALUE.getRequiredCount()
         );
     }
 
