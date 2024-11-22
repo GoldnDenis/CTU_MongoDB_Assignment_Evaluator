@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.field;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -31,15 +32,19 @@ public class UpdateAddFieldCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (parameter.firstLevelContains("$set")) {
-            currentCount++;
-            satisfied = true;
-        }
+        checkDocument(parameter.getDocument());
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.firstLevelContains("$set")) {
+        for (DocumentParameter documentParameter: parameter.getParameterList()) {
+            checkDocument(documentParameter.getDocument());
+        }
+    }
+
+    private void checkDocument(Document document) {
+        Document setDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$set");
+        if (setDocument != null && !setDocument.isEmpty()) {
             currentCount++;
             satisfied = true;
         }

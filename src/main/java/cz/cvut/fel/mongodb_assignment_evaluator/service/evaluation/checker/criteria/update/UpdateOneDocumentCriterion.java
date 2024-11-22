@@ -6,12 +6,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.Document;
 
-import java.nio.channels.Pipe;
-import java.util.ArrayList;
 import java.util.List;
 
 //todo update
@@ -25,6 +22,10 @@ public class UpdateOneDocumentCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
+        if (!query.getOperator().equalsIgnoreCase("updateone")) {
+            return;
+        }
+
         List<QueryParameter> parameters = query.getParameters();
         if (parameters.size() >= 2) {
             parameters.get(1).accept(this);
@@ -44,13 +45,10 @@ public class UpdateOneDocumentCriterion extends AssignmentCriterion {
     }
 
     private void checkDocument(Document document) {
-        if (document.containsKey("$set")) {
-            Object value = document.get("$set");
-            if (value instanceof Document &&
-                    !((Document) value).isEmpty()) {
-                currentCount++;
-                satisfied = true;
-            }
+        Document setDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$set");
+        if (setDocument != null && !setDocument.isEmpty()) {
+            currentCount++;
+            satisfied = true;
         }
     }
 }

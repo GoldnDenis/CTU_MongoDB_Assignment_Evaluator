@@ -29,10 +29,10 @@ public class UpdateUpsertUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document document = parameter.getDocument();
-        if (document.containsKey("$upsert")) {
-            if (document.get("$upsert").equals(true) ||
-            document.get("$upsert").equals(1)) {
+        if (parameter.firstLevelContains("$upsert")) {
+            Object upsertDocument = parameter.getDocument().get("$upsert");
+            if (upsertDocument.equals(true) ||
+            upsertDocument.equals(1)) {
                 currentCount++;
                 satisfied = true;
             }

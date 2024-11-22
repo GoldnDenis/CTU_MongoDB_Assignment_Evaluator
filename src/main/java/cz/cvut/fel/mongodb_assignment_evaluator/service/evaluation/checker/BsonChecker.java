@@ -77,6 +77,21 @@ public class BsonChecker {
         return "";
     }
 
+    public static Document getFirstLevelOperatorDocument(Document document, String operator) {
+        if (!operator.startsWith("$")) {
+            return null;
+        }
+        List<Document> documents = document.entrySet().stream()
+                .filter(entry -> entry.getKey().equalsIgnoreCase(operator))
+                .filter(entry -> entry.getValue() instanceof Document)
+                .map(entry -> (Document) entry.getValue())
+                .toList();
+        if (documents.isEmpty()) {
+            return null;
+        }
+        return documents.get(0);
+    }
+
     public static boolean contains(Document document, String fieldName) {
         if (document.containsKey(fieldName)) {
             return true;

@@ -49,14 +49,12 @@ public class UpdateNestedDocumentCriterion extends AssignmentCriterion {
     }
 
     private void checkDocument(Document document) {
-        if (document.containsKey("$set")) {
-            Object value = document.get("$set");
-            if (value instanceof Document) {
-                String key = BsonChecker.findFieldMatchesPattern((Document) value, nestedPattern);
-                if (!key.isBlank()) {
-                    currentCount++;
-                    satisfied = true;
-                }
+        Document setDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$set");
+        if (setDocument != null && !setDocument.isEmpty()) {
+            String key = BsonChecker.findFieldMatchesPattern(setDocument, nestedPattern);
+            if (!key.isBlank()) {
+                currentCount++;
+                satisfied = true;
             }
         }
     }

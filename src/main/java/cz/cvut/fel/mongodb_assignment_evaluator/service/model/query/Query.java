@@ -15,19 +15,19 @@ public final class Query {
     private final String query;
     private final QueryTypes type;
     private final String comment;
-    private final String operation;
+    private final String operator;
     private final String collection;
     private final List<QueryParameter> parameters;
     private final List<QueryModifier> modifiers;
 
-    public Query(int lineNumber, int columnNumber, String comment, String query, QueryTypes type, String operation, String collection,
+    public Query(int lineNumber, int columnNumber, String comment, String query, QueryTypes type, String operator, String collection,
                  List<QueryParameter> parameters, List<QueryModifier> modifiers) {
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
         this.query = query;
         this.type = type;
         this.comment = comment;
-        this.operation = operation;
+        this.operator = operator;
         this.collection = collection;
         this.parameters = new ArrayList<>(parameters);
         this.modifiers = new ArrayList<>(modifiers);

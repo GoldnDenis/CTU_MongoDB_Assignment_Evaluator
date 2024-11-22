@@ -30,7 +30,8 @@ public class FindElemMatchUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (parameter.contains("$elemMatch")) {
+        Document elemMatchDocument = BsonChecker.getFirstLevelOperatorDocument(parameter.getDocument(), "$elemMatch");
+        if (elemMatchDocument != null && !elemMatchDocument.isEmpty()) {
             currentCount++;
             satisfied = true;
         }

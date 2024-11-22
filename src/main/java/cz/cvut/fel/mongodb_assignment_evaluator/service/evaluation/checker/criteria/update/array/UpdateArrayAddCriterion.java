@@ -42,21 +42,16 @@ public class UpdateArrayAddCriterion extends AssignmentCriterion {
     public void visitPipelineParameter(PipelineParameter parameter) {
         for (DocumentParameter documentParameter: parameter.getParameterList()) {
             checkDocument(documentParameter.getDocument());
-            if (satisfied) {
-                break;
-            }
         }
     }
 
     private void checkDocument(Document document) {
-        if (document.containsKey("$set")) {
-            Object value = document.get("$set");
-            if (value instanceof Document) {
-                String key = BsonChecker.findFieldMatchesPattern((Document) value, arrayPattern);
-                if (!key.isBlank()) {
-                    currentCount++;
-                    satisfied = true;
-                }
+        Document setDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$set");
+        if (setDocument != null && !setDocument.isEmpty()) {
+            String key = BsonChecker.findFieldMatchesPattern(setDocument, arrayPattern);
+            if (!key.isBlank()) {
+                currentCount++;
+                satisfied = true;
             }
         }
     }

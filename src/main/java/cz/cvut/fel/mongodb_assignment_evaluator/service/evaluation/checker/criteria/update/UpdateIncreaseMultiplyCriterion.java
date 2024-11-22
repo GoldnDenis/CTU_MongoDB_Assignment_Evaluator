@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -41,8 +42,15 @@ public class UpdateIncreaseMultiplyCriterion extends AssignmentCriterion {
     }
 
     private void checkDocument(Document document) {
-        if (document.containsKey("$inc") ||
-                document.containsKey("$mul")) {
+        Document incDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$inc");
+        if (incDocument != null && !incDocument.isEmpty()) {
+            currentCount++;
+            satisfied = true;
+            return;
+        }
+
+        Document mulDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$mul");
+        if (mulDocument != null && !mulDocument.isEmpty()) {
             currentCount++;
             satisfied = true;
         }
