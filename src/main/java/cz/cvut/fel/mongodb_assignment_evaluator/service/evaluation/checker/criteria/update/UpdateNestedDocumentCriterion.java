@@ -2,24 +2,24 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 //todo update
 public class UpdateNestedDocumentCriterion extends AssignmentCriterion {
-    private final Pattern nestedPattern = Pattern.compile("^[a-z]+[a-z0-9_]*\\.[a-z]+[a-z0-9_]*");
+    private final Pattern nestedPattern = Pattern.compile("^[a-zA-Z]+[a-zA-Z0-9_]*(\\.(\\$(\\[[a-zA-Z0-9]*\\])?|[0-9]+))*(\\.[a-zA-Z]+[a-zA-Z0-9_]*)+");
 
-    public UpdateNestedDocumentCriterion() {
+    public UpdateNestedDocumentCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.UPDATE_NESTED_DOCUMENT.getDescription(),
                 CriterionDescription.UPDATE_NESTED_DOCUMENT.getRequiredCount()
         );
@@ -35,27 +35,30 @@ public class UpdateNestedDocumentCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        checkDocument(parameter.getDocument());
+        checkDocumentParameter(parameter);
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            checkDocument(documentParameter.getDocument());
-            if (satisfied) {
-                break;
-            }
+            checkDocumentParameter(documentParameter);
         }
     }
-
-    private void checkDocument(Document document) {
-        Document setDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$set");
-        if (setDocument != null && !setDocument.isEmpty()) {
-            String key = BsonChecker.findFieldMatchesPattern(setDocument, nestedPattern);
+    //todo ask
+    private void checkDocumentParameter(DocumentParameter parameter) {
+        Object found = parameter.getValue("$set", 1);
+        if (found instanceof Document) {
+            String key = BsonChecker.findFieldMatchesPattern(
+                    (Document) found,
+                    1,
+                    nestedPattern
+            );
             if (!key.isBlank()) {
                 currentCount++;
                 satisfied = true;
+//                return true;
             }
         }
+//        return false;
     }
 }

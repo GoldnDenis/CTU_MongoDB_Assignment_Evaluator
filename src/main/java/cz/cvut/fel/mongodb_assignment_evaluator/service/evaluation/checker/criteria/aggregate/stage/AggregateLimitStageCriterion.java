@@ -1,7 +1,9 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.stage;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
@@ -11,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AggregateLimitStageCriterion extends AssignmentCriterion {
-    public AggregateLimitStageCriterion() {
+    public AggregateLimitStageCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.AGGREGATE_LIMIT_STAGE.getDescription(),
                 CriterionDescription.AGGREGATE_LIMIT_STAGE.getRequiredCount()
         );
@@ -28,9 +31,12 @@ public class AggregateLimitStageCriterion extends AssignmentCriterion {
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.firstLevelContains("$limit")) {
-            currentCount++;
-            satisfied = true;
+        for (DocumentParameter documentParameter: parameter.getParameterList()) {
+            if (documentParameter.containsField("$limit", 1)) {
+                currentCount++;
+                satisfied = true;
+                return;
+            }
         }
     }
 }

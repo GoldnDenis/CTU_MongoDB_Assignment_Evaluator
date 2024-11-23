@@ -2,9 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker;
 
 import org.bson.Document;
 
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BsonChecker {
@@ -21,23 +19,8 @@ public class BsonChecker {
 //        return false;
 //    }
 
-    public static String findFieldWithArray(Document document) {
-        for (Map.Entry<String, Object> entry : document.entrySet()) {
-            String key = entry.getKey();
-            if (!key.startsWith("$") &&
-                    entry.getValue() instanceof List) {
-                return key;
-            } else if (entry.getValue() instanceof Document) {
-                String found = findFieldWithArray((Document) entry.getValue());
-                if (!found.isBlank()) {
-                    return found;
-                }
-            }
-        }
-        return "";
-    }
 
-//    public static boolean containsEmbeddedObject(Document document) {
+    //    public static boolean containsEmbeddedObject(Document document) {
 //        for (Object value : document.values()) {
 //            if (value instanceof Document) {
 //                return true;
@@ -46,63 +29,65 @@ public class BsonChecker {
 //        return false;
 //    }
 
-    public static String findFieldMatchesPattern(Document document, Pattern pattern) {
-        for (Map.Entry<String, Object> entry : document.entrySet()) {
-            String key = entry.getKey();
-            if (pattern.matcher(key).matches()) {
-                return key;
-            }
+    public static String findFieldValueOfType(Document document, int maxDepth, Class<?> clazz) {
+        if (maxDepth <= 0) {
+            return "";
         }
-        return "";
-    }
 
-    public static String findFieldContainsSubstring(Document document, String substring) {
         for (Map.Entry<String, Object> entry : document.entrySet()) {
             String key = entry.getKey();
-            if (key.contains(substring)) {
-                return key;
-            }
-        }
-        return "";
-    }
-
-    public static String findFieldWithEmbeddedObject(Document document) {
-        for (Map.Entry<String, Object> entry : document.entrySet()) {
-            String key = entry.getKey();
+            Object value = entry.getValue();
             if (!key.startsWith("$") &&
-                    entry.getValue() instanceof Document) {
+                    clazz.isInstance(value)) {
                 return key;
-            }
-        }
-        return "";
-    }
-
-    public static Document getFirstLevelOperatorDocument(Document document, String operator) {
-        if (!operator.startsWith("$")) {
-            return null;
-        }
-        List<Document> documents = document.entrySet().stream()
-                .filter(entry -> entry.getKey().equalsIgnoreCase(operator))
-                .filter(entry -> entry.getValue() instanceof Document)
-                .map(entry -> (Document) entry.getValue())
-                .toList();
-        if (documents.isEmpty()) {
-            return null;
-        }
-        return documents.get(0);
-    }
-
-    public static boolean contains(Document document, String fieldName) {
-        if (document.containsKey(fieldName)) {
-            return true;
-        }
-        for (Object value : document.values()) {
-            if (value instanceof Document) {
-                if (contains((Document) value, fieldName)) {
-                    return true;
+            } else if (maxDepth > 1 && value instanceof Document) {
+                String found = findFieldValueOfType((Document) value, maxDepth - 1, clazz);
+                if (!found.isBlank()) {
+                    return found;
                 }
             }
         }
-        return false;
+        return "";
+    }
+
+    public static String findFieldMatchesPattern(Document document, int maxDepth, Pattern pattern) {
+        if (pattern == null || maxDepth <= 0) {
+            return "";
+        }
+
+        for (Map.Entry<String, Object> entry : document.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (pattern.matcher(key).find()) {
+                return key;
+            } else if (maxDepth > 1 && value instanceof Document) {
+                key = findFieldMatchesPattern((Document) value, maxDepth - 1, pattern);
+                if (!key.isBlank()) {
+                    return key;
+                }
+            }
+        }
+        return "";
+    }
+
+    public static Object getValue(Document document, int maxDepth, String field) {
+        if (field.isBlank() || maxDepth <= 0) {
+            return null;
+        }
+
+        if (document.containsKey(field)) {
+            return document.get(field);
+        }
+
+        for (Object value : document.values()) {
+            if (maxDepth > 1 && value instanceof Document) {
+                value = getValue((Document) value, maxDepth - 1, field);
+                if (value != null) {
+                    return value;
+                }
+            }
+        }
+
+        return null;
     }
 }

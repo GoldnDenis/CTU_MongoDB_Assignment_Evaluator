@@ -2,6 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -12,8 +13,9 @@ import org.bson.Document;
 import java.util.List;
 
 public class InsertDocumentArraysCriterion extends AssignmentCriterion {
-    public InsertDocumentArraysCriterion() {
+    public InsertDocumentArraysCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.INSERT_DOCUMENT_ARRAYS.getDescription(),
                 CriterionDescription.INSERT_DOCUMENT_ARRAYS.getRequiredCount()
         );
@@ -29,7 +31,7 @@ public class InsertDocumentArraysCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (parameter.containsArray()) {
+        if (parameter.containsFieldValueOfType(List.class)) {
             currentCount++;
             satisfied = true;
         }
@@ -37,9 +39,11 @@ public class InsertDocumentArraysCriterion extends AssignmentCriterion {
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.containsArray()) {
-            currentCount++;
-            satisfied = true;
+        for (DocumentParameter documentParameter: parameter.getParameterList()) {
+            if (documentParameter.containsFieldValueOfType(List.class)) {
+                currentCount++;
+                satisfied = true;
+            }
         }
     }
 }

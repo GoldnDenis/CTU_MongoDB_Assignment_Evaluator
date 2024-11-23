@@ -6,50 +6,89 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bson.Document;
 
+import java.util.regex.Pattern;
+
 @AllArgsConstructor
 @Getter
-//public class DocumentParameter implements QueryParameter<DocumentParameter> {
 public class DocumentParameter implements QueryParameter {
     private Document document;
     private int depth;
-
-//    @Override
-//    public DocumentParameter get() {
-//        return this;
-//    }
 
     @Override
     public void accept(QueryParameterVisitor visitor) {
         visitor.visitDocumentParameter(this);
     }
 
-    public boolean containsEmbeddedObject() {
-        return !getFieldWithEmbeddedObject().isBlank();
+    public Object getValue(String field) {
+        return BsonChecker.getValue(
+                document,
+                depth,
+                field
+        );
     }
 
-    public String getFieldWithEmbeddedObject() {
-        return BsonChecker.findFieldWithEmbeddedObject(document);
+    public Object getValue(String field, int level) {
+        return BsonChecker.getValue(
+                document,
+                level,
+                field
+        );
     }
 
-
-    public boolean containsArray() {
-        return !getFieldWithArray().isBlank();
+    public boolean containsField(String field) {
+        return getValue(field) != null;
     }
 
-    public String getFieldWithArray() {
-        BsonChecker.findFieldWithArray(document);
+    public boolean containsField(String field, int level) {
+        return getValue(field, level) != null;
     }
 
-//    public boolean containsEmbeddedObject(Document document) {
-//        return BsonChecker.containsEmbeddedObject(document);
-//    }
-
-    public boolean contains(String fieldName) {
-        return BsonChecker.contains(document, fieldName);
+    public String findFieldValueOfType(Class<?> clazz) {
+        return BsonChecker.findFieldValueOfType(
+                document,
+                depth,
+                clazz
+        );
     }
 
-    public boolean firstLevelContains(String fieldName) {
-        return document.containsKey(fieldName);
+    public String findFieldValueOfType(Class<?> clazz, int level) {
+        return BsonChecker.findFieldValueOfType(
+                document,
+                level,
+                clazz
+        );
+    }
+
+    public boolean containsFieldValueOfType(Class<?> clazz) {
+        return !findFieldValueOfType(clazz).isBlank();
+    }
+
+    public boolean containsFieldValueOfType(Class<?> clazz, int level) {
+        return !findFieldValueOfType(clazz, level).isBlank();
+    }
+
+    public String findFieldMatchesPattern(Pattern pattern) {
+        return BsonChecker.findFieldMatchesPattern(
+                document,
+                depth,
+                pattern
+        );
+    }
+
+    public String findFieldMatchesPattern(Pattern pattern, int level) {
+        return BsonChecker.findFieldMatchesPattern(
+                document,
+                level,
+                pattern
+        );
+    }
+
+    public boolean containsFieldMatchesPattern(Pattern pattern) {
+        return !findFieldMatchesPattern(pattern).isBlank();
+    }
+
+    public boolean containsFieldMatchesPattern(Pattern pattern, int level) {
+        return !findFieldMatchesPattern(pattern, level).isBlank();
     }
 
     public boolean isTrivial() {

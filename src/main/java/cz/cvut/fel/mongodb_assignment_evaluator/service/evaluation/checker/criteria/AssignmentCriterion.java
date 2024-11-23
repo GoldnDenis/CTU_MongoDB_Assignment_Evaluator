@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.visitor.QueryParameterVisitor;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
@@ -14,12 +15,16 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
     protected int requiredCount;
     protected int currentCount;
 
+    protected final MockMongoDB mockDb;
+
     protected final List<Query> satisfiedQueries;
     protected final List<Query> failedQueries;
     protected boolean satisfied;
 
 
-    public AssignmentCriterion(String assignmentMessage, int requiredCount) {
+    public AssignmentCriterion(MockMongoDB mockDb, String assignmentMessage, int requiredCount) {
+        this.mockDb = mockDb;
+
         this.assignmentMessage = assignmentMessage;
 
         this.requiredCount = requiredCount;

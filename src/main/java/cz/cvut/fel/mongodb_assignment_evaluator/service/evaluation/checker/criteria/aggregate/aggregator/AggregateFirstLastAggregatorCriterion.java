@@ -1,18 +1,21 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.aggregator;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AggregateFirstLastAggregatorCriterion extends AssignmentCriterion {
-    public AggregateFirstLastAggregatorCriterion() {
+    public AggregateFirstLastAggregatorCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.AGGREGATE_FIRST_LAST_AGGREGATOR.getDescription(),
                 CriterionDescription.AGGREGATE_FIRST_LAST_AGGREGATOR.getRequiredCount()
         );
@@ -28,10 +31,13 @@ public class AggregateFirstLastAggregatorCriterion extends AssignmentCriterion {
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.contains("$first") ||
-                parameter.contains("$last")) {
-            currentCount++;
-            satisfied = true;
+        for (DocumentParameter documentParameter: parameter.getParameterList()) {
+            if (documentParameter.containsField("$first") ||
+                    documentParameter.containsField("$last")) {
+                currentCount++;
+                satisfied = true;
+                return;
+            }
         }
     }
 }

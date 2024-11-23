@@ -2,19 +2,19 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FindElemMatchUsedCriterion extends AssignmentCriterion {
-    public FindElemMatchUsedCriterion() {
+    public FindElemMatchUsedCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.FIND_ELEM_MATCH_USED.getDescription(),
                 CriterionDescription.FIND_ELEM_MATCH_USED.getRequiredCount()
         );
@@ -30,10 +30,12 @@ public class FindElemMatchUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document elemMatchDocument = BsonChecker.getFirstLevelOperatorDocument(parameter.getDocument(), "$elemMatch");
-        if (elemMatchDocument != null && !elemMatchDocument.isEmpty()) {
-            currentCount++;
-            satisfied = true;
+        Object found = parameter.getValue("$elemMatch");
+        if (found instanceof Document) {
+            if (!((Document) found).isEmpty()) {
+                currentCount++;
+                satisfied = true;
+            }
         }
     }
 }

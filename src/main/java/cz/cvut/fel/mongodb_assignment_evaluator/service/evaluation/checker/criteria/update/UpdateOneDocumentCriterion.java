@@ -2,6 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -13,8 +14,9 @@ import java.util.List;
 
 //todo update
 public class UpdateOneDocumentCriterion extends AssignmentCriterion {
-    public UpdateOneDocumentCriterion() {
+    public UpdateOneDocumentCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.UPDATE_ONE_DOCUMENT.getDescription(),
                 CriterionDescription.UPDATE_ONE_DOCUMENT.getRequiredCount()
         );
@@ -22,33 +24,36 @@ public class UpdateOneDocumentCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
-        if (!query.getOperator().equalsIgnoreCase("updateone")) {
-            return;
-        }
-
-        List<QueryParameter> parameters = query.getParameters();
-        if (parameters.size() >= 2) {
-            parameters.get(1).accept(this);
+        if (query.getOperator().equalsIgnoreCase("updateOne")) {
+            List<QueryParameter> parameters = query.getParameters();
+            if (parameters.size() >= 2) {
+                parameters.get(1).accept(this);
+            }
         }
     }
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        checkDocument(parameter.getDocument());
+        checkDocumentParameter(parameter);
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            checkDocument(documentParameter.getDocument());
+            checkDocumentParameter(documentParameter);
         }
     }
 
-    private void checkDocument(Document document) {
-        Document setDocument = BsonChecker.getFirstLevelOperatorDocument(document, "$set");
-        if (setDocument != null && !setDocument.isEmpty()) {
-            currentCount++;
-            satisfied = true;
+    //todo ask
+    private void checkDocumentParameter(DocumentParameter parameter) {
+        Object found = parameter.getValue("$set", 1);
+        if (found instanceof Document) {
+            if (!((Document) found).isEmpty()) {
+                currentCount++;
+                satisfied = true;
+//                return true;
+            }
         }
+//        return false;
     }
 }

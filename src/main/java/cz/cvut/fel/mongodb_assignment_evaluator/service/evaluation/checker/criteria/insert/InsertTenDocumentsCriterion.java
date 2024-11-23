@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.insert;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -12,12 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+// TODO REFACTOR 10 INSERTS
 public class InsertTenDocumentsCriterion extends AssignmentCriterion {
     private final Map<String, Integer> insertedDocumentsMap;
     private String currentCollection;
 
-    public InsertTenDocumentsCriterion() {
+    public InsertTenDocumentsCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.INSERT_TEN_DOCUMENTS.getDescription(),
                 CriterionDescription.INSERT_TEN_DOCUMENTS.getRequiredCount()
         );
@@ -44,6 +47,21 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
 
     @Override
     protected boolean isFulfilled() {
+//        if (insertedDocumentsMap.isEmpty()) {
+//            System.out.println(currentCount + "/" + requiredCount);
+//            return false;
+//        }
+//
+//        for (Map.Entry<String, Integer> entry : insertedDocumentsMap.entrySet()) {
+//            System.out.println(
+//                    "Documents inserted into '" +
+//                            entry.getKey() + "': " +
+//                            entry.getValue() + "/" + requiredCount
+//            );
+//        }
+//        return insertedDocumentsMap.values().stream()
+//                .filter(count -> count >= 10)
+//                .toList().size() == insertedDocumentsMap.size();
         if (insertedDocumentsMap.isEmpty()) {
             System.out.println(currentCount + "/" + requiredCount);
             return false;
@@ -75,6 +93,7 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
 
     private void checkDocumentParameter(DocumentParameter parameter) {
         if (!parameter.isTrivial()) {
+//                && mockDb.insertDocument(currentCollection, parameter.getDocument())) {
             insertedDocumentsMap.put(currentCollection, insertedDocumentsMap.get(currentCollection) + 1);
             satisfied = true;
         }

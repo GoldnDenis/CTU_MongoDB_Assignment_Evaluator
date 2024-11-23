@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.collection;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
@@ -10,14 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateOneCollectionCriterion extends AssignmentCriterion {
-    private final List<String> createdCollections;
+//    private final List<String> createdCollections;
 
-    public CreateOneCollectionCriterion() {
+    public CreateOneCollectionCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
                 CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
         );
-        this.createdCollections = new ArrayList<>();
+//        this.createdCollections = new ArrayList<>();
     }
 
     @Override
@@ -49,10 +51,15 @@ public class CreateOneCollectionCriterion extends AssignmentCriterion {
     public void visitStringParameter(StringParameter parameter) {
         String collection = parameter.getValue();
         if (!collection.isEmpty() &&
-                !createdCollections.contains(collection)) {
-            createdCollections.add(collection);
+                mockDb.createCollection(collection)) {
             currentCount++;
             satisfied = true;
         }
+//        if (!collection.isEmpty() &&
+//                !createdCollections.contains(collection)) {
+//            createdCollections.add(collection);
+//            currentCount++;
+//            satisfied = true;
+//        }
     }
 }

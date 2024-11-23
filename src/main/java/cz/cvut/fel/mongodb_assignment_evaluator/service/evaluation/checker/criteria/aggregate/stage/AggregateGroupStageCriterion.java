@@ -2,6 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AggregateGroupStageCriterion extends AssignmentCriterion {
-    public AggregateGroupStageCriterion() {
+    public AggregateGroupStageCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.AGGREGATE_GROUP_STAGE.getDescription(),
                 CriterionDescription.AGGREGATE_GROUP_STAGE.getRequiredCount()
         );
@@ -31,9 +33,12 @@ public class AggregateGroupStageCriterion extends AssignmentCriterion {
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.firstLevelContains("$group")) {
-            currentCount++;
-            satisfied = true;
+        for (DocumentParameter documentParameter: parameter.getParameterList()) {
+            if (documentParameter.containsField("$group", 1)) {
+                currentCount++;
+                satisfied = true;
+                return;
+            }
         }
     }
 }

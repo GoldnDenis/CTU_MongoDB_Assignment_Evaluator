@@ -1,17 +1,20 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.insert.document;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.Document;
 
 import java.util.List;
 
 public class InsertDocumentEmbeddedObjectsCriterion extends AssignmentCriterion {
-    public InsertDocumentEmbeddedObjectsCriterion() {
+    public InsertDocumentEmbeddedObjectsCriterion(MockMongoDB mockDb) {
         super(
+                mockDb,
                 CriterionDescription.INSERT_DOCUMENT_EMBEDDED_OBJECTS.getDescription(),
                 CriterionDescription.INSERT_DOCUMENT_EMBEDDED_OBJECTS.getRequiredCount()
         );
@@ -27,7 +30,7 @@ public class InsertDocumentEmbeddedObjectsCriterion extends AssignmentCriterion 
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (parameter.containsEmbeddedObject()) {
+        if (parameter.containsFieldValueOfType(Document.class)) {
             currentCount++;
             satisfied = true;
         }
@@ -35,9 +38,11 @@ public class InsertDocumentEmbeddedObjectsCriterion extends AssignmentCriterion 
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.containsEmbeddedObjects()) {
-            currentCount++;
-            satisfied = true;
+        for (DocumentParameter documentParameter: parameter.getParameterList()) {
+            if (documentParameter.containsFieldValueOfType(Document.class)) {
+                currentCount++;
+                satisfied = true;
+            }
         }
     }
 }
