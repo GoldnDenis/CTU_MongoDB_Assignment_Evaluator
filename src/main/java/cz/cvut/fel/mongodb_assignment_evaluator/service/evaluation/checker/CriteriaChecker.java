@@ -5,48 +5,55 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.strat
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CriteriaChecker {
-    private MockMongoDB mockDb;
+    private final MockMongoDB mockDb;
+
+    private final List<Query> unknownQueries;
+    private final FeedbackCollector feedbackCollector;
 
     private final Map<QueryTypes, CheckerStrategy> checkerStrategies;
-    private final GeneralStrategy generalStrategy;
-//    private final FeedbackGenerator feedbackCollector;
 
     public CriteriaChecker() {
         this.mockDb = new MockMongoDB();
 
+        this.unknownQueries = new ArrayList<>();
+        this.feedbackCollector = new FeedbackCollector();
         this.checkerStrategies = Map.ofEntries(
                 Map.entry(QueryTypes.CREATE_COLLECTION, new CreateCollectionStrategy(mockDb)),
                 Map.entry(QueryTypes.INSERT, new InsertStrategy(mockDb)),
                 Map.entry(QueryTypes.UPDATE, new UpdateStrategy(mockDb)),
                 Map.entry(QueryTypes.REPLACE_ONE, new ReplaceStrategy(mockDb)),
                 Map.entry(QueryTypes.FIND, new FindStrategy(mockDb)),
-                Map.entry(QueryTypes.AGGREGATE, new AggregateStrategy(mockDb))
+                Map.entry(QueryTypes.AGGREGATE, new AggregateStrategy(mockDb)),
+                Map.entry(QueryTypes.GENERAL, new GeneralStrategy(mockDb))
         );
-        this.generalStrategy = new GeneralStrategy(mockDb);
     }
 
-    public void checkQueries(List<Query> queries) {
-        List<Query> unknownQueries = new ArrayList<>();
+    public List<String> checkQueries(List<Query> queries) {
         for (Query query : queries) {
             QueryTypes type = query.getType();
             if (Objects.requireNonNull(type) == QueryTypes.UNKNOWN) {
                 unknownQueries.add(query);
                 continue;
             }
-            generalStrategy.checkCriteria(query);
             if (checkerStrategies.containsKey(type)) {
                 checkerStrategies.get(type).checkCriteria(query);
+                checkerStrategies.get(QueryTypes.GENERAL).checkCriteria(query);
             }
         }
 
-        System.out.println("\n==========================================");
-        System.out.println("Unrecognised queries:");
-        unknownQueries.forEach(System.out::println);
+        feedbackCollector.addFeedback(
+                "Unrecognised queries:\n" +
+                        unknownQueries.stream()
+                                .map(q -> q.toString() + '\n')
+                                .collect(Collectors.joining())
+        );
 
-        generalStrategy.collectAllFeedback();
-        checkerStrategies.values().forEach(CheckerStrategy::collectAllFeedback);
+        checkerStrategies.values().forEach(strategy -> strategy.collectAllFeedback(feedbackCollector));
+
+        return feedbackCollector.getFeedbackList();
     }
 
 //    public void checkQueries(List<Query> queries) {

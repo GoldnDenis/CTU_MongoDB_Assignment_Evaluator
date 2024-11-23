@@ -7,15 +7,16 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.Document
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
-import org.bson.Document;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO REFACTOR 10 INSERTS
 public class InsertTenDocumentsCriterion extends AssignmentCriterion {
     private final Map<String, Integer> insertedDocumentsMap;
+    private final int requiredCountIntoOne;
     private String currentCollection;
 
     public InsertTenDocumentsCriterion(MockMongoDB mockDb) {
@@ -25,7 +26,23 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
                 CriterionDescription.INSERT_TEN_DOCUMENTS.getRequiredCount()
         );
         this.insertedDocumentsMap = new HashMap<>();
+        this.requiredCountIntoOne = requiredCount;
         this.currentCollection = "";
+    }
+
+    @Override
+    protected String satisfiedQueriesToString() {
+        return insertedDocumentsMap.entrySet().stream()
+                .map(entry ->
+                        "Documents inserted into '" +
+                                entry.getKey() + "': " +
+                                entry.getValue() + "/" +
+                                requiredCountIntoOne + '\n')
+                .collect(Collectors.joining()) +
+                "Satisfied queries:\n" +
+                satisfiedQueries.stream()
+                        .map(query -> query.toString() + '\n')
+                        .collect(Collectors.joining());
     }
 
     @Override
@@ -39,44 +56,11 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
 
             if (!insertedDocumentsMap.containsKey(currentCollection)) {
                 insertedDocumentsMap.put(currentCollection, 0);
+                requiredCount = insertedDocumentsMap.size() * requiredCountIntoOne;
             }
 
             queryParameters.get(0).accept(this);
         }
-    }
-
-    @Override
-    protected boolean isFulfilled() {
-//        if (insertedDocumentsMap.isEmpty()) {
-//            System.out.println(currentCount + "/" + requiredCount);
-//            return false;
-//        }
-//
-//        for (Map.Entry<String, Integer> entry : insertedDocumentsMap.entrySet()) {
-//            System.out.println(
-//                    "Documents inserted into '" +
-//                            entry.getKey() + "': " +
-//                            entry.getValue() + "/" + requiredCount
-//            );
-//        }
-//        return insertedDocumentsMap.values().stream()
-//                .filter(count -> count >= 10)
-//                .toList().size() == insertedDocumentsMap.size();
-        if (insertedDocumentsMap.isEmpty()) {
-            System.out.println(currentCount + "/" + requiredCount);
-            return false;
-        }
-
-        for (Map.Entry<String, Integer> entry : insertedDocumentsMap.entrySet()) {
-            System.out.println(
-                    "Documents inserted into '" +
-                            entry.getKey() + "': " +
-                            entry.getValue() + "/" + requiredCount
-            );
-        }
-        return insertedDocumentsMap.values().stream()
-                .filter(count -> count >= 10)
-                .toList().size() == insertedDocumentsMap.size();
     }
 
     @Override
@@ -95,6 +79,7 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
         if (!parameter.isTrivial()) {
 //                && mockDb.insertDocument(currentCollection, parameter.getDocument())) {
             insertedDocumentsMap.put(currentCollection, insertedDocumentsMap.get(currentCollection) + 1);
+            currentCount++;
             satisfied = true;
         }
     }

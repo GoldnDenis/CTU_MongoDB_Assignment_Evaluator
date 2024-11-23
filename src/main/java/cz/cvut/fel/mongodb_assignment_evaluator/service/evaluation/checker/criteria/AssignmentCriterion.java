@@ -7,9 +7,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AssignmentCriterion implements QueryParameterVisitor {
-//public abstract class AssignmentCriterion {
     protected final String assignmentMessage;
 
     protected int requiredCount;
@@ -35,33 +35,29 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
         this.satisfied = false;
     }
 
-    public void generateFeedback() {
-        System.out.println("\n=======================================");
-        System.out.println('"' + assignmentMessage + "\":");
-
-        if (isFulfilled()) {
-            for (int i = 1; i <= satisfiedQueries.size(); i++) {
-                System.out.println(i + ") " + satisfiedQueries.get(i - 1));
+    public String generateFeedback() {
+        StringBuilder feedbackBuilder = new StringBuilder();
+        feedbackBuilder.append('"').append(assignmentMessage).append('"')
+                .append(" - ").append(currentCount).append(" out of ").append(requiredCount)
+                .append(": ");
+        if (currentCount > 0) {
+            if (currentCount < requiredCount) {
+                feedbackBuilder.append("Partly fulfilled.");
+            } else {
+                feedbackBuilder.append("Fulfilled.");
             }
+            feedbackBuilder.append('\n').append(satisfiedQueriesToString());
         } else {
-            System.out.println("Not fulfilled");
+            feedbackBuilder.append("Not fulfilled.");
         }
-
-//        System.out.println("\tFailed:");
-//        for (int i = 1; i <= failedQueries.size(); i++) {
-//            System.out.println("\t\t" + i + ") " + failedQueries.get(i - 1));
-//        }
-
-//        if (isFulfilled()) {
-//            generatePositiveFeedback();
-//        } else {
-//            generateNegativeFeedback();
-//        }
+        return feedbackBuilder.toString();
     }
 
-    protected boolean isFulfilled() {
-        System.out.println(currentCount + "/" + requiredCount);
-        return currentCount >= requiredCount;
+    protected String satisfiedQueriesToString() {
+        return "Satisfied queries:\n" +
+                satisfiedQueries.stream()
+                        .map(query -> query.toString() + '\n')
+                        .collect(Collectors.joining());
     }
 
     public void check(Query query) {
@@ -75,8 +71,6 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
     }
 
     protected abstract void concreteCheck(Query query);
-//    protected abstract void generatePositiveFeedback();
-//    protected abstract void generateNegativeFeedback();
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {

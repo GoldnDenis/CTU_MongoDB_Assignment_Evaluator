@@ -8,6 +8,7 @@ public enum QueryTypes {
     CREATE_COLLECTION,
     REPLACE_ONE,
     FUNCTION,
+    GENERAL,
     UNKNOWN;
 
     public static QueryTypes fromString(String queryName) {
