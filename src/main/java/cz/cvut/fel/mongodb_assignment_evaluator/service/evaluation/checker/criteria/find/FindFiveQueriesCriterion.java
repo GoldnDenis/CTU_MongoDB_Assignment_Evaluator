@@ -26,15 +26,10 @@ public class FindFiveQueriesCriterion extends AssignmentCriterion {
     public void concreteCheck(Query query) {
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
-            parameters.get(0).accept(this);
-        }
-    }
-
-    @Override
-    public void visitDocumentParameter(DocumentParameter parameter) {
-        if (!parameter.isTrivial()) {
-            currentCount++;
-            satisfied = true;
+            if (!parameters.get(0).isTrivial()) {
+                currentCount++;
+                satisfied = true;
+            }
         }
     }
 }

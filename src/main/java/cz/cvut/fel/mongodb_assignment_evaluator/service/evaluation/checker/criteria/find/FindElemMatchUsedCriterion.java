@@ -22,6 +22,7 @@ public class FindElemMatchUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
+        currentParameterIdx = 0;
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
             parameters.get(0).accept(this);
@@ -30,12 +31,15 @@ public class FindElemMatchUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Object found = parameter.getValue("$elemMatch");
-        if (found instanceof Document) {
-            if (!((Document) found).isEmpty()) {
-                currentCount++;
-                satisfied = true;
+        if (currentParameterIdx == 0) {
+            Object found = parameter.getValue("$elemMatch");
+            if (found instanceof Document) {
+                if (!((Document) found).isEmpty()) {
+                    currentCount++;
+                    satisfied = true;
+                }
             }
         }
+        currentParameterIdx++;
     }
 }

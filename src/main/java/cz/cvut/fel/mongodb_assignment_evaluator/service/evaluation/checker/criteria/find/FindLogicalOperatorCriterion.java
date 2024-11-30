@@ -24,6 +24,7 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
+        currentParameterIdx = 0;
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
             parameters.get(0).accept(this);
@@ -32,12 +33,15 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (contains(parameter ,"$and", 1) ||
-                contains(parameter ,"$or", 1) ||
-                contains(parameter ,"$not")) {
-            currentCount++;
-            satisfied = true;
+        if (currentParameterIdx == 0) {
+            if (contains(parameter, "$and", 1) ||
+                    contains(parameter, "$or", 1) ||
+                    contains(parameter, "$not")) {
+                currentCount++;
+                satisfied = true;
+            }
         }
+        currentParameterIdx++;
     }
 
     public boolean contains(DocumentParameter parameter, String operator, int level) {

@@ -67,30 +67,31 @@ public class DocumentParameter implements QueryParameter {
         return !findFieldValueOfType(clazz, level).isBlank();
     }
 
-    public String findFieldMatchesPattern(Pattern pattern) {
-        return BsonChecker.findFieldMatchesPattern(
+    public String findKeyMatchesPattern(Pattern pattern) {
+        return BsonChecker.findKeyMatchesPattern(
                 document,
                 depth,
                 pattern
         );
     }
 
-    public String findFieldMatchesPattern(Pattern pattern, int level) {
-        return BsonChecker.findFieldMatchesPattern(
+    public String findKeyMatchesPattern(Pattern pattern, int level) {
+        return BsonChecker.findKeyMatchesPattern(
                 document,
                 level,
                 pattern
         );
     }
 
-    public boolean containsFieldMatchesPattern(Pattern pattern) {
-        return !findFieldMatchesPattern(pattern).isBlank();
+    public boolean containsKeyMatchesPattern(Pattern pattern) {
+        return !findKeyMatchesPattern(pattern).isBlank();
     }
 
-    public boolean containsFieldMatchesPattern(Pattern pattern, int level) {
-        return !findFieldMatchesPattern(pattern, level).isBlank();
+    public boolean containsKeyMatchesPattern(Pattern pattern, int level) {
+        return !findKeyMatchesPattern(pattern, level).isBlank();
     }
 
+    @Override
     public boolean isTrivial() {
         return document.isEmpty();
     }

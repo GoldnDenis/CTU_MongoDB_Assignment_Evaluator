@@ -27,7 +27,7 @@ public class ParserStateMachine {
     @Setter
     private String lastQueryOperation;
     @Setter
-    private String lastComment;
+    private StringBuilder lastCommentBuilder;
 
     public ParserStateMachine() {
         this.state = new ScriptState(this);
@@ -38,13 +38,25 @@ public class ParserStateMachine {
         this.queryAccumulator = new StringBuilder();
 
         this.lastQueryOperation = "";
-        this.lastComment = "";
+        this.lastCommentBuilder = new StringBuilder();
+//        this.lastComment = "";
     }
 
     public void parseLine(LineIterator line) {
         while (line.hasNext()) {
             state.process(line);
         }
+    }
+
+    public void appendToComment(String comment) {
+        if (!lastQueryOperation.isEmpty()) {
+            lastCommentBuilder.setLength(0);
+        }
+
+        if (!lastCommentBuilder.isEmpty()) {
+            lastCommentBuilder.append("\n");
+        }
+        lastCommentBuilder.append(comment);
     }
 
     public void appendToQuery(String string) {
@@ -66,7 +78,8 @@ public class ParserStateMachine {
 
     public void setQueryOperator(String operator) {
         if (!lastQueryOperation.isBlank() && !lastQueryOperation.equals(operator)) {
-            lastComment = "";
+            lastCommentBuilder.setLength(0);
+//            lastComment = "";
         }
         lastQueryOperation = operator;
         queryBuilder.setOperation(operator);
@@ -77,8 +90,10 @@ public class ParserStateMachine {
         queryBuilder.setCollection(collection);
     }
 
-    public void resetQueryBuilder() {
+    public void resetQuery() {
         queryBuilder.reset();
+        modifierBuilder.reset();
+        queryAccumulator.setLength(0);
     }
 
     public void addParameter(QueryParameter parameter, Boolean isModifier) {
@@ -106,7 +121,7 @@ public class ParserStateMachine {
 
     public void saveQuery() {
         queryList.add(
-                queryBuilder.setComment(lastComment)
+                queryBuilder.setComment(lastCommentBuilder.toString())
                         .setQuery(queryAccumulator.toString())
                         .build()
         );

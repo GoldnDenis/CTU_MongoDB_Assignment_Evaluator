@@ -22,6 +22,7 @@ public class InsertDocumentEmbeddedObjectsCriterion extends AssignmentCriterion 
 
     @Override
     public void concreteCheck(Query query) {
+        currentParameterIdx = 0;
         List<QueryParameter> queryParameters = query.getParameters();
         if (!queryParameters.isEmpty()) {
             queryParameters.get(0).accept(this);
@@ -30,19 +31,26 @@ public class InsertDocumentEmbeddedObjectsCriterion extends AssignmentCriterion 
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (parameter.containsFieldValueOfType(Document.class)) {
-            currentCount++;
-            satisfied = true;
+        if (currentParameterIdx == 0) {
+            containsEmbeddedObject(parameter);
         }
+        currentParameterIdx++;
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            if (documentParameter.containsFieldValueOfType(Document.class)) {
-                currentCount++;
-                satisfied = true;
+        if (currentParameterIdx == 0) {
+            for (DocumentParameter documentParameter : parameter.getParameterList()) {
+                containsEmbeddedObject(documentParameter);
             }
+        }
+        currentParameterIdx++;
+    }
+
+    private void containsEmbeddedObject(DocumentParameter documentParameter) {
+        if (documentParameter.containsFieldValueOfType(Document.class)) {
+            currentCount++;
+            satisfied = true;
         }
     }
 }

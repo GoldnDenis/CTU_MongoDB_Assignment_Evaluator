@@ -24,15 +24,11 @@ public class ReplaceValueCriterion extends AssignmentCriterion {
     public void concreteCheck(Query query) {
         List<QueryParameter> queryParameters = query.getParameters();
         if (query.getParameters().size() >= 2) {
-            queryParameters.get(1).accept(this);
+            if (!queryParameters.get(1).isTrivial()) {
+                currentCount++;
+                satisfied = true;
+            }
         }
     }
 
-    @Override
-    public void visitDocumentParameter(DocumentParameter parameter) {
-        if (!parameter.isTrivial()) {
-            currentCount++;
-            satisfied = true;
-        }
-    }
 }

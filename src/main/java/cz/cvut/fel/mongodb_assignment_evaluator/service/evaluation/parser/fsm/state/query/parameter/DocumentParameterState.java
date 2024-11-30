@@ -2,10 +2,12 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.s
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import org.bson.Document;
+import org.bson.json.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,14 +68,19 @@ public class DocumentParameterState extends ParserState {
         String value = valueAccumulator.toString();
         context.appendToQuery(value);
 
-        DocumentParameter document = new DocumentParameter(Document.parse(value), depth);
-        resetDocument();
-
-        if (!isPipeline) {
-            context.addParameter(document, isModifier);
-            context.setState(new ParameterState(context, isModifier));
-        } else {
-            pipeline.add(document);
+        try {
+            DocumentParameter document = new DocumentParameter(Document.parse(value), depth);
+            resetDocument();
+            if (!isPipeline) {
+                context.addParameter(document, isModifier);
+                context.setState(new ParameterState(context, isModifier));
+            } else {
+                pipeline.add(document);
+            }
+        } catch (JsonParseException e) {
+            System.err.println(e.getMessage());
+            resetDocument();
+            context.setState(new ScriptState(context));
         }
     }
 

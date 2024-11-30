@@ -11,55 +11,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateOneCollectionCriterion extends AssignmentCriterion {
-//    private final List<String> createdCollections;
-
     public CreateOneCollectionCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
                 CriterionDescription.CREATE_ONE_COLLECTION.getDescription(),
                 CriterionDescription.CREATE_ONE_COLLECTION.getRequiredCount()
         );
-//        this.createdCollections = new ArrayList<>();
     }
 
     @Override
     public void concreteCheck(Query query) {
+        currentParameterIdx = 0;
         List<QueryParameter> queryParameters = query.getParameters();
-
         if (!queryParameters.isEmpty()) {
             queryParameters.get(0).accept(this);
         }
     }
 
-//    @Override
-//    protected boolean isFulfilled() {
-//        return !createdCollections.isEmpty();
-//    }
-//
-//    @Override
-//    protected void generatePositiveFeedback() {
-//        System.out.print("\tcreatedCollections=");
-//        System.out.println(createdCollections);
-//    }
-//
-//    @Override
-//    protected void generateNegativeFeedback() {
-//        System.out.println("No collections were created.");
-//    }
-
     @Override
     public void visitStringParameter(StringParameter parameter) {
-        String collection = parameter.getValue();
-        if (!collection.isEmpty() &&
-                mockDb.createCollection(collection)) {
-            currentCount++;
-            satisfied = true;
+        if (currentParameterIdx == 0) {
+            if (mockDb.createCollection(parameter.getValue())) {
+                currentCount++;
+                satisfied = true;
+            }
         }
-//        if (!collection.isEmpty() &&
-//                !createdCollections.contains(collection)) {
-//            createdCollections.add(collection);
-//            currentCount++;
-//            satisfied = true;
-//        }
+        currentParameterIdx++;
     }
 }

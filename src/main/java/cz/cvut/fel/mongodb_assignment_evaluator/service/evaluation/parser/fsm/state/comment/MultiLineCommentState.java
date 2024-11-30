@@ -15,7 +15,7 @@ public class MultiLineCommentState extends ParserState {
     public void process(LineIterator iterator) {
         valueAccumulator.append(iterator.consumeMatchOrAll("*/"));
         if (valueAccumulator.toString().endsWith("*/")) {
-            context.setLastComment(valueAccumulator.toString());
+            context.appendToComment(valueAccumulator.toString());
             context.setLastQueryOperation("");
             context.setState(new ScriptState(context));
         }

@@ -1,4 +1,4 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.array;
+package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.nested;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
@@ -10,17 +10,16 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 //todo update
-public class UpdateArrayReplaceCriterion extends UpdateCriterion {
-    private final Pattern arrayPattern = Pattern.compile("^[a-zA-Z]+[a-zA-Z0-9_]*(\\.[a-zA-Z]+[a-zA-Z0-9_]*)*(\\.\\$(\\[[a-zA-Z0-9]*\\])?|[0-9]+)+");
+public class UpdateNestedDocumentCriterion extends UpdateCriterion {
+    private final Pattern nestedPattern = Pattern.compile("^[a-zA-Z]+[a-zA-Z0-9_]*(\\.(\\$(\\[[a-zA-Z0-9]*\\])?|[0-9]+))*(\\.[a-zA-Z]+[a-zA-Z0-9_]*)+");
 
-    public UpdateArrayReplaceCriterion(MockMongoDB mockDb) {
+    public UpdateNestedDocumentCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.UPDATE_ARRAY_REPLACE.getDescription(),
-                CriterionDescription.UPDATE_ARRAY_REPLACE.getRequiredCount(),
-                List.of(
-                        "$set", "$mul", "$inc"
-                ), true
+                CriterionDescription.UPDATE_NESTED_DOCUMENT.getDescription(),
+                CriterionDescription.UPDATE_NESTED_DOCUMENT.getRequiredCount(),
+                List.of("$set", "$mul", "$inc"),
+                true
         );
     }
 
@@ -29,7 +28,7 @@ public class UpdateArrayReplaceCriterion extends UpdateCriterion {
         String key = BsonChecker.findKeyMatchesPattern(
                 document,
                 1,
-                arrayPattern
+                nestedPattern
         );
         if (key.isBlank()) {
             return Collections.emptySet();

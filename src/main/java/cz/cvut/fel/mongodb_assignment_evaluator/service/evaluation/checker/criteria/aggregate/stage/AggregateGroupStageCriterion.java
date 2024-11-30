@@ -25,6 +25,7 @@ public class AggregateGroupStageCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
+        currentParameterIdx = 0;
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
             parameters.get(0).accept(this);
@@ -33,12 +34,15 @@ public class AggregateGroupStageCriterion extends AssignmentCriterion {
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        for (DocumentParameter documentParameter: parameter.getParameterList()) {
-            if (documentParameter.containsField("$group", 1)) {
-                currentCount++;
-                satisfied = true;
-                return;
+        if (currentParameterIdx == 0) {
+            for (DocumentParameter documentParameter : parameter.getParameterList()) {
+                if (documentParameter.containsField("$group", 1)) {
+                    currentCount++;
+                    satisfied = true;
+                    return;
+                }
             }
         }
+        currentParameterIdx++;
     }
 }

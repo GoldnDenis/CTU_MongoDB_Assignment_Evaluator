@@ -40,7 +40,6 @@ public enum CriterionDescription {
     FIND_DATE_COMPARISON("The search criteria should contain comparing dates or parts of dates, e.g. all orders for a given date or all orders for a given year (at least once)", 1),
     FIND_ARRAY("The search criteria should contain matching the whole array (at least once)", 1),
     FIND_ARRAY_VALUE("The search criteria should contain searching for a value in the array (at least once)", 1),
-    FIND_LOOKUP_USED("Use lookup (if you have two collections)", 1),
 
     AGGREGATE_FIVE("Express 5 aggregate operations. Use 2 created collections for entities of different types. If necessary, insert more documents into each one of them", 5),
     AGGREGATE_MATCH_STAGE("Use at least once $match stage", 1),
@@ -52,7 +51,8 @@ public enum CriterionDescription {
     AGGREGATE_SUM_AVG_AGGREGATOR("Use at least once $sum (or $avg) aggregator", 1),
     AGGREGATE_COUNT_AGGREGATOR("Use at least once $count aggregator", 1),
     AGGREGATE_MIN_MAX_AGGREGATOR("Use at least once $min (or $max) aggregator", 1),
-    AGGREGATE_FIRST_LAST_AGGREGATOR("Use at least once $first (or $last)) aggregator", 1);
+    AGGREGATE_FIRST_LAST_AGGREGATOR("Use at least once $first (or $last)) aggregator", 1),
+    AGGREGATE_LOOKUP_USED("Use lookup (if you have two collections)", 1);
 
     private final String description;
     private final int requiredCount;

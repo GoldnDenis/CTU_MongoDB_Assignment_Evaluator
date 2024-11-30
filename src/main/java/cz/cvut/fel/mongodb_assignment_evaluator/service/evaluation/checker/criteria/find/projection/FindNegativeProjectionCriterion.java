@@ -24,6 +24,7 @@ public class FindNegativeProjectionCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
+        currentParameterIdx = 1;
         List<QueryParameter> parameters = query.getParameters();
         if (parameters.size() >= 2) {
             parameters.get(1).accept(this);
@@ -32,17 +33,20 @@ public class FindNegativeProjectionCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        Document document = parameter.getDocument();
-        for (String key : document.keySet()) {
-            if (key.equals("_id")) {
-                continue;
+        if (currentParameterIdx == 1) {
+            Document document = parameter.getDocument();
+            for (String key : document.keySet()) {
+                if (key.equals("_id")) {
+                    continue;
+                }
+                if (document.get(key).equals(true) ||
+                        document.get(key).equals(1)) {
+                    return;
+                }
             }
-            if (document.get(key).equals(true) ||
-                    document.get(key).equals(1)) {
-                return;
-            }
+            currentCount++;
+            satisfied = true;
         }
-        currentCount++;
-        satisfied = true;
+        currentParameterIdx++;
     }
 }

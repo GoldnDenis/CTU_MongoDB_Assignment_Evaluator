@@ -23,15 +23,10 @@ public class AggregateFiveCriterion extends AssignmentCriterion {
     public void concreteCheck(Query query) {
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
-            parameters.get(0).accept(this);
-        }
-    }
-
-    @Override
-    public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.containsNonTrivialDocument()) {
-            satisfied = true;
-            currentCount++;
+            if (!parameters.get(0).isTrivial()) {
+                satisfied = true;
+                currentCount++;
+            }
         }
     }
 }

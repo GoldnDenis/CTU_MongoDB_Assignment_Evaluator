@@ -22,21 +22,4 @@ public class CommentCriterion extends AssignmentCriterion {
             currentCount++;
         }
     }
-
-//    @Override
-//    public boolean isFulfilled() {
-//        return failedQueryList.isEmpty();
-//    }
-//
-//    @Override
-//    protected void generatePositiveFeedback() {
-//        System.out.println("All queries are properly commented.");
-//    }
-//
-//    @Override
-//    protected void generateNegativeFeedback() {
-//        for (Query query : failedQueryList) {
-//            System.out.println("\t" + query.toString() + " missing a comment.");
-//        }
-//    }
 }

@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionStates;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.visitor.QueryParameterVisitor;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.*;
@@ -11,11 +12,13 @@ import java.util.stream.Collectors;
 
 public abstract class AssignmentCriterion implements QueryParameterVisitor {
     protected final String assignmentMessage;
-
     protected int requiredCount;
+
     protected int currentCount;
+    protected CriterionStates state;
 
     protected final MockMongoDB mockDb;
+    protected int currentParameterIdx;
 
     protected final List<Query> satisfiedQueries;
     protected final List<Query> failedQueries;
@@ -23,12 +26,14 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
 
 
     public AssignmentCriterion(MockMongoDB mockDb, String assignmentMessage, int requiredCount) {
-        this.mockDb = mockDb;
-
         this.assignmentMessage = assignmentMessage;
-
         this.requiredCount = requiredCount;
+
         this.currentCount = 0;
+        this.state = CriterionStates.NOT_FULFILLED;
+
+        this.mockDb = mockDb;
+        this.currentParameterIdx = -1;
 
         this.satisfiedQueries = new ArrayList<>();
         this.failedQueries = new ArrayList<>();
@@ -36,24 +41,29 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
     }
 
     public String generateFeedback() {
+        evaluate();
         StringBuilder feedbackBuilder = new StringBuilder();
         feedbackBuilder.append('"').append(assignmentMessage).append('"')
                 .append(" - ").append(currentCount).append(" out of ").append(requiredCount)
-                .append(": ");
-        if (currentCount > 0) {
-            if (currentCount < requiredCount) {
-                feedbackBuilder.append("Partly fulfilled.");
-            } else {
-                feedbackBuilder.append("Fulfilled.");
-            }
-            feedbackBuilder.append('\n').append(satisfiedQueriesToString());
-        } else {
-            feedbackBuilder.append("Not fulfilled.");
+                .append(": ").append(state.getState()).append('\n');
+
+        if (state.equals(CriterionStates.FULFILLED) || state.equals(CriterionStates.PARTLY_FULFILLED)) {
+            feedbackBuilder.append(generateQueryRelatedFeedback());
         }
+
         return feedbackBuilder.toString();
     }
 
-    protected String satisfiedQueriesToString() {
+    protected void evaluate() {
+        if (currentCount > 0 ) {
+            state = CriterionStates.FULFILLED;
+            if (currentCount < requiredCount) {
+                state = CriterionStates.PARTLY_FULFILLED;
+            }
+        }
+    }
+
+    protected String generateQueryRelatedFeedback() {
         return "Satisfied queries:\n" +
                 satisfiedQueries.stream()
                         .map(query -> query.toString() + '\n')

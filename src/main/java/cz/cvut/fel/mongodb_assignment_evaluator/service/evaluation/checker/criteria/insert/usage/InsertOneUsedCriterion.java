@@ -20,17 +20,12 @@ public class InsertOneUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
-        if (query.getOperator().equalsIgnoreCase("insertOne")) {
-            List<QueryParameter> parameters = query.getParameters();
-            if (!parameters.isEmpty()) {
-                parameters.get(0).accept(this);
-            }
+        if (!query.getOperator().equalsIgnoreCase("insertOne")) {
+            return;
         }
-    }
 
-    @Override
-    public void visitDocumentParameter(DocumentParameter documentParameter) {
-        if (!documentParameter.isTrivial()) {
+        List<QueryParameter> parameters = query.getParameters();
+        if (!parameters.isEmpty() && !parameters.get(0).isTrivial()) {
             satisfied = true;
             currentCount++;
         }

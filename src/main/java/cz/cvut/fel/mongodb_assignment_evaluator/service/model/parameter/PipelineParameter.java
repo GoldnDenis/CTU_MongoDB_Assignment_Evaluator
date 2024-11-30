@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-//public class PipelineParameter implements QueryParameter<PipelineParameter> {
 public class PipelineParameter implements QueryParameter {
     private final List<DocumentParameter> parameterList;
 
@@ -15,14 +14,14 @@ public class PipelineParameter implements QueryParameter {
         this.parameterList = new ArrayList<>(parameterList);
     }
 
-//    @Override
-//    public PipelineParameter get() {
-//        return this;
-//    }
-
     @Override
     public void accept(QueryParameterVisitor visitor) {
         visitor.visitPipelineParameter(this);
+    }
+
+    @Override
+    public boolean isTrivial() {
+        return parameterList.isEmpty() || !containsNonTrivialDocument();
     }
 
     public boolean containsNonTrivialDocument() {

@@ -1,25 +1,27 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.search;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class FindConditionCriterion extends AssignmentCriterion {
+public class FindConditionCriterion extends FindFilterCriterion {
     public FindConditionCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
                 CriterionDescription.FIND_CONDITION.getDescription(),
-                CriterionDescription.FIND_CONDITION.getRequiredCount()
+                CriterionDescription.FIND_CONDITION.getRequiredCount(),
+                Set.of("$gt", "$lt", "$gte", "$lte")
         );
     }
 
     @Override
-    public void concreteCheck(Query query) {
+    protected boolean inspectFilter(Document filterDocument, int maxDepth) {
+        Object found = BsonChecker.getValue(filterDocument, maxDepth, expectedOperators);
+        return found != null;
     }
 }

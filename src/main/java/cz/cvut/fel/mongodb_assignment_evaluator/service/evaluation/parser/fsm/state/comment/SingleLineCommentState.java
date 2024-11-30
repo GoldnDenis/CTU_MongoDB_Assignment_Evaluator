@@ -13,7 +13,7 @@ public class SingleLineCommentState extends ParserState {
 
     @Override
     public void process(LineIterator iterator) {
-        context.setLastComment(iterator.nextAll());
+        context.appendToComment(iterator.nextAll());
         context.setLastQueryOperation("");
         context.setState(new ScriptState(context));
     }

@@ -20,17 +20,12 @@ public class InsertManyUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void concreteCheck(Query query) {
-        if (query.getOperator().equalsIgnoreCase("insertMany")) {
-            List<QueryParameter> parameters = query.getParameters();
-            if (!parameters.isEmpty()) {
-                parameters.get(0).accept(this);
-            }
+        if (!query.getOperator().equalsIgnoreCase("insertMany")) {
+            return;
         }
-    }
 
-    @Override
-    public void visitPipelineParameter(PipelineParameter parameter) {
-        if (parameter.containsNonTrivialDocument()) {
+        List<QueryParameter> parameters = query.getParameters();
+        if (!parameters.isEmpty() && !parameters.get(0).isTrivial()) {
             satisfied = true;
             currentCount++;
         }

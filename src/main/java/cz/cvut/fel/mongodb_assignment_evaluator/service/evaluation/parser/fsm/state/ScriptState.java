@@ -23,7 +23,7 @@ public class ScriptState extends ParserState {
         } else if (iterator.startsWith("/*")) {
             context.setState(new MultiLineCommentState(context));
         } else if (iterator.startsWith("db.")) {
-            context.resetQueryBuilder();
+            context.resetQuery();
             setQueryPosition(iterator);
             context.appendToQuery(iterator.consumeMatch("db"));
             context.setState(new QueryState(context, false));

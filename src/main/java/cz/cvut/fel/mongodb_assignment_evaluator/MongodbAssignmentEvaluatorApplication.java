@@ -11,7 +11,7 @@ public class MongodbAssignmentEvaluatorApplication {
     public static void main(String[] args) {
         SpringApplication.run(MongodbAssignmentEvaluatorApplication.class, args);
 
-        String path = "scripts\\script1";
+        String path = "scripts";
         AssignmentEvaluator.evaluate(path);
     }
 
