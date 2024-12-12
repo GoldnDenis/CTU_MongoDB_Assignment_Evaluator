@@ -1,14 +1,14 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker;
 
 import lombok.Getter;
-import org.bson.BSONCallback;
-import org.bson.Document;
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
 import java.util.*;
 
 @Getter
 public class MockMongoDB {
-    private final Map<String, Map<String, Document>> collections;
+    private final Map<String, Map<String, BsonDocument>> collections;
 
     public MockMongoDB() {
         this.collections = new HashMap<>();
@@ -27,19 +27,19 @@ public class MockMongoDB {
         return collections.containsKey(collectionName);
     }
 
-    public List<Document> getCollectionDocuments(String collectionName) {
+    public List<BsonDocument> getCollectionDocuments(String collectionName) {
         if (!collections.containsKey(collectionName)) {
             return Collections.emptyList();
         }
         return collections.get(collectionName).values().stream().toList();
     }
 
-    public boolean insertDocument(String collectionName, Document document) {
+    public boolean insertDocument(String collectionName, BsonDocument document) {
         if (!containsCollection(collectionName)) {
             return false;
         }
-        Map<String, Document> insertedDocuments = this.collections.get(collectionName);
-        Object idObject = document.get("_id");
+        Map<String, BsonDocument> insertedDocuments = this.collections.get(collectionName);
+        BsonValue idObject = document.get("_id");
         String id = (idObject != null)
                 ? idObject.toString()
                 : String.valueOf(insertedDocuments.size() + 1);
@@ -51,11 +51,11 @@ public class MockMongoDB {
         return true;
     }
 
-    public Document findDocument(String collectionName, String id) {
+    public BsonDocument findDocument(String collectionName, String id) {
         if (!containsCollection(collectionName)) {
             return null;
         }
-        Map<String, Document> documents = collections.get(collectionName);
+        Map<String, BsonDocument> documents = collections.get(collectionName);
         if (!documents.containsKey(id)) {
             return null;
         }
@@ -64,7 +64,7 @@ public class MockMongoDB {
 
     public Set<String> findAllFieldsOfType(String collectionName, Class<?> clazz) {
         Set<String> fields = new HashSet<>();
-        for (Document document : getCollectionDocuments(collectionName)) {
+        for (BsonDocument document : getCollectionDocuments(collectionName)) {
             fields.addAll(BsonChecker.findAllFieldsOfType(document, clazz));
         }
         return fields;
@@ -77,7 +77,7 @@ public class MockMongoDB {
         if (!containsCollection(collectionName)) {
             return false;
         }
-        List<Document> collectionDocuments = getCollectionDocuments(collectionName);
+        List<BsonDocument> collectionDocuments = getCollectionDocuments(collectionName);
         if (collectionDocuments.isEmpty()) {
             return false;
         }
@@ -91,7 +91,7 @@ public class MockMongoDB {
         if (!containsCollection(collectionName)) {
             return false;
         }
-        for (Document document : getCollectionDocuments(collectionName)) {
+        for (BsonDocument document : getCollectionDocuments(collectionName)) {
             if (documentContainsFields(document, fields)) {
                 return true;
             }
@@ -106,14 +106,14 @@ public class MockMongoDB {
         if (!containsCollection(collectionName)) {
             return false;
         }
-        Document found = findDocument(collectionName, id);
+        BsonDocument found = findDocument(collectionName, id);
         if (found == null) {
             return false;
         }
         return documentContainsFields(found, fields);
     }
 
-    private boolean documentContainsFields(Document document, Set<String> fields) {
+    private boolean documentContainsFields(BsonDocument document, Set<String> fields) {
         for (String key : fields) {
             key = key.split("\\.")[0];
             if (!document.containsKey(key)) {
@@ -122,7 +122,4 @@ public class MockMongoDB {
         }
         return true;
     }
-//    public boolean containsDocument(String collectionName, String id) {
-//        return findDocument(collectionName, id) != null;
-//    }
 }

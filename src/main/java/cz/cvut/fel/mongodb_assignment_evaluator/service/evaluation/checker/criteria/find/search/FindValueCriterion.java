@@ -2,6 +2,8 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.util.List;
@@ -19,23 +21,23 @@ public class FindValueCriterion extends FindFilterCriterion {
     }
 
     @Override
-    protected boolean inspectFilter(Document filterDocument, int maxDepth) {
-        for (Map.Entry<String, Object> entry : filterDocument.entrySet()) {
+    protected boolean inspectFilter(BsonDocument filterDocument, int maxDepth) {
+        for (Map.Entry<String, BsonValue> entry : filterDocument.entrySet()) {
             String key = entry.getKey();
-            Object value = entry.getValue();
+            BsonValue value = entry.getValue();
             if (key.startsWith("$")) {
                 if (expectedOperators.contains(key)) {
                     return true;
                 }
             }
-            if (value instanceof Document) {
-                if (inspectFilter((Document) value, maxDepth)) {
+            if (value.isDocument()) {
+                if (inspectFilter(value.asDocument(), maxDepth)) {
                     return true;
                 }
-            } else if (value instanceof List<?>) {
-                for (Object item : (List<?>) value) {
-                    if (item instanceof Document) {
-                        if (inspectFilter((Document) item, maxDepth)) {
+            } else if (value.isArray()) {
+                for (BsonValue item : value.asArray()) {
+                    if (item.isDocument()) {
+                        if (inspectFilter(item.asDocument(), maxDepth)) {
                             return true;
                         }
                     } else {

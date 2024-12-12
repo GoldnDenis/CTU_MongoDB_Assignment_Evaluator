@@ -7,6 +7,8 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.Document
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -33,14 +35,18 @@ public class FindPositiveProjectionCriterion extends AssignmentCriterion {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         if (currentParameterIdx == 1) {
-            Document document = parameter.getDocument();
+            BsonDocument document = parameter.getDocument();
             for (String key : document.keySet()) {
                 if (key.equals("_id")) {
                     continue;
                 }
 
-                if (document.get(key).equals(false) ||
-                        document.get(key).equals(0)) {
+                BsonValue value = document.get(key);
+                if (value == null) {
+                    return;
+                }
+                if ((value.isBoolean() && !value.asBoolean().getValue()) ||
+                        (value.isInt32() && value.asInt32().getValue() == 0)) {
                     return;
                 }
             }

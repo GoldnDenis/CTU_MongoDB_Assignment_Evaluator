@@ -8,6 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.Document
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.BsonDocument;
 import org.bson.Document;
 
 import java.util.Collection;
@@ -31,8 +32,7 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion {
 
     @Override
     protected void evaluate() {
-        //todo note that currently evaluates based on createCollection(), so if one of them fails the results may vary
-        Collection<Map<String, Document>> collectionValues = mockDb.getCollections().values();
+        Collection<Map<String, BsonDocument>> collectionValues = mockDb.getCollections().values();
         requiredCount = requiredCountIntoOne * collectionValues.size();
         if (currentCount > 0 ) {
             state = CriterionStates.FULFILLED;

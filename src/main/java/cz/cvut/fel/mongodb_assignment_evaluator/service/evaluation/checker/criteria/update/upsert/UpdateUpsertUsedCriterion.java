@@ -6,6 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.BsonValue;
 
 import java.util.List;
 
@@ -30,10 +31,10 @@ public class UpdateUpsertUsedCriterion extends AssignmentCriterion {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         if (currentParameterIdx == 2) {
-            Object found = parameter.getValue("upsert", 1);
+            BsonValue found = parameter.getValue("upsert", 1);
             if (found != null) {
-                if (found.equals(true) ||
-                        found.equals(1)) {
+                if ((found.isBoolean() && found.asBoolean().getValue()) ||
+                        (found.isInt32() && found.asInt32().getValue() == 1)) {
                     currentCount++;
                     satisfied = true;
                 }

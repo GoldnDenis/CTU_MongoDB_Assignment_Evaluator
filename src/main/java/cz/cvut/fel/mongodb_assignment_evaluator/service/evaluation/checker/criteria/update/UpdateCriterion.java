@@ -6,7 +6,8 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.Document
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
-import org.bson.Document;
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class UpdateCriterion extends AssignmentCriterion {
     private final Boolean shouldFindFields;
 
     protected Boolean isUpdateOne;
-    protected Document filterDocument;
+    protected BsonDocument filterDocument;
     protected String collection;
     protected String id;
 
@@ -31,7 +32,7 @@ public abstract class UpdateCriterion extends AssignmentCriterion {
         this.shouldFindFields = shouldFindFields;
 
         this.isUpdateOne = false;
-        this.filterDocument = Document.parse("{}");
+        this.filterDocument = BsonDocument.parse("{}");
         this.collection = "";
         this.id = "";
 
@@ -85,28 +86,29 @@ public abstract class UpdateCriterion extends AssignmentCriterion {
         currentParameterIdx++;
     }
 
-    protected Set<String> getFieldsSet(Document document) {
+    protected Set<String> getFieldsSet(BsonDocument document) {
         return document.keySet();
     }
 
     protected void checkForUpdateOperators(DocumentParameter parameter) {
         for (String operator : updateOperators) {
-            Object foundOperatorObject = parameter.getValue(operator, 1);
-            if (!(foundOperatorObject instanceof Document)) {
+            BsonValue foundOperatorObject = parameter.getValue(operator, 1);
+            if (foundOperatorObject == null) {
                 foundOperator = false;
                 foundFields = false;
                 continue;
             }
             foundOperator = true;
-
-            Set<String> fields = getFieldsSet((Document) foundOperatorObject);
-            if (isUpdateOne) {
-                containsUpdateOne(fields);
-            } else {
-                containsUpdateMany(fields);
-            }
-            if (foundFields.equals(shouldFindFields)) {
-                break;
+            if (foundOperatorObject.isDocument()) {
+                Set<String> fields = getFieldsSet(foundOperatorObject.asDocument());
+                if (isUpdateOne) {
+                    containsUpdateOne(fields);
+                } else {
+                    containsUpdateMany(fields);
+                }
+                if (foundFields.equals(shouldFindFields)) {
+                    break;
+                }
             }
         }
     }

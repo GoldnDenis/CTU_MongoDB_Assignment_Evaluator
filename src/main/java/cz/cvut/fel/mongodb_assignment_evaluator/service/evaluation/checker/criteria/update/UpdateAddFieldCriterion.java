@@ -2,6 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
+import org.bson.BsonDocument;
 import org.bson.Document;
 
 import java.util.List;
@@ -16,10 +17,5 @@ public class UpdateAddFieldCriterion extends UpdateCriterion {
                 List.of("$set", "$mul", "$inc"),
                 false
         );
-    }
-
-    @Override
-    protected Set<String> getFieldsSet(Document document) {
-        return document.keySet();
     }
 }

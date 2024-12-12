@@ -23,8 +23,8 @@ public class CriteriaChecker {
         this.checkerStrategies = Map.ofEntries(
                 Map.entry(QueryTypes.CREATE_COLLECTION, new CreateCollectionStrategy(mockDb)),
                 Map.entry(QueryTypes.INSERT, new InsertStrategy(mockDb)),
-                Map.entry(QueryTypes.UPDATE, new UpdateStrategy(mockDb)),
                 Map.entry(QueryTypes.REPLACE_ONE, new ReplaceStrategy(mockDb)),
+                Map.entry(QueryTypes.UPDATE, new UpdateStrategy(mockDb)),
                 Map.entry(QueryTypes.FIND, new FindStrategy(mockDb)),
                 Map.entry(QueryTypes.AGGREGATE, new AggregateStrategy(mockDb)),
                 Map.entry(QueryTypes.GENERAL, new GeneralStrategy(mockDb))
@@ -44,6 +44,11 @@ public class CriteriaChecker {
             }
         }
 
+        collectFeedback();
+        return feedbackCollector.getFeedbackList();
+    }
+
+    private void collectFeedback() {
         feedbackCollector.addFeedback(
                 "Unrecognised queries:\n" +
                         unknownQueries.stream()
@@ -52,28 +57,5 @@ public class CriteriaChecker {
         );
 
         checkerStrategies.values().forEach(strategy -> strategy.collectAllFeedback(feedbackCollector));
-
-        return feedbackCollector.getFeedbackList();
     }
-
-//    public void checkQueries(List<Query> queries) {
-//        System.out.println("\n==========================================");
-//        System.out.println("Unrecognised queries:");
-//        List<Query> unknownQueries = queries.stream()
-//                .filter(q -> q.getType() == QueryTypes.UNKNOWN)
-//                .peek(System.out::println)
-//                .toList();
-//
-//        queries.stream()
-//                .filter(q -> q.getType() != QueryTypes.UNKNOWN)
-//                .forEach(query ->
-//                        {
-//                            generalStrategy.checkCriteria(query);
-//                            checkerStrategies.get(query.getType()).checkCriteria(query);
-//                        }
-//                );
-//
-//        generalStrategy.collectAllFeedback();
-//        checkerStrategies.values().forEach(CheckerStrategy::collectAllFeedback);
-//    }
 }

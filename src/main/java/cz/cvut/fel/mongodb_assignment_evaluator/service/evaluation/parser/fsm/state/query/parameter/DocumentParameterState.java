@@ -6,6 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.st
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
+import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.json.JsonParseException;
 
@@ -69,7 +70,7 @@ public class DocumentParameterState extends ParserState {
         context.appendToQuery(value);
 
         try {
-            DocumentParameter document = new DocumentParameter(Document.parse(value), depth);
+            DocumentParameter document = new DocumentParameter(BsonDocument.parse(value), depth);
             resetDocument();
             if (!isPipeline) {
                 context.addParameter(document, isModifier);

@@ -4,6 +4,8 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonC
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.visitor.QueryParameterVisitor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.util.regex.Pattern;
@@ -11,7 +13,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 @Getter
 public class DocumentParameter implements QueryParameter {
-    private Document document;
+    private BsonDocument document;
     private int depth;
 
     @Override
@@ -19,7 +21,7 @@ public class DocumentParameter implements QueryParameter {
         visitor.visitDocumentParameter(this);
     }
 
-    public Object getValue(String field) {
+    public BsonValue getValue(String field) {
         return BsonChecker.getValue(
                 document,
                 depth,
@@ -27,7 +29,7 @@ public class DocumentParameter implements QueryParameter {
         );
     }
 
-    public Object getValue(String field, int level) {
+    public BsonValue getValue(String field, int level) {
         return BsonChecker.getValue(
                 document,
                 level,

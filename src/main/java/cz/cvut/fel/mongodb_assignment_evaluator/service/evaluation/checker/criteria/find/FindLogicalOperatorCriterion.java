@@ -8,6 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.Document
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -45,9 +46,9 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
     }
 
     public boolean contains(DocumentParameter parameter, String operator, int level) {
-        Object found = parameter.getValue(operator, level);
-        if (found instanceof List<?>) {
-            if (!((List<?>) found).isEmpty()) {
+        BsonValue found = parameter.getValue(operator, level);
+        if (found != null && found.isArray()) {
+            if (!found.asArray().isEmpty()) {
                 return true;
             }
         }
@@ -55,13 +56,16 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
     }
 
     public boolean contains(DocumentParameter parameter, String operator) {
-        Object found = parameter.getValue(operator);
-        if (found instanceof Document) {
-            if (!((Document) found).isEmpty()) {
+        BsonValue found = parameter.getValue(operator);
+        if (found == null) {
+            return false;
+        }
+        if (found.isDocument()) {
+            if (!found.asDocument().isEmpty()) {
                 return true;
             }
-        } else if (found instanceof List<?>) {
-            if (!((List<?>) found).isEmpty()) {
+        } else if (found.isArray()) {
+            if (!found.asArray().isEmpty()) {
                 return true;
             }
         }

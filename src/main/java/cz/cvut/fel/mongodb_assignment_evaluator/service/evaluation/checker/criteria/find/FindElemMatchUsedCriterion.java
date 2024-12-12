@@ -7,6 +7,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.util.List;
@@ -32,9 +33,9 @@ public class FindElemMatchUsedCriterion extends AssignmentCriterion {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         if (currentParameterIdx == 0) {
-            Object found = parameter.getValue("$elemMatch");
-            if (found instanceof Document) {
-                if (!((Document) found).isEmpty()) {
+            BsonValue found = parameter.getValue("$elemMatch");
+            if (found != null && found.isDocument()) {
+                if (!found.asDocument().isEmpty()) {
                     currentCount++;
                     satisfied = true;
                 }

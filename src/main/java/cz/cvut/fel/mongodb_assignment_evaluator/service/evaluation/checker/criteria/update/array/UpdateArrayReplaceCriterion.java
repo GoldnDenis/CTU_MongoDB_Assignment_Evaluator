@@ -4,6 +4,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescripti
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.UpdateCriterion;
+import org.bson.BsonDocument;
 import org.bson.Document;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class UpdateArrayReplaceCriterion extends UpdateCriterion {
     }
 
     @Override
-    protected Set<String> getFieldsSet(Document document) {
+    protected Set<String> getFieldsSet(BsonDocument document) {
         String key = BsonChecker.findKeyMatchesPattern(
                 document,
                 1,

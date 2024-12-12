@@ -5,6 +5,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import org.bson.BsonDocument;
 import org.bson.Document;
 
 import java.util.HashSet;
@@ -42,5 +43,5 @@ public abstract class FindFilterCriterion extends AssignmentCriterion {
         currentParameterIdx++;
     }
 
-    protected abstract boolean inspectFilter(Document filterDocument, int maxDepth);
+    protected abstract boolean inspectFilter(BsonDocument filterDocument, int maxDepth);
 }

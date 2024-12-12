@@ -3,6 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
+import org.bson.BsonDocument;
 import org.bson.Document;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class FindConditionCriterion extends FindFilterCriterion {
     }
 
     @Override
-    protected boolean inspectFilter(Document filterDocument, int maxDepth) {
+    protected boolean inspectFilter(BsonDocument filterDocument, int maxDepth) {
         Object found = BsonChecker.getValue(filterDocument, maxDepth, expectedOperators);
         return found != null;
     }
