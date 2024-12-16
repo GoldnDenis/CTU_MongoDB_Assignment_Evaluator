@@ -7,19 +7,22 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.projection.FindPositiveProjectionCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.search.*;
 
+import java.util.List;
+
 public class FindStrategy extends CheckerStrategy{
     public FindStrategy(MockMongoDB mockDb) {
-        super(mockDb);
-        criteria.add(new FindFiveQueriesCriterion(mockDb));
-        criteria.add(new FindLogicalOperatorCriterion(mockDb));
-        criteria.add(new FindElemMatchUsedCriterion(mockDb));
-        criteria.add(new FindPositiveProjectionCriterion(mockDb));
-        criteria.add(new FindNegativeProjectionCriterion(mockDb));
-        criteria.add(new FindSortModifierCriterion(mockDb));
-        criteria.add(new FindValueCriterion(mockDb));
-        criteria.add(new FindConditionCriterion(mockDb));
-        criteria.add(new FindDateComparisonCriterion(mockDb));
-        criteria.add(new FindArrayCriterion(mockDb));
-        criteria.add(new FindArrayValueCriterion(mockDb));
+        super(mockDb, List.of(
+                new FindFiveQueriesCriterion(mockDb),
+                new FindLogicalOperatorCriterion(mockDb),
+                new FindElemMatchUsedCriterion(mockDb),
+                new FindPositiveProjectionCriterion(mockDb),
+                new FindNegativeProjectionCriterion(mockDb),
+                new FindSortModifierCriterion(mockDb),
+                new FindValueCriterion(mockDb),
+                new FindConditionCriterion(mockDb),
+                new FindDateComparisonCriterion(mockDb),
+                new FindArrayCriterion(mockDb),
+                new FindArrayValueCriterion(mockDb)
+        ));
     }
 }

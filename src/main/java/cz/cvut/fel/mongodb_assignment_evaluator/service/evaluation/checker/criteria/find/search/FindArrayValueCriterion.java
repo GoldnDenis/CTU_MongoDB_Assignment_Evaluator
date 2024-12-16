@@ -1,11 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.search;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
 
@@ -15,8 +11,8 @@ public class FindArrayValueCriterion extends FindFilterCriterion {
     public FindArrayValueCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.FIND_ARRAY_VALUE.getDescription(),
-                CriterionDescription.FIND_ARRAY_VALUE.getRequiredCount(),
+                Criteria.FIND_ARRAY_VALUE.getDescription(),
+                Criteria.FIND_ARRAY_VALUE.getRequiredCount(),
                 Set.of("$eq", "$in", "$all", "$elemMatch")
         );
     }

@@ -1,11 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.array;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.UpdateCriterion;
 import org.bson.BsonDocument;
-import org.bson.Document;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -17,8 +16,8 @@ public class UpdateArrayReplaceCriterion extends UpdateCriterion {
     public UpdateArrayReplaceCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.UPDATE_ARRAY_REPLACE.getDescription(),
-                CriterionDescription.UPDATE_ARRAY_REPLACE.getRequiredCount(),
+                Criteria.UPDATE_ARRAY_REPLACE.getDescription(),
+                Criteria.UPDATE_ARRAY_REPLACE.getRequiredCount(),
                 List.of(
                         "$set", "$mul", "$inc"
                 ), true

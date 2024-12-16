@@ -8,14 +8,17 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.insert.usage.InsertManyUsedCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.insert.usage.InsertOneUsedCriterion;
 
-public class InsertStrategy extends CheckerStrategy{
+import java.util.List;
+
+public class InsertStrategy extends CheckerStrategy {
     public InsertStrategy(MockMongoDB mockDb) {
-        super(mockDb);
-        criteria.add(new InsertTenDocumentsCriterion(mockDb));
-        criteria.add(new InsertDocumentEmbeddedObjectsCriterion(mockDb));
-        criteria.add(new InsertDocumentArraysCriterion(mockDb));
-        criteria.add(new InsertInterlinkCriterion(mockDb));
-        criteria.add(new InsertOneUsedCriterion(mockDb));
-        criteria.add(new InsertManyUsedCriterion(mockDb));
+        super(mockDb, List.of(
+                new InsertTenDocumentsCriterion(mockDb),
+                new InsertDocumentEmbeddedObjectsCriterion(mockDb),
+                new InsertDocumentArraysCriterion(mockDb),
+                new InsertInterlinkCriterion(mockDb),
+                new InsertOneUsedCriterion(mockDb),
+                new InsertManyUsedCriterion(mockDb)
+        ));
     }
 }

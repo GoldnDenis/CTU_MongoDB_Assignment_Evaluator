@@ -11,17 +11,20 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.UpdateAddFieldCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.UpdateRemoveFieldCriterion;
 
+import java.util.List;
+
 public class UpdateStrategy extends CheckerStrategy{
     public UpdateStrategy(MockMongoDB mockDb) {
-        super(mockDb);
-        criteria.add(new UpdateOneDocumentCriterion(mockDb));
-        criteria.add(new UpdateIncreaseMultiplyCriterion(mockDb));
-        criteria.add(new UpdateAddFieldCriterion(mockDb));
-        criteria.add(new UpdateRemoveFieldCriterion(mockDb));
-        criteria.add(new UpdateNestedDocumentCriterion(mockDb));
-        criteria.add(new UpdateArrayReplaceCriterion(mockDb));
-        criteria.add(new UpdateArrayAddCriterion(mockDb));
-        criteria.add(new UpdateArrayRemoveCriterion(mockDb));
-        criteria.add(new UpdateUpsertUsedCriterion(mockDb));
+        super(mockDb, List.of(
+                new UpdateOneDocumentCriterion(mockDb),
+                new UpdateIncreaseMultiplyCriterion(mockDb),
+                new UpdateAddFieldCriterion(mockDb),
+                new UpdateRemoveFieldCriterion(mockDb),
+                new UpdateNestedDocumentCriterion(mockDb),
+                new UpdateArrayReplaceCriterion(mockDb),
+                new UpdateArrayAddCriterion(mockDb),
+                new UpdateArrayRemoveCriterion(mockDb),
+                new UpdateUpsertUsedCriterion(mockDb)
+        ));
     }
 }

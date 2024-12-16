@@ -43,23 +43,23 @@ public abstract class UpdateCriterion extends AssignmentCriterion {
     @Override
     public void concreteCheck(Query query) {
         id = "";
-        currentParameterIdx = 0;
+        curParamIdx = 0;
         collection = query.getCollection();
         List<QueryParameter> parameters = query.getParameters();
         if (parameters.size() >= 2) {
             isUpdateOne = query.getOperator().equalsIgnoreCase("updateOne");
-            parameters.get(currentParameterIdx).accept(this);
-            parameters.get(currentParameterIdx).accept(this);
+            parameters.get(curParamIdx).accept(this);
+            parameters.get(curParamIdx).accept(this);
         }
     }
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (currentParameterIdx == 0) {
+        if (curParamIdx == 0) {
             filterDocument = parameter.getDocument();
             Object idObject = parameter.getValue("_id");
             id = (idObject != null) ? idObject.toString() : "";
-        } else if (currentParameterIdx == 1) {
+        } else if (curParamIdx == 1) {
             checkForUpdateOperators(parameter);
             if (foundOperator &&
                     foundFields.equals(shouldFindFields)) {
@@ -67,12 +67,12 @@ public abstract class UpdateCriterion extends AssignmentCriterion {
                 satisfied = true;
             }
         }
-        currentParameterIdx++;
+        curParamIdx++;
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (currentParameterIdx == 1) {
+        if (curParamIdx == 1) {
             for (DocumentParameter documentParameter : parameter.getParameterList()) {
                 checkForUpdateOperators(documentParameter);
                 if (foundOperator &&
@@ -83,7 +83,7 @@ public abstract class UpdateCriterion extends AssignmentCriterion {
                 }
             }
         }
-        currentParameterIdx++;
+        curParamIdx++;
     }
 
     protected Set<String> getFieldsSet(BsonDocument document) {

@@ -36,17 +36,21 @@ public class AssignmentEvaluator {
             return;
         }
 
+        log.info("Starting evaluation...");
         for (File folder : subfolders) {
             Matcher matcher = studentFolderPattern.matcher(folder.getName());
             if (matcher.matches()) {
                 String studentName = matcher.group(2);
 
                 List<String> fileLines = DirectoryManager.readJavaScriptFiles(folder);
+                log.info("Parsing the script of " + studentName + "...");
                 List<Query> queryList = ScriptParser.parse(fileLines);
+                log.info("Evaluating queries...");
                 List<String> feedbackList = new CriteriaChecker().checkQueries(queryList);
-
+                log.info("Writing feedback...");
                 DirectoryManager.writeFeedback(resultFolder, studentName, feedbackList);
             }
         }
+        log.info("Evaluation has finished.");
     }
 }

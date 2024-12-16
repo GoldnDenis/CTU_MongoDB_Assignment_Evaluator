@@ -3,10 +3,12 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.strategy.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import lombok.extern.java.Log;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Log
 public class CriteriaChecker {
     private final MockMongoDB mockDb;
 
@@ -17,33 +19,36 @@ public class CriteriaChecker {
 
     public CriteriaChecker() {
         this.mockDb = new MockMongoDB();
-
         this.unknownQueries = new ArrayList<>();
         this.feedbackCollector = new FeedbackCollector();
-        this.checkerStrategies = Map.ofEntries(
-                Map.entry(QueryTypes.CREATE_COLLECTION, new CreateCollectionStrategy(mockDb)),
-                Map.entry(QueryTypes.INSERT, new InsertStrategy(mockDb)),
-                Map.entry(QueryTypes.REPLACE_ONE, new ReplaceStrategy(mockDb)),
-                Map.entry(QueryTypes.UPDATE, new UpdateStrategy(mockDb)),
-                Map.entry(QueryTypes.FIND, new FindStrategy(mockDb)),
-                Map.entry(QueryTypes.AGGREGATE, new AggregateStrategy(mockDb)),
-                Map.entry(QueryTypes.GENERAL, new GeneralStrategy(mockDb))
-        );
+        this.checkerStrategies = new LinkedHashMap<>();
+        this.initStrategies();
+    }
+
+    private void initStrategies() {
+        checkerStrategies.put(QueryTypes.CREATE_COLLECTION, new CreateCollectionStrategy(mockDb));
+        checkerStrategies.put(QueryTypes.INSERT, new InsertStrategy(mockDb));
+        checkerStrategies.put(QueryTypes.REPLACE_ONE, new ReplaceStrategy(mockDb));
+        checkerStrategies.put(QueryTypes.UPDATE, new UpdateStrategy(mockDb));
+        checkerStrategies.put(QueryTypes.FIND, new FindStrategy(mockDb));
+        checkerStrategies.put(QueryTypes.AGGREGATE, new AggregateStrategy(mockDb));
+        checkerStrategies.put(QueryTypes.GENERAL, new GeneralStrategy(mockDb));
+//        checkerStrategies.put(QueryTypes.UNKNOWN, new UnknownStrategy(mockDb));
     }
 
     public List<String> checkQueries(List<Query> queries) {
         for (Query query : queries) {
             QueryTypes type = query.getType();
-            if (Objects.requireNonNull(type) == QueryTypes.UNKNOWN) {
-                unknownQueries.add(query);
-                continue;
+            if (type == null) {
+                log.severe("Query type is null.");
             }
-            if (checkerStrategies.containsKey(type)) {
-                checkerStrategies.get(type).checkCriteria(query);
+            if (type == QueryTypes.UNKNOWN) {
+                unknownQueries.add(query);
+            } else if (checkerStrategies.containsKey(type)) {
                 checkerStrategies.get(QueryTypes.GENERAL).checkCriteria(query);
+                checkerStrategies.get(type).checkCriteria(query);
             }
         }
-
         collectFeedback();
         return feedbackCollector.getFeedbackList();
     }
@@ -56,6 +61,8 @@ public class CriteriaChecker {
                                 .collect(Collectors.joining())
         );
 
-        checkerStrategies.values().forEach(strategy -> strategy.collectAllFeedback(feedbackCollector));
+        for (CheckerStrategy strategy: checkerStrategies.values()) {
+            strategy.collectEvaluationResults(feedbackCollector);
+        }
     }
 }

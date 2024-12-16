@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.stage;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
@@ -14,14 +14,14 @@ public class AggregateLookupUsedCriterion extends AssignmentCriterion {
     public AggregateLookupUsedCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.AGGREGATE_LOOKUP_USED.getDescription(),
-                CriterionDescription.AGGREGATE_LOOKUP_USED.getRequiredCount()
+                Criteria.AGGREGATE_LOOKUP_USED.getDescription(),
+                Criteria.AGGREGATE_LOOKUP_USED.getRequiredCount()
         );
     }
 
     @Override
     public void concreteCheck(Query query) {
-        currentParameterIdx = 0;
+        curParamIdx = 0;
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
             parameters.get(0).accept(this);
@@ -30,7 +30,7 @@ public class AggregateLookupUsedCriterion extends AssignmentCriterion {
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        if (currentParameterIdx == 0) {
+        if (curParamIdx == 0) {
             for (DocumentParameter documentParameter: parameter.getParameterList()) {
                 if (documentParameter.containsField("$lookup", 1)) {
                     currentCount++;
@@ -39,6 +39,6 @@ public class AggregateLookupUsedCriterion extends AssignmentCriterion {
                 }
             }
         }
-        currentParameterIdx++;
+        curParamIdx++;
     }
 }

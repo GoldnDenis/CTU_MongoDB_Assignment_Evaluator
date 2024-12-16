@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum CriterionDescription {
+public enum Criteria {
     COMMENT("Describe the real-world meaning of all your queries in comments", 1),
 
     CREATE_ONE_COLLECTION("Explicitly create one or two collections", 1),

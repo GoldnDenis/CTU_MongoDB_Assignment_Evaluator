@@ -1,14 +1,9 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.search;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
-import org.bson.Document;
 
 import java.util.*;
 
@@ -16,8 +11,8 @@ public class FindArrayCriterion extends FindFilterCriterion {
     public FindArrayCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.FIND_ARRAY.getDescription(),
-                CriterionDescription.FIND_ARRAY.getRequiredCount(),
+                Criteria.FIND_ARRAY.getDescription(),
+                Criteria.FIND_ARRAY.getRequiredCount(),
                 Collections.emptySet()
         );
     }

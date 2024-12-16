@@ -1,31 +1,27 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.BsonValue;
-import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FindLogicalOperatorCriterion extends AssignmentCriterion {
     public FindLogicalOperatorCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.FIND_LOGICAL_OPERATOR.getDescription(),
-                CriterionDescription.FIND_LOGICAL_OPERATOR.getRequiredCount()
+                Criteria.FIND_LOGICAL_OPERATOR.getDescription(),
+                Criteria.FIND_LOGICAL_OPERATOR.getRequiredCount()
         );
     }
 
     @Override
     public void concreteCheck(Query query) {
-        currentParameterIdx = 0;
+        curParamIdx = 0;
         List<QueryParameter> parameters = query.getParameters();
         if (!parameters.isEmpty()) {
             parameters.get(0).accept(this);
@@ -34,7 +30,7 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (currentParameterIdx == 0) {
+        if (curParamIdx == 0) {
             if (contains(parameter, "$and", 1) ||
                     contains(parameter, "$or", 1) ||
                     contains(parameter, "$not")) {
@@ -42,7 +38,7 @@ public class FindLogicalOperatorCriterion extends AssignmentCriterion {
                 satisfied = true;
             }
         }
-        currentParameterIdx++;
+        curParamIdx++;
     }
 
     public boolean contains(DocumentParameter parameter, String operator, int level) {

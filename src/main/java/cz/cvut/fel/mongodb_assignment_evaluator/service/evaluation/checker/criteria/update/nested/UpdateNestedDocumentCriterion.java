@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.nested;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.update.UpdateCriterion;
@@ -16,8 +16,8 @@ public class UpdateNestedDocumentCriterion extends UpdateCriterion {
     public UpdateNestedDocumentCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.UPDATE_NESTED_DOCUMENT.getDescription(),
-                CriterionDescription.UPDATE_NESTED_DOCUMENT.getRequiredCount(),
+                Criteria.UPDATE_NESTED_DOCUMENT.getDescription(),
+                Criteria.UPDATE_NESTED_DOCUMENT.getRequiredCount(),
                 List.of("$set", "$mul", "$inc"),
                 true
         );

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum CriterionStates {
+public enum ResultStates {
     NOT_FULFILLED("Not Fulfilled"),
     PARTLY_FULFILLED("Partly Fulfilled"),
     FULFILLED("Fulfilled");

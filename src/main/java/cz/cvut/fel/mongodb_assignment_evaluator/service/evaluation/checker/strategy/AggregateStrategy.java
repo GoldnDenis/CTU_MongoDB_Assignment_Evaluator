@@ -8,21 +8,23 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.aggregator.AggregateSumAvgAggregatorCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.stage.*;
 
-public class AggregateStrategy extends CheckerStrategy{
+import java.util.List;
 
+public class AggregateStrategy extends CheckerStrategy{
     public AggregateStrategy(MockMongoDB mockDb) {
-        super(mockDb);
-        criteria.add(new AggregateFiveCriterion(mockDb));
-        criteria.add(new AggregateMatchStageCriterion(mockDb));
-        criteria.add(new AggregateGroupStageCriterion(mockDb));
-        criteria.add(new AggregateSortStageCriterion(mockDb));
-        criteria.add(new AggregateProjectAddFieldsStageCriterion(mockDb));
-        criteria.add(new AggregateSkipStageCriterion(mockDb));
-        criteria.add(new AggregateLimitStageCriterion(mockDb));
-        criteria.add(new AggregateSumAvgAggregatorCriterion(mockDb));
-        criteria.add(new AggregateCountAggregatorCriterion(mockDb));
-        criteria.add(new AggregateMinMaxAggregatorCriterion(mockDb));
-        criteria.add(new AggregateFirstLastAggregatorCriterion(mockDb));
-        criteria.add(new AggregateLookupUsedCriterion(mockDb));
+        super(mockDb, List.of(
+                new AggregateFiveCriterion(mockDb),
+                new AggregateMatchStageCriterion(mockDb),
+                new AggregateGroupStageCriterion(mockDb),
+                new AggregateSortStageCriterion(mockDb),
+                new AggregateProjectAddFieldsStageCriterion(mockDb),
+                new AggregateSkipStageCriterion(mockDb),
+                new AggregateLimitStageCriterion(mockDb),
+                new AggregateSumAvgAggregatorCriterion(mockDb),
+                new AggregateCountAggregatorCriterion(mockDb),
+                new AggregateMinMaxAggregatorCriterion(mockDb),
+                new AggregateFirstLastAggregatorCriterion(mockDb),
+                new AggregateLookupUsedCriterion(mockDb)
+        ));
     }
 }

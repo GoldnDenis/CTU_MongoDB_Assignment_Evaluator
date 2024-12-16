@@ -1,32 +1,28 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.projection;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
-import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FindNegativeProjectionCriterion extends AssignmentCriterion {
     public FindNegativeProjectionCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.FIND_NEGATIVE_PROJECTION.getDescription(),
-                CriterionDescription.FIND_NEGATIVE_PROJECTION.getRequiredCount()
+                Criteria.FIND_NEGATIVE_PROJECTION.getDescription(),
+                Criteria.FIND_NEGATIVE_PROJECTION.getRequiredCount()
         );
     }
 
     @Override
     public void concreteCheck(Query query) {
-        currentParameterIdx = 1;
+        curParamIdx = 1;
         List<QueryParameter> parameters = query.getParameters();
         if (parameters.size() >= 2) {
             parameters.get(1).accept(this);
@@ -35,7 +31,7 @@ public class FindNegativeProjectionCriterion extends AssignmentCriterion {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        if (currentParameterIdx == 1) {
+        if (curParamIdx == 1) {
             BsonDocument document = parameter.getDocument();
             for (String key : document.keySet()) {
                 if (key.equals("_id")) {
@@ -54,6 +50,6 @@ public class FindNegativeProjectionCriterion extends AssignmentCriterion {
             currentCount++;
             satisfied = true;
         }
-        currentParameterIdx++;
+        curParamIdx++;
     }
 }

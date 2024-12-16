@@ -9,22 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CheckerStrategy {
-    private final MockMongoDB mockDb;
-
+    protected final MockMongoDB mockDb;
     protected final List<AssignmentCriterion> criteria;
 
-    public CheckerStrategy(MockMongoDB mockDb) {
+    public CheckerStrategy(MockMongoDB mockDb, List<AssignmentCriterion> criteria) {
         this.mockDb = mockDb;
-        this.criteria = new ArrayList<>();
+        this.criteria = new ArrayList<>(criteria);
     }
 
     public void checkCriteria(Query query) {
-        for (AssignmentCriterion criterion : criteria) {
-            criterion.check(query);
-        }
+        criteria.forEach(c -> c.check(query));
     }
 
-    public void collectAllFeedback(FeedbackCollector feedbackCollector) {
-        criteria.forEach(criterion -> feedbackCollector.addFeedback(criterion.generateFeedback()));
+    public void collectEvaluationResults(FeedbackCollector feedbackCollector) {
+        criteria.forEach(c -> feedbackCollector.addFeedback(c.generateFeedback()));
     }
 }

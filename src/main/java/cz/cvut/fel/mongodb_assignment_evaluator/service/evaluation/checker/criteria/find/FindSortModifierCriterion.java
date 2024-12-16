@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.modifier.QueryModifier;
@@ -14,8 +14,8 @@ public class FindSortModifierCriterion extends AssignmentCriterion {
     public FindSortModifierCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.FIND_SORT_MODIFIER.getDescription(),
-                CriterionDescription.FIND_SORT_MODIFIER.getRequiredCount()
+                Criteria.FIND_SORT_MODIFIER.getDescription(),
+                Criteria.FIND_SORT_MODIFIER.getRequiredCount()
         );
     }
 

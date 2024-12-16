@@ -1,12 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.search;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.CriterionDescription;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
-import org.bson.Document;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,8 +12,8 @@ public class FindValueCriterion extends FindFilterCriterion {
     public FindValueCriterion(MockMongoDB mockDb) {
         super(
                 mockDb,
-                CriterionDescription.FIND_VALUE.getDescription(),
-                CriterionDescription.FIND_VALUE.getRequiredCount(),
+                Criteria.FIND_VALUE.getDescription(),
+                Criteria.FIND_VALUE.getRequiredCount(),
                 Set.of("$eq", "$ne")
         );
     }
