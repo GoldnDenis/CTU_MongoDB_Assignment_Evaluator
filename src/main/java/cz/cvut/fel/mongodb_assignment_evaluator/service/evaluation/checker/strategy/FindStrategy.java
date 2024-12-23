@@ -1,16 +1,14 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.strategy;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.aggregate.stage.AggregateLookupUsedCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.*;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.projection.FindNegativeProjectionCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.projection.FindPositiveProjectionCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.find.search.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.find.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.find.FindNegativeProjectionCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.find.FindPositiveProjectionCriterion;
 
 import java.util.List;
 
 public class FindStrategy extends CheckerStrategy{
-    public FindStrategy(MockMongoDB mockDb) {
+    public FindStrategy(InsertedDocumentStorage mockDb) {
         super(mockDb, List.of(
                 new FindFiveQueriesCriterion(mockDb),
                 new FindLogicalOperatorCriterion(mockDb),

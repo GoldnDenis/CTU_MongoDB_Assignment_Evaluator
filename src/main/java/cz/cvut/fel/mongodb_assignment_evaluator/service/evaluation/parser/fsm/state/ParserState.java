@@ -17,7 +17,8 @@ public abstract class ParserState {
     protected void setQueryPosition(LineIterator iterator) {
         int lineNumber = iterator.getRowIndex() + 1;
         int columnNumber = iterator.getCurrentColumnIndex() + 1;
-        context.setQueryPosition(lineNumber, columnNumber);
+        context.getQueryBuilder().setLineNumber(lineNumber)
+                .setColumnNumber(columnNumber);
     }
 
     protected void processSyntaxError(String message, LineIterator iterator) {

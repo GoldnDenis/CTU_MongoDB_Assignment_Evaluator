@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.visitor.QueryParameterVisitor;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.visitor.QueryParameterVisitor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +8,10 @@ import lombok.Getter;
 @Getter
 public class StringParameter implements QueryParameter {
     private String value;
+
+    public StringParameter() {
+        value = "";
+    }
 
     @Override
     public void accept(QueryParameterVisitor visitor) {

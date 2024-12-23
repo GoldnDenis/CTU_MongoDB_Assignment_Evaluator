@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Query;
 
 import java.util.List;
 

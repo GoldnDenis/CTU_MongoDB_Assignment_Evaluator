@@ -10,5 +10,15 @@ public enum ResultStates {
     PARTLY_FULFILLED("Partly Fulfilled"),
     FULFILLED("Fulfilled");
 
-    private final String state;
+    private final String text;
+
+    public static ResultStates evaluate(int current, int required) {
+        if (current <= 0) {
+            return NOT_FULFILLED;
+        } else if (current >= required) {
+            return FULFILLED;
+        } else {
+            return PARTLY_FULFILLED;
+        }
+    }
 }

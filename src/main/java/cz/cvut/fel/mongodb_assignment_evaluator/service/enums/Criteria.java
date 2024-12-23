@@ -52,7 +52,9 @@ public enum Criteria {
     AGGREGATE_COUNT_AGGREGATOR("Use at least once $count aggregator", 1),
     AGGREGATE_MIN_MAX_AGGREGATOR("Use at least once $min (or $max) aggregator", 1),
     AGGREGATE_FIRST_LAST_AGGREGATOR("Use at least once $first (or $last)) aggregator", 1),
-    AGGREGATE_LOOKUP_USED("Use lookup (if you have two collections)", 1);
+    AGGREGATE_LOOKUP_USED("Use lookup (if you have two collections)", 1),
+
+    UNKNOWN_UNRECOGNISED("Queries were not recognised", 0);
 
     private final String description;
     private final int requiredCount;

@@ -1,15 +1,21 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum QueryTypes {
-    FIND,
-    INSERT,
-    UPDATE,
-    AGGREGATE,
-    CREATE_COLLECTION,
-    REPLACE_ONE,
-    FUNCTION,
-    GENERAL,
-    UNKNOWN;
+    FIND(true),
+    INSERT(true),
+    UPDATE(true),
+    AGGREGATE(true),
+    CREATE_COLLECTION(false),
+    REPLACE_ONE(true),
+    GENERAL(false),
+    UNKNOWN(false);
+
+    private final boolean inCollectionScope;
 
     public static QueryTypes fromString(String queryName) {
         switch (queryName) {

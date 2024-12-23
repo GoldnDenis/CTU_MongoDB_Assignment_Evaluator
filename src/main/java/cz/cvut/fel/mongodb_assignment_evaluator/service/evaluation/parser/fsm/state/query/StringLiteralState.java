@@ -25,9 +25,9 @@ public class StringLiteralState extends ParserState {
                     processSyntaxError("'system.' prefix isn't allowed. (Reserved for internal use.)", iterator);
                     return;
                 }
-                context.setQueryCollection(value);
+                context.setCurrentCollection(value);
             } else if (isModifier) {
-                context.setModifierOperator(value);
+                context.getModifierBuilder().setModifier(value);
             } else {
                 context.setQueryOperator(value);
             }

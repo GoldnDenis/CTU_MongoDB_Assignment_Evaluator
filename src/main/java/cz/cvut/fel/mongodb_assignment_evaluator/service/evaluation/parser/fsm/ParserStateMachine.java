@@ -6,8 +6,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.st
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.modifier.ModifierBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.QueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.factory.QueryBuilderFactory;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.builder.QueryBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,14 +21,17 @@ public class ParserStateMachine {
     @Getter
     private final List<Query> queryList;
 
-    private final QueryBuilder queryBuilder;
-    private final ModifierBuilder modifierBuilder;
-    private final StringBuilder queryAccumulator;
+    @Getter
+    private QueryBuilder queryBuilder;
+    @Getter
+    private ModifierBuilder modifierBuilder;
 
-    @Setter
     private String lastQueryOperation;
     @Setter
-    private StringBuilder lastCommentBuilder;
+    private String currentCollection;
+
+    private final StringBuilder queryAccumulator;
+    private final StringBuilder lastCommentBuilder;
 
     public ParserStateMachine() {
         this.state = new ScriptState(this);
@@ -35,10 +39,12 @@ public class ParserStateMachine {
 
         this.queryBuilder = new QueryBuilder();
         this.modifierBuilder = new ModifierBuilder();
-        this.queryAccumulator = new StringBuilder();
 
         this.lastQueryOperation = "";
+        this.currentCollection = "";
+
         this.lastCommentBuilder = new StringBuilder();
+        this.queryAccumulator = new StringBuilder();
 //        this.lastComment = "";
     }
 
@@ -52,7 +58,6 @@ public class ParserStateMachine {
         if (!lastQueryOperation.isEmpty()) {
             lastCommentBuilder.setLength(0);
         }
-
         if (!lastCommentBuilder.isEmpty()) {
             lastCommentBuilder.append("\n");
         }
@@ -67,33 +72,19 @@ public class ParserStateMachine {
         queryAccumulator.append(character);
     }
 
-    public void setQueryPosition(int lineNumber, int columnNumber) {
-        queryBuilder.setLineNumber(lineNumber)
-                .setColumnNumber(columnNumber);
-    }
-
-    public void setQueryOperator(QueryTypes type) {
-        queryBuilder.setType(type);
-    }
-
     public void setQueryOperator(String operator) {
         if (!lastQueryOperation.isBlank() && !lastQueryOperation.equals(operator)) {
             lastCommentBuilder.setLength(0);
 //            lastComment = "";
         }
         lastQueryOperation = operator;
+
+        QueryTypes type = QueryTypes.fromString(operator);
+        queryBuilder = QueryBuilderFactory.createQueryBuilder(type);
+
+        queryBuilder.setCollection(currentCollection);
         queryBuilder.setOperation(operator);
-        queryBuilder.setType(QueryTypes.fromString(operator));
-    }
-
-    public void setQueryCollection(String collection) {
-        queryBuilder.setCollection(collection);
-    }
-
-    public void resetQuery() {
-        queryBuilder.reset();
-        modifierBuilder.reset();
-        queryAccumulator.setLength(0);
+        queryBuilder.setType(type);
     }
 
     public void addParameter(QueryParameter parameter, Boolean isModifier) {
@@ -104,19 +95,16 @@ public class ParserStateMachine {
         }
     }
 
-    public void setModifierOperator(String modifier) {
-        modifierBuilder.setModifier(modifier);
-    }
-
     public void resetAccumulators() {
-        queryBuilder.reset();
-        modifierBuilder.reset();
+        queryBuilder = new QueryBuilder();
+        modifierBuilder = new ModifierBuilder();
         queryAccumulator.setLength(0);
+        currentCollection = "";
     }
 
     public void saveModifier() {
         queryBuilder.addModifier(modifierBuilder.build());
-        modifierBuilder.reset();
+        this.modifierBuilder = new ModifierBuilder();
     }
 
     public void saveQuery() {
@@ -125,7 +113,6 @@ public class ParserStateMachine {
                         .setQuery(queryAccumulator.toString())
                         .build()
         );
-        queryBuilder.reset();
-        queryAccumulator.setLength(0);
+        resetAccumulators();
     }
 }

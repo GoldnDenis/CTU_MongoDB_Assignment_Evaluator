@@ -1,23 +1,15 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.CriteriaChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.CriteriaEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.EvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.ScriptParser;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Query;
 import lombok.extern.java.Log;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Log
 public class AssignmentEvaluator {
@@ -46,9 +38,11 @@ public class AssignmentEvaluator {
                 log.info("Parsing the script of " + studentName + "...");
                 List<Query> queryList = ScriptParser.parse(fileLines);
                 log.info("Evaluating queries...");
-                List<String> feedbackList = new CriteriaChecker().checkQueries(queryList);
-                log.info("Writing feedback...");
-                DirectoryManager.writeFeedback(resultFolder, studentName, feedbackList);
+                List<EvaluationResult> evaluationResults = new CriteriaEvaluator().check(queryList);
+                log.info("Processing results...");
+                String resultToWrite = ResultProcessor.formatToText(evaluationResults);
+                log.info("Writing results...");
+                DirectoryManager.writeFeedback(resultFolder, studentName, resultToWrite);
             }
         }
         log.info("Evaluation has finished.");

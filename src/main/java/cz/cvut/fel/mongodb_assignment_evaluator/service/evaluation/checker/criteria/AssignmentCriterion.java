@@ -1,104 +1,80 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.ResultStates;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.MockMongoDB;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.visitor.QueryParameterVisitor;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.*;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.Query;
-import lombok.Getter;
+import cz.cvut.fel.mongodb_assignment_evaluator.entity.Criterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.CriterionNode;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Query;
+import lombok.extern.java.Log;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public abstract class AssignmentCriterion implements QueryParameterVisitor {
-    protected final MockMongoDB mockDb;
-
-    protected final String assignmentMessage;
-    protected int requiredCount;
+@Log
+public abstract class AssignmentCriterion<Q extends Query> implements CriterionNode {
+//public abstract class AssignmentCriterion<Q extends Query> implements CriterionNode<Q> {
+    protected Criteria criterion;
+    private final Class<Q> queryType;
+//    protected final String assignmentMessage;
+//    protected int requiredCount;
+    protected final InsertedDocumentStorage documentStorage;
 //    protected final int minArgCount;
+    protected int currentScore;
+//    protected final List<Query> satisfiedQueries;
+//    protected final List<Query> failedQueries;
+//    protected ResultStates state;
+//    protected int curParamIdx;
+//    protected boolean satisfied;
+    protected EvaluationResult evaluationResult;
 
-    protected int currentCount;
-    protected final List<Query> satisfiedQueries;
-    protected final List<Query> failedQueries;
-
-    protected ResultStates state;
-
-    protected int curParamIdx;
-
-    protected boolean satisfied;
-
-    @Getter
-    protected EvaluationResult result;
-
-    public AssignmentCriterion(MockMongoDB mockDb, String assignmentMessage, int requiredCount) {
-        this.mockDb = mockDb;
-
-        this.assignmentMessage = assignmentMessage;
-        this.requiredCount = requiredCount;
-
-        this.currentCount = 0;
-        this.satisfiedQueries = new ArrayList<>();
-        this.failedQueries = new ArrayList<>();
-
-        this.state = ResultStates.NOT_FULFILLED;
-        this.curParamIdx = -1;
-
-//        this.satisfied = false;
-    }
-
-//    public AssignmentCriterion(MockMongoDB mockDb, String assignmentMessage, int requiredCount, int minArgCount) {
-//        this.mockDb = mockDb;
-//
-//        this.assignmentMessage = assignmentMessage;
-//        this.requiredCount = requiredCount;
-//        this.minArgCount = minArgCount;
-//
-//        this.currentCount = 0;
-//        this.satisfiedQueries = new ArrayList<>();
-//        this.failedQueries = new ArrayList<>();
-//
-//        this.state = ResultStates.NOT_FULFILLED;
-//        this.curParamIdx = -1;
-//
+//    public AssignmentCriterion(Criteria criterion, InsertedDocumentStorage documentStorage, int minArgCount) {
+//        this.evaluationResult = new EvaluationResult(criterion);
+////        this.documentStorage = documentStorage;
+////        this.minArgCount = minArgCount;
+////        this.assignmentMessage = assignmentMessage;
+////        this.requiredCount = requiredCount;
+//        this.currentScore = 0;
+////        this.satisfiedQueries = new ArrayList<>();
+////        this.failedQueries = new ArrayList<>();
+////        this.state = ResultStates.NOT_FULFILLED;
+////        this.curParamIdx = -1;
 ////        this.satisfied = false;
 //    }
 
-    public String generateFeedback() {
-        evaluate();
-        StringBuilder feedbackBuilder = new StringBuilder();
-        feedbackBuilder.append('"').append(assignmentMessage).append('"')
-                .append(" - ").append(currentCount).append(" out of ").append(requiredCount)
-                .append(": ").append(state.getState()).append('\n');
-
-        if (state.equals(ResultStates.FULFILLED) || state.equals(ResultStates.PARTLY_FULFILLED)) {
-            feedbackBuilder.append(generateQueryRelatedFeedback());
-        }
-
-        return feedbackBuilder.toString();
+    public AssignmentCriterion(Criteria criterion, Class<Q> queryType, InsertedDocumentStorage documentStorage) {
+        this.evaluationResult = new EvaluationResult(criterion);
+        this.queryType = queryType;
+        this.documentStorage = documentStorage;
+        this.currentScore = 0;
+//        this.minArgCount = minArgCount;
+//        this.assignmentMessage = assignmentMessage;
+//        this.requiredCount = requiredCount;
+//        this.satisfiedQueries = new ArrayList<>();
+//        this.failedQueries = new ArrayList<>();
+//        this.state = ResultStates.NOT_FULFILLED;
+//        this.curParamIdx = -1;
+//        this.satisfied = false;
     }
 
-    protected void evaluate() {
-        if (currentCount > 0 ) {
-            state = ResultStates.FULFILLED;
-            if (currentCount < requiredCount) {
-                state = ResultStates.PARTLY_FULFILLED;
-            }
-        }
-    }
+//    public abstract void check(Q query);
 
-    protected String generateQueryRelatedFeedback() {
-        return "Satisfied queries:\n" +
-                satisfiedQueries.stream()
-                        .map(query -> query.toString() + '\n')
-                        .collect(Collectors.joining());
-    }
+//    public EvaluationResult evaluate() {
+//        return evaluationResult;
+//    }
 
+    @Override
+//    public void check(Q query) {
     public void check(Query query) {
-        int lastCount = currentCount;
-        concreteCheck(query);
-        log(query, lastCount != currentCount);
+        if (queryType.isInstance(query)) {
+            Q q = queryType.cast(query);
+            currentScore = 0;
+//        resetQueryData();
 
+//        checkParameters(query.getParameters());
+            concreteCheck(q);
+            evaluationResult.log(query, currentScore);
+        }
+//        log(query, lastCount != currentScore);
+        // OLD
 //        if (satisfied) {
 //            satisfiedQueries.add(query);
 //        } else {
@@ -107,51 +83,102 @@ public abstract class AssignmentCriterion implements QueryParameterVisitor {
 //        satisfied = false;
     }
 
-    protected abstract void concreteCheck(Query query);
+    protected abstract void concreteCheck(Q query);
 
-    protected void checkParameters(List<QueryParameter> parameters) {
-        for (QueryParameter parameter : parameters) {
-            curParamIdx++;
-            if (curParamIdx == requiredCount) {
-                break;
-            }
-            parameter.accept(this);
-        }
-
+    @Override
+    public List<EvaluationResult> evaluate() {
+        return List.of(evaluationResult);
     }
 
-    public void log(Query query, Boolean satisfied) {
-        result.logQuery(query, satisfied);
+//    protected void checkParameters(List<QueryParameter> parameters) {
+//        for (QueryParameter parameter : parameters) {
+//            parameter.accept(this);
+//            curParamIdx++;
+//            if (curParamIdx == minArgCount) {
+//                break;
+//            }
+//        }
+//    }
+//
+//    protected abstract void resetQueryData();
+//
+//    @Override
+//    public void visitDocumentParameter(DocumentParameter parameter) {
+//
+//    }
+//
+//    @Override
+//    public void visitStringParameter(StringParameter parameter) {
+//
+//    }
+//
+//    @Override
+//    public void visitPipelineParameter(PipelineParameter parameter) {
+//
+//    }
+//
+//    @Override
+//    public void visitStringLiteralParameter(FunctionParameter parameter) {
+//
+//    }
+//
+//    @Override
+//    public void visitEmptyParameter(EmptyParameter parameter) {
+//
+//    }
+
+//    public AssignmentCriterion(MockMongoDB mockDb, String assignmentMessage, int requiredCount) {
+//        this.mockDb = mockDb;
+////        this.result = new EvaluationResult();
+//        this.assignmentMessage = assignmentMessage;
+//        this.requiredCount = requiredCount;
+//        this.currentCount = 0;
+//        this.satisfiedQueries = new ArrayList<>();
+//        this.failedQueries = new ArrayList<>();
+//        this.state = ResultStates.NOT_FULFILLED;
+//        this.curParamIdx = -1;
+////        this.satisfied = false;
+//    }
+
+//    public String generateFeedback() {
+//        evaluate();
+//        StringBuilder feedbackBuilder = new StringBuilder();
+//        feedbackBuilder.append('"').append(assignmentMessage).append('"')
+//                .append(" - ").append(currentScore).append(" out of ").append(requiredCount)
+//                .append(": ").append(state.getState()).append('\n');
+//        if (state.equals(ResultStates.FULFILLED) || state.equals(ResultStates.PARTLY_FULFILLED)) {
+//            feedbackBuilder.append(generateQueryRelatedFeedback());
+//        }
+//        return feedbackBuilder.toString();
+//    }
+
+//    public EvaluationResult evaluate() {
+//        ResultStates state = ResultStates.evaluate(currentScore, requiredCount);
+//        return new EvaluationResult(criterion, state, satisfiedQueries, failedQueries);
+//    }
+
+//    protected void evaluate() {
+//        if (currentScore > 0 ) {
+//            state = ResultStates.FULFILLED;
+//            if (currentScore < requiredCount) {
+//                state = ResultStates.PARTLY_FULFILLED;
+//            }
+//        }
+//    }
+
+//    protected String generateQueryRelatedFeedback() {
+//        return "Satisfied queries:\n" +
+//                satisfiedQueries.stream()
+//                        .map(query -> query.toString() + '\n')
+//                        .collect(Collectors.joining());
+//    }
+
+//    public void log(Query query, Boolean satisfied) {
+//        result.logQuery(query, satisfied);
 //        if (satisfied) {
 //            satisfiedQueries.add(query);
 //        } else {
 //            failedQueries.add(query);
 //        }
-    }
-
-
-    @Override
-    public void visitDocumentParameter(DocumentParameter parameter) {
-        // todo :: standard implementation
-    }
-
-    @Override
-    public void visitStringParameter(StringParameter parameter) {
-        // todo :: standard implementation
-    }
-
-    @Override
-    public void visitPipelineParameter(PipelineParameter parameter) {
-        // todo :: standard implementation
-    }
-
-    @Override
-    public void visitStringLiteralParameter(FunctionParameter parameter) {
-        // todo :: standard implementation
-    }
-
-    @Override
-    public void visitEmptyParameter(EmptyParameter parameter) {
-        // todo :: standard implementation
-    }
+//    }
 }

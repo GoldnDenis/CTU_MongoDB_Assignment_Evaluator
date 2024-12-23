@@ -8,7 +8,8 @@ public class ModifierBuilder {
     private QueryParameter parameter;
 
     public ModifierBuilder() {
-        reset();
+        this.modifier = "";
+        this.parameter = new EmptyParameter();
     }
 
     public ModifierBuilder setModifier(String modifier) {
@@ -23,10 +24,5 @@ public class ModifierBuilder {
 
     public QueryModifier build() {
         return new QueryModifier(modifier, parameter);
-    }
-
-    public void reset() {
-        this.modifier = "";
-        this.parameter = new EmptyParameter();
     }
 }
