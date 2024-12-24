@@ -31,7 +31,7 @@ public enum Criteria {
 
     FIND_FIVE_QUERIES("Express at least 5 find queries (with non-trivial selections, i.e. the first parameter cannot be empty)", 5),
     FIND_LOGICAL_OPERATOR("Use at least one logical operator ($and, $or, $not)", 1),
-    FIND_ELEM_MATCH_USED("Use $elemMatch operator on array fields at least once", 1),
+    FIND_ELEM_MATCH("Use $elemMatch operator on array fields at least once", 1),
     FIND_POSITIVE_PROJECTION("Use positive projection (at least once)", 1),
     FIND_NEGATIVE_PROJECTION("Use negative projection (at least once)", 1),
     FIND_SORT_MODIFIER("Use sort modifier", 1),
@@ -48,11 +48,11 @@ public enum Criteria {
     AGGREGATE_PROJECT_ADD_FIELDS_STAGE("Use at least once $project (or $addFields) stage", 1),
     AGGREGATE_SKIP_STAGE("Use at least once $skip stage", 1),
     AGGREGATE_LIMIT_STAGE("Use at least once $limit stage", 1),
+    AGGREGATE_LOOKUP_STAGE("Use lookup (if you have two collections)", 1),
     AGGREGATE_SUM_AVG_AGGREGATOR("Use at least once $sum (or $avg) aggregator", 1),
     AGGREGATE_COUNT_AGGREGATOR("Use at least once $count aggregator", 1),
     AGGREGATE_MIN_MAX_AGGREGATOR("Use at least once $min (or $max) aggregator", 1),
     AGGREGATE_FIRST_LAST_AGGREGATOR("Use at least once $first (or $last)) aggregator", 1),
-    AGGREGATE_LOOKUP_USED("Use lookup (if you have two collections)", 1),
 
     UNKNOWN_UNRECOGNISED("Queries were not recognised", 0);
 

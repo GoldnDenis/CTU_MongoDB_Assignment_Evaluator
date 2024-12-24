@@ -1,10 +1,13 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Aggregators;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.QueryTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Stages;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.visitor.QueryVisitor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
@@ -20,6 +23,16 @@ public class AggregateQuery extends Query {
 //        this.collection = collection;
         this.aggregationPipeline = aggregationPipeline;
         this.options = options;
+    }
+
+    public boolean containsAggregator(Aggregators aggregator) {
+        return aggregationPipeline.stream()
+                .anyMatch(d -> d.containsField(aggregator.getValue()));
+    }
+
+    public boolean containsStage(Stages stage) {
+        return aggregationPipeline.stream()
+                .anyMatch(d -> d.containsField(stage.getValue(), stage.getLevel()));
     }
 
     @Override

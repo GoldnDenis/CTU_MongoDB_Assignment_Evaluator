@@ -9,6 +9,12 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class BsonChecker {
+    private boolean documentContainsField(BsonDocument document, String key) {
+        return document.containsKey(key.split("\\.")[0]);
+    }
+
+    // OLD
+
     public static Set<String> findAllFieldsOfType(BsonDocument document, Class<?> clazz) {
         Set<String> fields = new HashSet<>();
         for (Map.Entry<String, BsonValue> entry : document.entrySet()) {

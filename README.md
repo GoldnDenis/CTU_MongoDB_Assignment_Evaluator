@@ -7,7 +7,7 @@
 - Big table
 ---  
 ## Recommended minor adjustments:
-- Evaluate only queries with existent collections
+- Evaluate only queries with existent collections ✅
 - Find queries could look for a non-existent document (it just returns an empty result)
 - Comment criterion shouldn't display all its queries
 ---  

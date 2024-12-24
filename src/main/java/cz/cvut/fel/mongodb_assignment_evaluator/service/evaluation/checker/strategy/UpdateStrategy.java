@@ -2,12 +2,12 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.stra
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.many.UpdateIncreaseMultiplyCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.UpdateNestedDocumentCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.nested.UpdateNestedDocumentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.one.UpdateOneDocumentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.upsert.UpdateUpsertUsedCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.array.UpdateArrayAddCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.array.UpdateArrayRemoveCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.UpdateArrayReplaceCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.array.UpdateArrayReplaceCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.field.UpdateAddFieldCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.field.UpdateRemoveFieldCriterion;
 

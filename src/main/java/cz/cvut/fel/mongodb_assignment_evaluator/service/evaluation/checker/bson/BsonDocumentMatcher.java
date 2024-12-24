@@ -18,8 +18,8 @@ public class BsonDocumentMatcher {
         return true;
     }
 
-    private boolean evaluateCondition(String key, BsonValue filterValue, BsonDocument document) {
-        switch (key) {
+    private boolean evaluateCondition(String selector, BsonValue filterValue, BsonDocument document) {
+        switch (selector) {
             case "$and":
                 return evaluateAnd(filterValue, document);
             case "$or":
@@ -29,7 +29,7 @@ public class BsonDocumentMatcher {
             case "$nor":
                 return evaluateNor(filterValue, document);
             default:
-                return evaluateFieldCondition(key, filterValue, document);
+                return evaluateFieldCondition(selector, filterValue, document);
         }
     }
 
@@ -39,27 +39,27 @@ public class BsonDocumentMatcher {
             BsonDocument condition = filterValue.asDocument();
             Set<String> operators = condition.keySet();
             for (String operator : operators) {
-                if (!evaluateOperator(operator, condition.get(operator), documentValue)) {
+                if (!evaluateSelector(operator, condition.get(operator), documentValue)) {
                     return false;
                 }
             }
             return true;
         } else {
             // Implicit `$eq` for non-operator values
-            return evaluateOperator("$eq", filterValue, documentValue);
+            return evaluateSelector("$eq", filterValue, documentValue);
         }
     }
 
-    private boolean evaluateOperator(String operator, BsonValue filterValue, BsonValue documentValue) {
+    private boolean evaluateSelector(String selector, BsonValue filterValue, BsonValue documentValue) {
         BsonValueComparator comparator = new BsonValueComparator();
-        return switch (operator) {
+        return switch (selector) {
             case "$eq" -> comparator.compare(filterValue, documentValue) == 0;
             case "$lt" -> comparator.compare(filterValue, documentValue) < 0;
             case "$lte" -> comparator.compare(filterValue, documentValue) <= 0;
             case "$gt" -> comparator.compare(filterValue, documentValue) > 0;
             case "$gte" -> comparator.compare(filterValue, documentValue) >= 0;
             case "$ne" -> comparator.compare(filterValue, documentValue) != 0;
-            default -> throw new UnsupportedOperationException("Unsupported operator: " + operator);
+            default -> throw new UnsupportedOperationException("Unsupported selector: " + selector);
         };
     }
 

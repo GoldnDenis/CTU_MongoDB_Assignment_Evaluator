@@ -13,26 +13,26 @@ import java.util.Set;
 
 @Getter
 public class UpdateQuery extends Query {
-    private final static String UPDATE_ONE = "updateOne";
-    private final static String UPDATE_MANY = "updateMany";
+    public final static String UPDATE_ONE = "updateOne";
+    public final static String UPDATE_MANY = "updateMany";
 
-    private final static Set<String> UPDATE_OPERATOR_SET = Set.of(
+    public final static Set<String> UPDATE_OPERATOR_SET = Set.of(
             "$set", "$rename", "$mul", "$inc",
             "$min", "$max", "$currentDate"
     );
-    private final static Set<String> FORMULA_OPERATOR_SET = Set.of(
+    public final static Set<String> FORMULA_OPERATOR_SET = Set.of(
             "$mul", "$inc"
     );
-    private final static Set<String> ADD_OPERATOR_SET = Set.of(
+    public final static Set<String> ADD_OPERATOR_SET = Set.of(
             "$set", "$mul", "$inc"
     );
-    private final static Set<String> REMOVE_OPERATOR_SET = Set.of(
+    public final static Set<String> REMOVE_OPERATOR_SET = Set.of(
             "$unset"
     );
-    private final static Set<String> ARRAY_UPDATE_OPERATOR_SET = Set.of(
+    public final static Set<String> ARRAY_UPDATE_OPERATOR_SET = Set.of(
             "$push"
     );
-    private final static Set<String> ARRAY_REMOVE_OPERATOR_SET = Set.of(
+    public final static Set<String> ARRAY_REMOVE_OPERATOR_SET = Set.of(
             "$pull", "$pop"
     );
 

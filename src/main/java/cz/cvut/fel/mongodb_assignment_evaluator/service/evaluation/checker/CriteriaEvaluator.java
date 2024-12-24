@@ -8,6 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.*;
 import lombok.extern.java.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +53,13 @@ public class CriteriaEvaluator {
     }
 
     private List<EvaluationResult> collectAllResults() {
-        return children.values().stream()
-                .flatMap(child -> child.evaluate().stream())
-                .toList();
+        List<EvaluationResult> results = new ArrayList<>(
+                children.values().stream()
+                        .flatMap(child -> child.evaluate().stream())
+                        .toList()
+        );
+        results.addAll(generalCriterionGroup.evaluate());
+        return results;
     }
 
 //    private Map<QueryTypes, CriterionNode<? extends Query>> initCriteriaGroup() {
@@ -64,8 +69,8 @@ public class CriteriaEvaluator {
                 QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage),
                 QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage),
                 QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage),
-                QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage),
                 QueryTypes.FIND, new FindGroupCriterion(documentStorage),
+                QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage),
                 QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage)
         );
 //        children.put(QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage));

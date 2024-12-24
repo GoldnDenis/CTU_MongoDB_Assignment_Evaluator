@@ -2,12 +2,11 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.InsertInterlinkCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.InsertTenDocumentsCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.InsertDocumentArraysCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.InsertDocumentEmbeddedObjectsCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.InsertManyUsedCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.InsertOneUsedCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.quantity.InsertTenDocumentsCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.document.InsertDocumentArraysCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.document.InsertDocumentEmbeddedObjectsCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.many.InsertManyUsedCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.insert.one.InsertOneUsedCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.InsertQuery;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class InsertCriteriaGroup extends GroupCriterion<InsertQuery> {
                 new InsertTenDocumentsCriterion(documentStorage),
                 new InsertDocumentEmbeddedObjectsCriterion(documentStorage),
                 new InsertDocumentArraysCriterion(documentStorage),
-                new InsertInterlinkCriterion(documentStorage),
+//                new InsertInterlinkCriterion(documentStorage),
                 new InsertOneUsedCriterion(documentStorage),
                 new InsertManyUsedCriterion(documentStorage)
         );

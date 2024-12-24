@@ -1,11 +1,12 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.strategy;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.*;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.AggregateCountAggregatorCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.AggregateFirstLastAggregatorCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.AggregateMinMaxAggregatorCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.AggregateSumAvgAggregatorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateCountAggregatorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateFirstLastAggregatorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateMinMaxAggregatorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateSumAvgAggregatorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.quantity.AggregateFiveCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.stage.*;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class AggregateStrategy extends CheckerStrategy{
                 new AggregateCountAggregatorCriterion(mockDb),
                 new AggregateMinMaxAggregatorCriterion(mockDb),
                 new AggregateFirstLastAggregatorCriterion(mockDb),
-                new AggregateLookupUsedCriterion(mockDb)
+                new AggregateLookupStageCriterion(mockDb)
         ));
     }
 }
