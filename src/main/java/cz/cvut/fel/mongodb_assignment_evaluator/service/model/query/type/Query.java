@@ -42,8 +42,4 @@ public class Query {
                 comment + '\n' +
                 query;
     }
-
-    public void accept(QueryVisitor visitor) {
-        visitor.visitQuery(this);
-    }
 }

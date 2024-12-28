@@ -12,6 +12,7 @@ public class CommentCriterion extends AssignmentCriterion<Query> {
 
     @Override
     public void concreteCheck(Query query) {
+        criterionEvaluationResult.setCriterionModifier(criterionEvaluationResult.getCriterionModifier() + 1);
         if (!query.getComment().isBlank()) {
             currentScore++;
         }

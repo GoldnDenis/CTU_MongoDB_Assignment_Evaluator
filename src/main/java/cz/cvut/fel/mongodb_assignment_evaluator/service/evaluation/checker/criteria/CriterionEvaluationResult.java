@@ -12,18 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class EvaluationResult {
+public class CriterionEvaluationResult {
     private final Criteria criterion;
     private final Map<Query, Integer> satisfiedQueries;
     private final List<Query> failedQueries;
-
 //    private ResultStates state;
     private int score; // may not be necessary, could be calculated from the map
-
     @Setter
     private int criterionModifier;
 
-    public EvaluationResult(Criteria criterion) {
+    public CriterionEvaluationResult(Criteria criterion) {
         this.criterion = criterion;
         this.satisfiedQueries = new HashMap<>();
         this.failedQueries = new ArrayList<>();
@@ -45,7 +43,11 @@ public class EvaluationResult {
         }
     }
 
+    public int getRequiredCount() {
+        return criterionModifier * criterion.getRequiredCount();
+    }
+
     public ResultStates evaluateState() {
-        return ResultStates.evaluate(score, criterionModifier * criterion.getRequiredCount());
+        return ResultStates.evaluate(score, getRequiredCount());
     }
 }

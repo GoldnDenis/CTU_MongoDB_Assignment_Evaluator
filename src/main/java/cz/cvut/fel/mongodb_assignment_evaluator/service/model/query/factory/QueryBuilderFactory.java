@@ -26,7 +26,7 @@ public class QueryBuilderFactory {
                 return new FindBuilder();
             }
             default -> {
-                return new QueryBuilder();
+                return new UnknownBuilder();
             }
         }
     }

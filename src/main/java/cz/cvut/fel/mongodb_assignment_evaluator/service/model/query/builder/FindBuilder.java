@@ -30,10 +30,18 @@ public class FindBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         switch (parameters.size()) {
-            case 0: filter = parameter;
-            case 1: projection = parameter;
-            case 2: options = parameter;
-            default: throw new IllegalArgumentException();
+            case 0 -> filter = parameter;
+            case 1 -> projection = parameter;
+            case 2 -> options = parameter;
+            default -> throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public void visitEmptyParameter(EmptyParameter parameter) {
+        switch (parameters.size()) {
+            case 0 -> filter = new DocumentParameter();
+            default -> throw new IllegalArgumentException();
         }
     }
 }

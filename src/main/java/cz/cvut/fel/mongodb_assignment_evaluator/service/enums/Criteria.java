@@ -13,7 +13,6 @@ public enum Criteria {
     INSERT_TEN_DOCUMENTS("Insert 10 documents into each collection. These documents must be non-trivial", 10),
     INSERT_DOCUMENT_EMBEDDED_OBJECTS("At least one with embedded object", 1),
     INSERT_DOCUMENT_ARRAYS("At least one with array", 1),
-    INSERT_INTERLINK("Interlink the documents using references", 1),
     INSERT_ONE_USED("Use insertOne", 1),
     INSERT_MANY_USED("Use insertMany", 1),
 
@@ -42,7 +41,7 @@ public enum Criteria {
     FIND_ARRAY_VALUE("The search criteria should contain searching for a value in the array (at least once)", 1),
 
     AGGREGATE_FIVE("Express 5 aggregate operations. Use 2 created collections for entities of different types. If necessary, insert more documents into each one of them", 5),
-    AGGREGATE_MATCH_STAGE("Use at least once $match stage", 1),
+    AGGREGATE_INTERLINK("Interlink the documents using references", 1),    AGGREGATE_MATCH_STAGE("Use at least once $match stage", 1),
     AGGREGATE_GROUP_STAGE("Use at least once $group stage", 1),
     AGGREGATE_SORT_STAGE("Use at least once $sort stage", 1),
     AGGREGATE_PROJECT_ADD_FIELDS_STAGE("Use at least once $project (or $addFields) stage", 1),

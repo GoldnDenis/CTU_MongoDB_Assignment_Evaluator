@@ -27,7 +27,6 @@ public class InsertCriteriaGroup extends GroupCriterion<InsertQuery> {
                 new InsertTenDocumentsCriterion(documentStorage),
                 new InsertDocumentEmbeddedObjectsCriterion(documentStorage),
                 new InsertDocumentArraysCriterion(documentStorage),
-//                new InsertInterlinkCriterion(documentStorage),
                 new InsertOneUsedCriterion(documentStorage),
                 new InsertManyUsedCriterion(documentStorage)
         );

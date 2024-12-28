@@ -20,9 +20,4 @@ public class CreateCollectionQuery extends Query {
         this.collectionName = collectionName;
         this.options = options;
     }
-
-    @Override
-    public void accept(QueryVisitor visitor) {
-        visitor.visitCreateCollection(this);
-    }
 }

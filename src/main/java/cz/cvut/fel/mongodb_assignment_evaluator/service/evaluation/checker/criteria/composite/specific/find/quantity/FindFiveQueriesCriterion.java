@@ -12,7 +12,7 @@ public class FindFiveQueriesCriterion extends AssignmentCriterion<FindQuery> {
 
     @Override
     public void concreteCheck(FindQuery query) {
-        if (query.getFilter().isTrivial()) {
+        if (!query.getFilter().isTrivial()) {
             currentScore++;
         }
     }

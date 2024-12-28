@@ -18,7 +18,7 @@ public class CreateCollectionBuilder extends QueryBuilder {
         return new CreateCollectionQuery(
                 lineNumber, columnNumber,
                 comment, query, type,
-                operation,
+                operation, "",
                 parameters, modifiers,
                 collectionName, options
         );
@@ -27,16 +27,16 @@ public class CreateCollectionBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         switch (parameters.size()) {
-            case 1: options = parameter;
-            default: throw new IllegalArgumentException();
+            case 1 -> options = parameter;
+            default -> throw new IllegalArgumentException();
         }
     }
 
     @Override
     public void visitStringParameter(StringParameter parameter) {
         switch (parameters.size()) {
-            case 0: collectionName = parameter;
-            default: throw new IllegalArgumentException();
+            case 0 -> collectionName = parameter;
+            default -> throw new IllegalArgumentException();
         }
     }
 }

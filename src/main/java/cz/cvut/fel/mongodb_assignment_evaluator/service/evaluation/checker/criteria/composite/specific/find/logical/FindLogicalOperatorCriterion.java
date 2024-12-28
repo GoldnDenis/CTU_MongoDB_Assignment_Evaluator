@@ -3,8 +3,11 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.QuerySelectors;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.bson.BsonDocumentChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.FindQuery;
+
+import java.util.Set;
 
 public class FindLogicalOperatorCriterion extends AssignmentCriterion<FindQuery> {
     public FindLogicalOperatorCriterion(InsertedDocumentStorage documentStorage) {

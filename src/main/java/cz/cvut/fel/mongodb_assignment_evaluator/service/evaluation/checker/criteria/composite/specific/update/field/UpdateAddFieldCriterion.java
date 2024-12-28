@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.field;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.UpdateGroups;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.UpdateQuery;
@@ -15,11 +16,11 @@ public class UpdateAddFieldCriterion extends AssignmentCriterion<UpdateQuery> {
 
     @Override
     protected void concreteCheck(UpdateQuery query) {
-        if (query.containsAddOperator()) {
-            List<BsonDocument> found = documentStorage.findDocumentByFilter(query.getCollection(), query.getFilter().getDocument());
-            if (found.isEmpty()) {
-                currentScore++;
-            }
+        if (!query.containsOneOfUpdates(UpdateGroups.ADD)) {
+            return;
+        }
+        if (documentStorage.findDocument(query.getCollection(), query.getFilter().getDocument()).isEmpty()) {
+            currentScore++;
         }
     }
 }

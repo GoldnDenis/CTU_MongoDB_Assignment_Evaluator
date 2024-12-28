@@ -33,17 +33,18 @@ public class UpdateBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         switch (parameters.size()) {
-            case 0: filter = parameter;
-            case 2: options = parameter;
-            default: throw new IllegalArgumentException();
+            case 0 -> filter = parameter;
+            case 1 -> updateDocuments.add(parameter);
+            case 2 -> options = parameter;
+            default -> throw new IllegalArgumentException();
         }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         switch (parameters.size()) {
-            case 1: updateDocuments.addAll(parameter.getParameterList());
-            default: throw new IllegalArgumentException();
+            case 1 -> updateDocuments.addAll(parameter.getParameterList());
+            default -> throw new IllegalArgumentException();
         }
     }
 }

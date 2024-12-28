@@ -15,20 +15,13 @@ public class InsertQuery extends Query {
     private final static String INSERT_ONE = "insertOne";
     private final static String INSERT_MANY = "insertMany";
 
-//    private final String collection;
     private final List<DocumentParameter> insertedDocuments;
     private final DocumentParameter options;
 
     public InsertQuery(int lineNumber, int columnNumber, String comment, String query, QueryTypes type, String operator, List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection, List<DocumentParameter> insertedDocuments, DocumentParameter options) {
         super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
-//        this.collection = collection;
         this.insertedDocuments = new ArrayList<>(insertedDocuments);
         this.options = options;
-    }
-
-    @Override
-    public void accept(QueryVisitor visitor) {
-        visitor.visitInsertQuery(this);
     }
 
     public List<DocumentParameter> getNonTrivialInsertedDocuments() {

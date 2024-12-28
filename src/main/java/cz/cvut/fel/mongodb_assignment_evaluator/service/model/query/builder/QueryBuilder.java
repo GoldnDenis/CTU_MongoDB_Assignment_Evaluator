@@ -9,7 +9,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryBuilder implements QueryParameterVisitor {
+public abstract class QueryBuilder implements QueryParameterVisitor {
     protected int lineNumber;
     protected int columnNumber;
     protected String comment;
@@ -84,33 +84,31 @@ public class QueryBuilder implements QueryParameterVisitor {
         return this;
     }
 
-    public Query build() {
-        return new Query(lineNumber, columnNumber, comment, query, type, operation, collection, parameters, modifiers);
-    }
+    public abstract Query build();
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        throw
+        throw new IllegalArgumentException("Wasn't expecting a document parameter");
     }
 
     @Override
     public void visitStringParameter(StringParameter parameter) {
-        throw
+        throw new IllegalArgumentException("Wasn't expecting a string parameter");
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        throw
+        throw new IllegalArgumentException("Wasn't expecting a pipeline parameter");
     }
 
     @Override
     public void visitEmptyParameter(EmptyParameter parameter) {
-        throw
+        throw new IllegalArgumentException("Wasn't expecting a empty parameter");
     }
 
     @Override
     public void visitFunctionParameter(FunctionParameter parameter) {
-        throw
+        throw new IllegalArgumentException("Wasn't expecting a function parameter");
     }
 
 //    public void reset() {

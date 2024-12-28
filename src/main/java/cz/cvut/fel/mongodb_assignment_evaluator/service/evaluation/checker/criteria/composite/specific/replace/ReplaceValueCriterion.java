@@ -9,6 +9,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Replace
 import org.bson.BsonDocument;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ReplaceValueCriterion extends AssignmentCriterion<ReplaceOneQuery> {
     public ReplaceValueCriterion(InsertedDocumentStorage documentStorage) {
@@ -17,8 +18,7 @@ public class ReplaceValueCriterion extends AssignmentCriterion<ReplaceOneQuery> 
 
     @Override
     public void concreteCheck(ReplaceOneQuery query) {
-        List<BsonDocument> found = documentStorage.findDocumentByFilter(query.getCollection(), query.getFilter().getDocument());
-        if (found.isEmpty()) {
+        if (documentStorage.findDocument(query.getCollection(), query.getFilter().getDocument()).isEmpty()) {
             return;
         }
         if (!query.getReplacement().isTrivial()) {

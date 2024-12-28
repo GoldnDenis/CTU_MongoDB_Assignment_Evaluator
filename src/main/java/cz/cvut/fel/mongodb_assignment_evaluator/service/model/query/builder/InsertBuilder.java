@@ -30,17 +30,17 @@ public class InsertBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         switch (parameters.size()) {
-            case 0: insertedDocuments.add(parameter);
-            case 1: options = parameter;
-            default: throw new IllegalArgumentException();
+            case 0 -> insertedDocuments.add(parameter);
+            case 1 -> options = parameter;
+            default -> throw new IllegalArgumentException();
         }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         switch (parameters.size()) {
-            case 0: insertedDocuments.addAll(parameter.getParameterList());
-            default: throw new IllegalArgumentException();
+            case 0 -> insertedDocuments.addAll(parameter.getParameterList());
+            default -> throw new IllegalArgumentException();
         }
     }
 }

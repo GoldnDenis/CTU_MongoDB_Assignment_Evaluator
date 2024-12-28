@@ -12,6 +12,7 @@ public class UnknownQueryCriterion extends AssignmentCriterion<Query> {
 
     @Override
     protected void concreteCheck(Query query) {
-        evaluationResult.setCriterionModifier(evaluationResult.getCriterionModifier() + 1);
+        criterionEvaluationResult.setCriterionModifier(criterionEvaluationResult.getCriterionModifier() + 1);
+        currentScore++;
     }
 }

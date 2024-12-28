@@ -31,8 +31,8 @@ public class AggregateBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         switch (parameters.size()) {
-            case 1: options = parameter;
-            default: throw new IllegalArgumentException();
+            case 1 -> options = parameter;
+            default -> throw new IllegalArgumentException();
         }
     }
 
@@ -44,8 +44,8 @@ public class AggregateBuilder extends QueryBuilder {
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         switch (parameters.size()) {
-            case 0: aggregationPipeline.addAll(parameter.getParameterList());
-            default: throw new IllegalArgumentException();
+            case 0 -> aggregationPipeline.addAll(parameter.getParameterList());
+            default -> throw new IllegalArgumentException();
         }
     }
 

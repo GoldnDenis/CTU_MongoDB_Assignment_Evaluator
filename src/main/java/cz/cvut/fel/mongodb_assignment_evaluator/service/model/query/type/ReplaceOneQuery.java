@@ -24,8 +24,8 @@ public class ReplaceOneQuery extends Query {
         this.options = options;
     }
 
-    @Override
-    public void accept(QueryVisitor visitor) {
-        visitor.visitReplaceOneQuery(this);
-    }
+//    @Override
+//    public void accept(QueryVisitor visitor) {
+//        visitor.visitReplaceOneQuery(this);
+//    }
 }

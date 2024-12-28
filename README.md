@@ -1,5 +1,6 @@
 ## Required:
-- Interlink criterion:
+- Date criterion ✅
+- Interlink criterion:✅
 
 
     aggregate $lookup - find local fields and foreign fields (opt find there values).
@@ -7,6 +8,7 @@
 - Big table
 ---  
 ## Recommended minor adjustments:
+- Configuration of a DateValue in a document
 - Evaluate only queries with existent collections ✅
 - Find queries could look for a non-existent document (it just returns an empty result)
 - Comment criterion shouldn't display all its queries

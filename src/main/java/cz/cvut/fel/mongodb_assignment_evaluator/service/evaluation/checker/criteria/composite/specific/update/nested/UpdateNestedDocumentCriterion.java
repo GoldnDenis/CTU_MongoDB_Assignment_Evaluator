@@ -1,12 +1,14 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.nested;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.bson.BsonChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.UpdateGroups;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.bson.BsonDocumentChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.UpdateQuery;
 import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.BsonValue;
 
 import java.util.*;
@@ -21,27 +23,23 @@ public class UpdateNestedDocumentCriterion extends AssignmentCriterion<UpdateQue
 
     @Override
     protected void concreteCheck(UpdateQuery query) {
+        Optional<BsonDocument> optFoundDocument = documentStorage.findDocument(query.getCollection(), query.getFilter().getDocument());
+        if (optFoundDocument.isEmpty()) {
+            return;
+        }
+        BsonDocument foundDocument = optFoundDocument.get();
         for (DocumentParameter updateDocumentParameter : query.getUpdateDocuments()) {
-            List<BsonValue> foundOperatorValues = updateDocumentParameter.getValues(UpdateQuery.ADD_OPERATOR_SET);
-            if (foundOperatorValues.isEmpty()) {
-                continue;
-            }
-            List<BsonDocument> foundDocuments = documentStorage.findDocumentByFilter(query.getCollection(), query.getFilter().getDocument());
-            if (foundDocuments.isEmpty()) {
-                continue;
-            }
-
-            for (BsonValue foundValue : foundOperatorValues) {
-                if (foundValue.isDocument()) {
-                    String key = BsonChecker.findKeyMatchesPattern(
-                            foundValue.asDocument(),
-                            1,
-                            nestedPattern
-                    );
-                    if (foundDocuments.stream().anyMatch(document -> document.containsKey(key))) {
-                        currentScore++;
-                        return;
-                    }
+            List<BsonValue> foundOperatorValues = BsonDocumentChecker.getAllRecursive(updateDocumentParameter.getDocument(), UpdateGroups.ADD.getOperations(), 1);
+            for (BsonValue operatorValue : foundOperatorValues) {
+                if (!operatorValue.isDocument()) {
+                    continue;
+                }
+                Optional<String> foundNestedKey = BsonDocumentChecker.findKeyMatchesPattern(operatorValue.asDocument(), nestedPattern);
+                if (foundNestedKey.isEmpty()) {
+                    continue;
+                }
+                if (BsonDocumentChecker.containsRecursive(foundDocument, new BsonString(foundNestedKey.get()), 1)) {
+                    currentScore++;
                 }
             }
         }

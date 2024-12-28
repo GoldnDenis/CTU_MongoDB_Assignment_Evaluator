@@ -6,6 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateFirstLastAggregatorCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateMinMaxAggregatorCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.aggregator.AggregateSumAvgAggregatorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.interlink.AggregateInterlinkCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.quantity.AggregateFiveCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.aggregate.stage.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.AggregateQuery;
@@ -21,6 +22,7 @@ public class AggregateGroupCriterion extends GroupCriterion<AggregateQuery> {
     protected List<AssignmentCriterion<AggregateQuery>> initCriteria() {
         return List.of(
                 new AggregateFiveCriterion(documentStorage),
+                new AggregateInterlinkCriterion(documentStorage),
                 new AggregateMatchStageCriterion(documentStorage),
                 new AggregateGroupStageCriterion(documentStorage),
                 new AggregateSortStageCriterion(documentStorage),

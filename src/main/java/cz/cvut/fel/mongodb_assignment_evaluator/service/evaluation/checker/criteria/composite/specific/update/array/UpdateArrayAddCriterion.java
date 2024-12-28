@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.update.array;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.UpdateGroups;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.group.UpdateCriteriaGroup;
@@ -14,14 +15,13 @@ public class UpdateArrayAddCriterion extends AssignmentCriterion<UpdateQuery> {
         super(Criteria.UPDATE_ARRAY_ADD, UpdateQuery.class, documentStorage);
     }
 
-    // todo :: potentially incorrect finding logic
     @Override
     protected void concreteCheck(UpdateQuery query) {
-        if (query.containsArrayUpdateOperator()) {
-            List<BsonDocument> found = documentStorage.findDocumentByFilter(query.getCollection(), query.getFilter().getDocument());
-            if (!found.isEmpty()) {
-                currentScore++;
-            }
+        if (!query.containsOneOfUpdates(UpdateGroups.ARRAY_UPDATE)) {
+            return;
+        }
+        if (documentStorage.findDocument(query.getCollection(), query.getFilter().getDocument()).isPresent()) {
+            currentScore++;
         }
     }
 }

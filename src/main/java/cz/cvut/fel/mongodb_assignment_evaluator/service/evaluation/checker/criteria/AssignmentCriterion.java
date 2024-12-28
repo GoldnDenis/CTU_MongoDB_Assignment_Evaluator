@@ -1,6 +1,5 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.CriterionNode;
@@ -24,7 +23,7 @@ public abstract class AssignmentCriterion<Q extends Query> implements CriterionN
 //    protected ResultStates state;
 //    protected int curParamIdx;
 //    protected boolean satisfied;
-    protected EvaluationResult evaluationResult;
+    protected CriterionEvaluationResult criterionEvaluationResult;
 
 //    public AssignmentCriterion(Criteria criterion, InsertedDocumentStorage documentStorage, int minArgCount) {
 //        this.evaluationResult = new EvaluationResult(criterion);
@@ -41,7 +40,7 @@ public abstract class AssignmentCriterion<Q extends Query> implements CriterionN
 //    }
 
     public AssignmentCriterion(Criteria criterion, Class<Q> queryType, InsertedDocumentStorage documentStorage) {
-        this.evaluationResult = new EvaluationResult(criterion);
+        this.criterionEvaluationResult = new CriterionEvaluationResult(criterion);
         this.queryType = queryType;
         this.documentStorage = documentStorage;
         this.currentScore = 0;
@@ -71,7 +70,7 @@ public abstract class AssignmentCriterion<Q extends Query> implements CriterionN
 
 //        checkParameters(query.getParameters());
             concreteCheck(q);
-            evaluationResult.log(query, currentScore);
+            criterionEvaluationResult.log(query, currentScore);
         }
 //        log(query, lastCount != currentScore);
         // OLD
@@ -86,8 +85,8 @@ public abstract class AssignmentCriterion<Q extends Query> implements CriterionN
     protected abstract void concreteCheck(Q query);
 
     @Override
-    public List<EvaluationResult> evaluate() {
-        return List.of(evaluationResult);
+    public List<CriterionEvaluationResult> evaluate() {
+        return List.of(criterionEvaluationResult);
     }
 
 //    protected void checkParameters(List<QueryParameter> parameters) {

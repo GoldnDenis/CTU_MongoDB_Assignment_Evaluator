@@ -2,13 +2,13 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.CriterionNode;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.EvaluationResult;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.group.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.specific.unknown.UnknownQueryCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.result.StudentEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.*;
 import lombok.extern.java.Log;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +19,19 @@ public class CriteriaEvaluator {
 //    private final Map<QueryTypes, CriterionNode<? extends Query>> children;
     private final InsertedDocumentStorage documentStorage;
     private final Map<QueryTypes, CriterionNode> children;
-    private final GeneralCriterionGroup generalCriterionGroup;
+//    private final GeneralCriterionGroup generalCriterionGroup;
 
     public CriteriaEvaluator() {
         documentStorage = new InsertedDocumentStorage();
-        children = new LinkedHashMap<>(initCriteriaGroup());
-        generalCriterionGroup = new GeneralCriterionGroup(documentStorage);
+//        children = new LinkedHashMap<>(initCriteriaGroup());
+//        generalCriterionGroup = new GeneralCriterionGroup(documentStorage);
+        children = new LinkedHashMap<>();
+        initCriteriaGroup();
     }
 
-    public List<EvaluationResult> check(List<Query> queries) {
+    public StudentEvaluationResult check(List<Query> queries) {
         queries.forEach(this::checkQuery);
-        return collectAllResults();
+        return new StudentEvaluationResult(collectAllResults());
     }
 
     private void checkQuery(Query query) {
@@ -44,54 +46,69 @@ public class CriteriaEvaluator {
             return;
         }
         if (type != QueryTypes.UNKNOWN) {
-            generalCriterionGroup.check(query);
-//            ((CriterionNode<Query>) children.get(QueryTypes.GENERAL)).check(query);
+//            generalCriterionGroup.check(query);
+            children.get(QueryTypes.GENERAL).check(query);
         }
 
 //        query.accept(this);
         children.get(type).check(query);
     }
 
-    private List<EvaluationResult> collectAllResults() {
-        List<EvaluationResult> results = new ArrayList<>(
-                children.values().stream()
-                        .flatMap(child -> child.evaluate().stream())
-                        .toList()
-        );
-        results.addAll(generalCriterionGroup.evaluate());
-        return results;
+    private List<CriterionEvaluationResult> collectAllResults() {
+//        List<EvaluationResult> results = new ArrayList<>(
+//                children.values().stream()
+//                        .flatMap(child -> child.evaluate().stream())
+//                        .toList()
+//        );
+//        results.addAll(generalCriterionGroup.evaluate());
+//        return results;
+
+        return children.values().stream()
+                .flatMap(child -> child.evaluate().stream())
+                .toList();
+    }
+
+    private void initCriteriaGroup() {
+        children.put(QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage));
+        children.put(QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage));
+        children.put(QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage));
+        children.put(QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage));
+        children.put(QueryTypes.FIND, new FindGroupCriterion(documentStorage));
+        children.put(QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage));
+        children.put(QueryTypes.GENERAL, new GeneralCriterionGroup(documentStorage));
+        children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage));
     }
 
 //    private Map<QueryTypes, CriterionNode<? extends Query>> initCriteriaGroup() {
-    private Map<QueryTypes, CriterionNode> initCriteriaGroup() {
-        return Map.of(
-                QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage),
-                QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage),
-                QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage),
-                QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage),
-                QueryTypes.FIND, new FindGroupCriterion(documentStorage),
-                QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage),
-                QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage)
-        );
-//        children.put(QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage));
-//        children.put(QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage));
-//        children.put(QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage));
-//        children.put(QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage));
-//        children.put(QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage));
-//        children.put(QueryTypes.FIND, new FindGroupCriterion(documentStorage));
-//        children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage));
-//        children.put(QueryTypes.GENERAL, new GeneralCriterionGroup(documentStorage));
-
-//        for (QueryTypes type : QueryTypes.values()) {
-//            if (children.containsKey(type)) {
-//                log.severe("Criteria for Query type: '" + type + "' is already initialized.");
-//                continue;
-//            }
-//            CompositeCriterionFactory.createGroupCriterion(type, documentStorage).ifPresent(
-//                    group -> children.put(type, group)
-//            );
-//        }
-    }
+//    private Map<QueryTypes, CriterionNode> initCriteriaGroup() {
+//        return Map.of(
+//                QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage),
+//                QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage),
+//                QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage),
+//                QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage),
+//                QueryTypes.FIND, new FindGroupCriterion(documentStorage),
+//                QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage),
+//                QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage)
+//        );
+////        children.put(QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage));
+////        children.put(QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage));
+////        children.put(QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage));
+////        children.put(QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage));
+////        children.put(QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage));
+////        children.put(QueryTypes.FIND, new FindGroupCriterion(documentStorage));
+////        children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage));
+////        children.put(QueryTypes.GENERAL, new GeneralCriterionGroup(documentStorage));
+//
+////        for (QueryTypes type : QueryTypes.values()) {
+////            if (children.containsKey(type)) {
+////                log.severe("Criteria for Query type: '" + type + "' is already initialized.");
+////                continue;
+////            }
+////            CompositeCriterionFactory.createGroupCriterion(type, documentStorage).ifPresent(
+////                    group -> children.put(type, group)
+////            );
+////        }
+//    }
 
 //    @Override
 //    public void visitCreateCollection(CreateCollectionQuery createCollectionQuery) {

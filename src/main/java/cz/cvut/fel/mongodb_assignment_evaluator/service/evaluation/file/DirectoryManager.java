@@ -1,5 +1,6 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation;
+package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.file;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.result.FinalEvaluationResult;
 import lombok.extern.java.Log;
 
 import java.io.File;
@@ -44,12 +45,30 @@ public class DirectoryManager {
         return fileLines;
     }
 
-    public static void writeFeedback(File resultFolder, String studentName, List<String> feedbackList) {
+    public static void writeStudentEvaluationResult(File resultFolder, String studentName, String result) {
         File resultFile = new File(resultFolder, studentName + ".csv");
         try (FileWriter writer = new FileWriter(resultFile)) {
-            writer.write(String.join("\n", feedbackList));
+            writer.write(result);
         } catch (IOException e) {
             log.severe("Error writing feedback for " + studentName);
         }
     }
+
+    public static void generateFinalResultTable(File resultFolder, FinalEvaluationResult finalEvaluationResult) {
+        File finalResultFile = new File(resultFolder, "final_table.csv");
+        try (FileWriter writer = new FileWriter(finalResultFile)) {
+            writer.write(result);
+        } catch (IOException e) {
+            log.severe("Error writing feedback for " + studentName);
+        }
+    }
+
+//    public static void writeStudentEvaluationResult(File resultFolder, String studentName, List<String> feedbackList) {
+//        File resultFile = new File(resultFolder, studentName + ".csv");
+//        try (FileWriter writer = new FileWriter(resultFile)) {
+//            writer.write(String.join("\n", feedbackList));
+//        } catch (IOException e) {
+//            log.severe("Error writing feedback for " + studentName);
+//        }
+//    }
 }

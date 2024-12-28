@@ -6,12 +6,13 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
+//public class FunctionParameter implements QueryParameter {
 public class FunctionParameter implements QueryParameter {
     private String value;
 
     @Override
     public void accept(QueryParameterVisitor visitor) {
-        visitor.visitStringLiteralParameter(this);
+        visitor.visitFunctionParameter(this);
     }
 
     @Override

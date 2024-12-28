@@ -2,13 +2,9 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.EvaluationResult;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.composite.CriterionNode;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.visitor.QueryParameterVisitor;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.*;
-import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.CreateCollectionQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.Query;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +30,7 @@ import java.util.List;
         children.forEach(c -> c.check(query));
     }
 
-    public List<EvaluationResult> evaluate() {
+    public List<CriterionEvaluationResult> evaluate() {
         return children.stream()
                 .flatMap(c -> c.evaluate().stream())
                 .toList();

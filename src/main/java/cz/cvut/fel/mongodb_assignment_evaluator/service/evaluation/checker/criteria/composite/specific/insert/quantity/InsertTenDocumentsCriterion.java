@@ -3,8 +3,11 @@ package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crit
 import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.AssignmentCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.query.type.InsertQuery;
+
+import java.util.List;
 
 public class InsertTenDocumentsCriterion extends AssignmentCriterion<InsertQuery> {
 //    private final InsertCriteriaGroup parent;
@@ -24,6 +27,12 @@ public class InsertTenDocumentsCriterion extends AssignmentCriterion<InsertQuery
                 currentScore++;
             }
         }
+    }
+
+    @Override
+    public List<CriterionEvaluationResult> evaluate() {
+        criterionEvaluationResult.setCriterionModifier(documentStorage.getCollections().size());
+        return List.of(criterionEvaluationResult);
     }
 
 //    @Override

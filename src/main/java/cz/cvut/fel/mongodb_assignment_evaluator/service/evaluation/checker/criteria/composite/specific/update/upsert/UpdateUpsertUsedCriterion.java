@@ -18,12 +18,8 @@ public class UpdateUpsertUsedCriterion extends AssignmentCriterion<UpdateQuery> 
 
     @Override
     public void concreteCheck(UpdateQuery query) {
-        BsonValue upsertValue = query.getOptions().getValue("upsert", 1);
-        if (upsertValue != null) {
-            if ((upsertValue.isBoolean() && upsertValue.asBoolean().getValue()) ||
-                    (upsertValue.isInt32() && upsertValue.asInt32().getValue() == 1)) {
-                currentScore++;
-            }
+        if (query.upsertIsPositive()) {
+            currentScore++;
         }
     }
 }

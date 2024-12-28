@@ -30,10 +30,10 @@ public class ReplaceOneBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         switch (parameters.size()) {
-            case 0: filter = parameter;
-            case 1: replacement = parameter;
-            case 2: options = parameter;
-            default: throw new IllegalArgumentException();
+            case 0 -> filter = parameter;
+            case 1 -> replacement = parameter;
+            case 2 -> options = parameter;
+            default -> throw new IllegalArgumentException();
         }
     }
 }
