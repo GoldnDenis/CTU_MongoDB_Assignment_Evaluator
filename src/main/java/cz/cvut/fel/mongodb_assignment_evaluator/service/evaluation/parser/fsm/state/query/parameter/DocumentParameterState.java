@@ -4,6 +4,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.Pa
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.iterator.LineIterator;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.parser.preprocessor.StringPreprocessor;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.model.parameter.PipelineParameter;
 import org.bson.BsonDocument;
@@ -34,7 +35,6 @@ public class DocumentParameterState extends ParserState {
         resetDocument();
     }
 
-    //todo hashmap first level
     @Override
     public void process(LineIterator iterator) {
         if (Character.isWhitespace(iterator.peek())
@@ -77,7 +77,7 @@ public class DocumentParameterState extends ParserState {
         String old = value;
 
         try {
-            value = preprocessEJson(value);
+            value = StringPreprocessor.preprocessEJson(value);
             DocumentParameter document = new DocumentParameter(BsonDocument.parse(value), depth);
             resetDocument();
             if (!isPipeline) {
@@ -104,44 +104,5 @@ public class DocumentParameterState extends ParserState {
         valueAccumulator.setLength(0);
         parenthesisCount = 0;
         depth = 0;
-    }
-
-    private static final Pattern DATE_PATTERN = Pattern.compile("new Date\\((.*?(\\((.*?)\\).*?)?)\\)");
-//    private static final Pattern OBJECT_ID_PATTERN = Pattern.compile("ObjectId\\([a-zA-Z0-9]*\\)");
-
-    private String preprocessEJson(String eJson) {
-        eJson = eJson.replaceAll("\\/\\*.*?\\*\\/", "");
-        eJson = eJson.replaceAll("ObjectId\\([a-zA-Z0-9]*\\)", generateHex24());
-        Matcher matcher = DATE_PATTERN.matcher(eJson);
-        while (matcher.find()) {
-            String dateString = matcher.group(1);
-            String replacement = "";
-            if (dateString == null || dateString.isBlank()) {
-                replacement = "\"" + new Date() + "\"";
-            } else if ((dateString.startsWith("\"") && dateString.endsWith("\"")) ||
-                    (dateString.startsWith("'") && dateString.endsWith("'"))) {
-                replacement = matcher.group(1);
-            } else {
-                String newDate = "\"" + new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss z").format(new Date())  + "\"";
-                replacement = matcher.group().replace(matcher.group(1), newDate);
-            }
-            eJson = eJson.replace(matcher.group(), replacement);
-        }
-        return eJson;
-    }
-
-    public static String generateHex24() {
-        final String HEX_CHARS = "0123456789abcdef";
-        SecureRandom random = new SecureRandom();
-        StringBuilder hexString = new StringBuilder(24);
-
-        hexString.append("\"");
-        for (int i = 0; i < 24; i++) {
-            int index = random.nextInt(HEX_CHARS.length());
-            hexString.append(HEX_CHARS.charAt(index));
-        }
-        hexString.append("\"");
-
-        return hexString.toString();
     }
 }

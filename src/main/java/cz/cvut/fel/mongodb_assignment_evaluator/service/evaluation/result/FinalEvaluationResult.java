@@ -4,7 +4,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.crite
 import lombok.Getter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 public class FinalEvaluationResult {

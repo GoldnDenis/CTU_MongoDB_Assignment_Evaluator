@@ -1,6 +1,9 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.file;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.service.enums.Criteria;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.checker.criteria.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.result.FinalEvaluationResult;
+import cz.cvut.fel.mongodb_assignment_evaluator.service.evaluation.result.StudentEvaluationResult;
 import lombok.extern.java.Log;
 
 import java.io.File;
@@ -9,6 +12,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Log
 public class DirectoryManager {
@@ -57,9 +63,27 @@ public class DirectoryManager {
     public static void generateFinalResultTable(File resultFolder, FinalEvaluationResult finalEvaluationResult) {
         File finalResultFile = new File(resultFolder, "final_table.csv");
         try (FileWriter writer = new FileWriter(finalResultFile)) {
-            writer.write(result);
+            boolean init = false;
+            for (Map.Entry<String, StudentEvaluationResult> entry : finalEvaluationResult.getStudentResultMap().entrySet()) {
+                String student = entry.getKey();
+                Map<CriterionEvaluationResult, Integer> criterionCounts = entry.getValue().getCriteriaMapWithScores();
+                Set<CriterionEvaluationResult> criteriaResults = criterionCounts.keySet();
+                if (!init) {
+                    init = true;
+                    writer.append("StudentName");
+                    for (CriterionEvaluationResult result : criteriaResults) {
+                        writer.append(",").append(result.getCriterion().name());
+                    }
+                    writer.append("\n");
+                }
+                writer.append(student);
+                for (CriterionEvaluationResult result : criteriaResults) {
+                    writer.append(",").append(String.valueOf(criterionCounts.get(result)));
+                }
+                writer.append("\n");
+            }
         } catch (IOException e) {
-            log.severe("Error writing feedback for " + studentName);
+            log.severe("Error writing cross-tabulation table");
         }
     }
 

@@ -51,8 +51,8 @@ public class AssignmentEvaluator {
         finalEvaluationResult.addStudentResult(studentName, studentResult);
         log.info("Writing results of " + studentName + "...");
         String resultToWrite = studentResult.toString();
-//        DirectoryManager.writeStudentEvaluationResult(resultFolder, studentName, resultToWrite);
-        System.out.println(resultToWrite);
-        System.out.println();
+        DirectoryManager.writeStudentEvaluationResult(resultFolder, studentName, resultToWrite);
+//        System.out.println(resultToWrite);
+//        System.out.println();
     }
 }

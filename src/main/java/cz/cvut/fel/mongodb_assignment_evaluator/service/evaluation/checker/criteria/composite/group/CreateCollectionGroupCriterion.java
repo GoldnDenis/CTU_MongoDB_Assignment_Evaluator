@@ -9,15 +9,8 @@ import java.util.List;
 
 //@Getter
 public class CreateCollectionGroupCriterion extends GroupCriterion<CreateCollectionQuery> {
-//    private List<CriterionNode<CreateCollectionQuery>> children;
-//    private String collectionName;
-//    private BsonDocument options;
-
     public CreateCollectionGroupCriterion(InsertedDocumentStorage documentStorage) {
         super(documentStorage);
-//        children = List.of(
-//                new CreateOneCollectionCriterion(documentStorage)
-//        );
     }
 
     @Override
@@ -26,24 +19,4 @@ public class CreateCollectionGroupCriterion extends GroupCriterion<CreateCollect
                 new CreateOneCollectionCriterion(documentStorage)
         );
     }
-
-//    @Override
-//    public void visitStringParameter(StringParameter parameter) {
-//        if (currentParameterIndex == 0) {
-//            collectionName = parameter.getValue();
-//        }
-//    }
-//
-//    @Override
-//    public void visitDocumentParameter(DocumentParameter parameter) {
-//        if (currentParameterIndex == 1) {
-//            options = parameter.getDocument();
-//        }
-//    }
-//
-//    @Override
-//    protected void resetQueryData() {
-//        collectionName = "";
-//        options.clear();
-//    }
 }

@@ -15,16 +15,11 @@ import java.util.Map;
 
 @Log
 public class CriteriaEvaluator {
-//public class RootCompositeCriterion implements QueryVisitor {
-//    private final Map<QueryTypes, CriterionNode<? extends Query>> children;
     private final InsertedDocumentStorage documentStorage;
     private final Map<QueryTypes, CriterionNode> children;
-//    private final GeneralCriterionGroup generalCriterionGroup;
 
     public CriteriaEvaluator() {
         documentStorage = new InsertedDocumentStorage();
-//        children = new LinkedHashMap<>(initCriteriaGroup());
-//        generalCriterionGroup = new GeneralCriterionGroup(documentStorage);
         children = new LinkedHashMap<>();
         initCriteriaGroup();
     }
@@ -46,23 +41,12 @@ public class CriteriaEvaluator {
             return;
         }
         if (type != QueryTypes.UNKNOWN) {
-//            generalCriterionGroup.check(query);
             children.get(QueryTypes.GENERAL).check(query);
         }
-
-//        query.accept(this);
         children.get(type).check(query);
     }
 
     private List<CriterionEvaluationResult> collectAllResults() {
-//        List<EvaluationResult> results = new ArrayList<>(
-//                children.values().stream()
-//                        .flatMap(child -> child.evaluate().stream())
-//                        .toList()
-//        );
-//        results.addAll(generalCriterionGroup.evaluate());
-//        return results;
-
         return children.values().stream()
                 .flatMap(child -> child.evaluate().stream())
                 .toList();
@@ -78,129 +62,4 @@ public class CriteriaEvaluator {
         children.put(QueryTypes.GENERAL, new GeneralCriterionGroup(documentStorage));
         children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage));
     }
-
-//    private Map<QueryTypes, CriterionNode<? extends Query>> initCriteriaGroup() {
-//    private Map<QueryTypes, CriterionNode> initCriteriaGroup() {
-//        return Map.of(
-//                QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage),
-//                QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage),
-//                QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage),
-//                QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage),
-//                QueryTypes.FIND, new FindGroupCriterion(documentStorage),
-//                QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage),
-//                QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage)
-//        );
-////        children.put(QueryTypes.CREATE_COLLECTION, new CreateCollectionGroupCriterion(documentStorage));
-////        children.put(QueryTypes.INSERT, new InsertCriteriaGroup(documentStorage));
-////        children.put(QueryTypes.REPLACE_ONE, new ReplaceOneCriteriaGroup(documentStorage));
-////        children.put(QueryTypes.UPDATE, new UpdateCriteriaGroup(documentStorage));
-////        children.put(QueryTypes.AGGREGATE, new AggregateGroupCriterion(documentStorage));
-////        children.put(QueryTypes.FIND, new FindGroupCriterion(documentStorage));
-////        children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterion(documentStorage));
-////        children.put(QueryTypes.GENERAL, new GeneralCriterionGroup(documentStorage));
-//
-////        for (QueryTypes type : QueryTypes.values()) {
-////            if (children.containsKey(type)) {
-////                log.severe("Criteria for Query type: '" + type + "' is already initialized.");
-////                continue;
-////            }
-////            CompositeCriterionFactory.createGroupCriterion(type, documentStorage).ifPresent(
-////                    group -> children.put(type, group)
-////            );
-////        }
-//    }
-
-//    @Override
-//    public void visitCreateCollection(CreateCollectionQuery createCollectionQuery) {
-//        ((CriterionNode<CreateCollectionQuery>) children.get(QueryTypes.CREATE_COLLECTION)).check(createCollectionQuery);
-//    }
-//
-//    @Override
-//    public void visitInsertQuery(InsertQuery insertQuery) {
-//        ((CriterionNode<InsertQuery>) children.get(QueryTypes.INSERT)).check(insertQuery);
-//    }
-//
-//    @Override
-//    public void visitReplaceOneQuery(ReplaceOneQuery replaceOneQuery) {
-//        ((CriterionNode<ReplaceOneQuery>) children.get(QueryTypes.REPLACE_ONE)).check(replaceOneQuery);
-//    }
-//
-//    @Override
-//    public void visitUpdateQuery(UpdateQuery updateQuery) {
-//        ((CriterionNode<UpdateQuery>) children.get(QueryTypes.UPDATE)).check(updateQuery);
-//    }
-//
-//    @Override
-//    public void visitAggregateQuery(AggregateQuery aggregateQuery) {
-//        ((CriterionNode<AggregateQuery>) children.get(QueryTypes.AGGREGATE)).check(aggregateQuery);
-//    }
-//
-//    @Override
-//    public void visitFindQuery(FindQuery findQuery) {
-//        ((CriterionNode<FindQuery>) children.get(QueryTypes.FIND)).check(findQuery);
-//    }
-//
-//    @Override
-//    public void visitUnknownQuery(UnknownQuery unknownQuery) {
-//        ((CriterionNode<UnknownQuery>) children.get(QueryTypes.UNKNOWN)).check(unknownQuery);
-//    }
-
-//    private void initCriteriaGroups(InsertedDocumentStorage documentStorage) {
-//        children.put(QueryTypes.CREATE_COLLECTION, new CompositeCriterion(
-//                new CreateOneCollectionCriterion(documentStorage)
-//        ));
-//        children.put(QueryTypes.INSERT, new CompositeCriterion(
-//                new InsertTenDocumentsCriterion(documentStorage),
-//                new InsertDocumentEmbeddedObjectsCriterion(documentStorage),
-//                new InsertDocumentArraysCriterion(documentStorage),
-//                new InsertInterlinkCriterion(documentStorage),
-//                new InsertOneUsedCriterion(documentStorage),
-//                new InsertManyUsedCriterion(documentStorage)
-//        ));
-//        children.put(QueryTypes.REPLACE_ONE, new CompositeCriterion(
-//                new ReplaceValueCriterion(documentStorage)
-//        ));
-//        children.put(QueryTypes.UPDATE, new CompositeCriterion(
-//                new UpdateOneDocumentCriterion(documentStorage),
-//                new UpdateIncreaseMultiplyCriterion(documentStorage),
-//                new UpdateAddFieldCriterion(documentStorage),
-//                new UpdateRemoveFieldCriterion(documentStorage),
-//                new UpdateNestedDocumentCriterion(documentStorage),
-//                new UpdateArrayReplaceCriterion(documentStorage),
-//                new UpdateArrayAddCriterion(documentStorage),
-//                new UpdateArrayRemoveCriterion(documentStorage),
-//                new UpdateUpsertUsedCriterion(documentStorage)
-//        ));
-//        children.put(QueryTypes.FIND, new CompositeCriterion(
-//                new FindFiveQueriesCriterion(documentStorage),
-//                new FindLogicalOperatorCriterion(documentStorage),
-//                new FindElemMatchUsedCriterion(documentStorage),
-//                new FindPositiveProjectionCriterion(documentStorage),
-//                new FindNegativeProjectionCriterion(documentStorage),
-//                new FindSortModifierCriterion(documentStorage),
-//                new FindValueCriterion(documentStorage),
-//                new FindConditionCriterion(documentStorage),
-//                new FindDateComparisonCriterion(documentStorage),
-//                new FindArrayCriterion(documentStorage),
-//                new FindArrayValueCriterion(documentStorage)
-//        ));
-//        children.put(QueryTypes.AGGREGATE, new CompositeCriterion(
-//                new AggregateFiveCriterion(documentStorage),
-//                new AggregateMatchStageCriterion(documentStorage),
-//                new AggregateGroupStageCriterion(documentStorage),
-//                new AggregateSortStageCriterion(documentStorage),
-//                new AggregateProjectAddFieldsStageCriterion(documentStorage),
-//                new AggregateSkipStageCriterion(documentStorage),
-//                new AggregateLimitStageCriterion(documentStorage),
-//                new AggregateSumAvgAggregatorCriterion(documentStorage),
-//                new AggregateCountAggregatorCriterion(documentStorage),
-//                new AggregateMinMaxAggregatorCriterion(documentStorage),
-//                new AggregateFirstLastAggregatorCriterion(documentStorage),
-//                new AggregateLookupUsedCriterion(documentStorage)
-//        ));
-//        children.put(QueryTypes.GENERAL, new CompositeCriterion(
-//                new CommentCriterion()
-//        ));
-//        children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterion());
-//    }
 }

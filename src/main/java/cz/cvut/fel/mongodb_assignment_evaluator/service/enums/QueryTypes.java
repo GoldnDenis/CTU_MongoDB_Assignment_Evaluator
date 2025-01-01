@@ -31,7 +31,7 @@ public enum QueryTypes {
             case "replaceOne" -> {
                 return QueryTypes.REPLACE_ONE;
             }
-            case "find" -> {
+            case "find", "findOne" -> {
                 return QueryTypes.FIND;
             }
             case "aggregate" -> {

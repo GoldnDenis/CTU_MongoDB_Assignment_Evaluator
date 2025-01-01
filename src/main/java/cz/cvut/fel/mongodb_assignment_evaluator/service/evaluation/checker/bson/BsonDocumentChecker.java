@@ -54,7 +54,7 @@ public class BsonDocumentChecker {
                             return Optional.of(matcher.group().split("\\.")[0]);
                         }
                     } else if (nestedValue.isDocument()) {
-                        Optional<String> found = findKeyMatchesPattern(value.asDocument(), pattern, depth - 1);
+                        Optional<String> found = findKeyMatchesPattern(nestedValue.asDocument(), pattern, depth - 1);
                         if (found.isPresent()) {
                             return found;
                         }
