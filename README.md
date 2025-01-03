@@ -6,6 +6,7 @@
     aggregate $lookup - find local fields and foreign fields (opt find there values).
 
 - Big table ✅
+- Log errors
 ---  
 ## Recommended minor adjustments:
 - Configuration of a DateValue in a document ✅
