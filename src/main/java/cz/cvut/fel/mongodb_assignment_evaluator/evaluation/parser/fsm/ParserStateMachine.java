@@ -1,5 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.StudentEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.LogTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm.state.ScriptState;
@@ -16,6 +18,7 @@ import lombok.extern.java.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 @Log
 public class ParserStateMachine {
@@ -103,8 +106,8 @@ public class ParserStateMachine {
                 queryBuilder.addParameter(parameter);
             }
         } catch (IllegalArgumentException e) {
-            // todo :: error logging FRQ05
             log.severe(e.getMessage());
+            StudentEvaluator.studentLogCollector.addLog(Level.WARNING, LogTypes.PARSER, e.getMessage());
             state = new ScriptState(this);
             resetAccumulators();
         }

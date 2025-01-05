@@ -1,10 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.presentation;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker.CriteriaEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.StudentEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.FileFormats;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.result.FinalEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.result.StudentEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.persistence.DirectoryManager;
 import lombok.extern.java.Log;
 
 import java.io.File;
@@ -19,40 +19,38 @@ public class AssignmentEvaluator {
 
     public static void evaluate(String rootDirectoryPath) {
         try {
-            DirectoryManager directoryManager = new DirectoryManager(rootDirectoryPath);
+//            DirectoryManager directoryManager = new DirectoryManager(rootDirectoryPath);
+            File directory = DirectoryManager.getValidatedRootDirectory(rootDirectoryPath);
+            File resultFolder = DirectoryManager.createFolder(directory, "results");
 
             log.info("Starting evaluation...");
-            for (File folder : directoryManager.getDirectorySubfolders()) {
-                Matcher matcher = STUDENT_FOLDER_PATTERN.matcher(folder.getName());
+            for (File subFolder : DirectoryManager.getDirectorySubfolders(directory)) {
+                Matcher matcher = STUDENT_FOLDER_PATTERN.matcher(subFolder.getName());
                 if (matcher.matches()) {
                     String studentName = matcher.group(2);
-                    evaluateStudentWork(directoryManager, folder, studentName);
+                    File studentFolder = DirectoryManager.createFolder(resultFolder, studentName);
+
+                    log.info("Reading the script of " + studentName + "...");
+                    List<String> fileLines = DirectoryManager.readJavaScriptFiles(subFolder);
+
+                    StudentEvaluator studentEvaluator = new StudentEvaluator(studentName);
+                    StudentEvaluationResult studentResult = studentEvaluator.evaluateScriptLines(fileLines);
+                    finalEvaluationResult.addStudentResult(studentName, studentResult);
+
+                    String studentResultReport = OutputFormatter.formatToString(studentResult);
+                    DirectoryManager.writeFile(studentFolder, studentName, FileFormats.CSV, studentResultReport);
+                    String studentLogOutput = OutputFormatter.formatToString(StudentEvaluator.getStudentLogCollector());
+                    DirectoryManager.writeFile(studentFolder, studentName, FileFormats.LOG, studentLogOutput);
                 }
             }
+
             log.info("Generating an overall result table...");
-            String finalResultTable = ResultFormatter.formatToString(finalEvaluationResult);
-            directoryManager.writeCSV("final_table", finalResultTable);
+            String finalResultTable = OutputFormatter.formatToString(finalEvaluationResult);
+            DirectoryManager.writeFile(resultFolder, "final_table", FileFormats.CSV, finalResultTable);
 
             log.info("Evaluation has finished.");
         } catch (Exception e) {
             log.severe(e.getMessage());
         }
-    }
-
-    private static void evaluateStudentWork(DirectoryManager directoryManager, File folder, String studentName) {
-        log.info("Reading the script of " + studentName + "...");
-        List<String> fileLines = DirectoryManager.readJavaScriptFiles(folder);
-
-        log.info("Parsing the script of " + studentName + "...");
-        List<Query> queryList = ScriptParser.parse(fileLines);
-
-        log.info("Evaluating queries...");
-        StudentEvaluationResult studentResult = new CriteriaEvaluator().check(queryList);
-
-        log.info("Writing results of " + studentName + "...");
-        String studentResultReport = ResultFormatter.formatToString(studentResult);
-        directoryManager.writeCSV(studentName, studentResultReport);
-
-        finalEvaluationResult.addStudentResult(studentName, studentResult);
     }
 }

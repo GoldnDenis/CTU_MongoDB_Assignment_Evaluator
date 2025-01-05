@@ -1,9 +1,9 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.presentation;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker.criteria.CriterionEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.ResultStates;
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.log.LogCollector;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.result.FinalEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.result.StudentEvaluationResult;
@@ -11,8 +11,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.result.StudentE
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class ResultFormatter {
+public class OutputFormatter {
     public static String formatToString(StudentEvaluationResult studentEvaluationResult) {
         StringBuilder resultBuilder = new StringBuilder();
         int i = 0;
@@ -85,5 +86,9 @@ public class ResultFormatter {
             resultBuilder.append("\n");
         }
         return resultBuilder.toString();
+    }
+
+    public static String formatToString(LogCollector logCollector) {
+        return String.join("\n", logCollector.getLogList());
     }
 }

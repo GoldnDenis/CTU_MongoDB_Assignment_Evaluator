@@ -1,17 +1,22 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.StudentEvaluator;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker.criteria.composite.group.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.LogTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker.criteria.composite.CriterionNode;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker.criteria.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.checker.criteria.composite.specific.unknown.UnknownQueryCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.result.StudentEvaluationResult;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.NotDefinedCriteriaQueryType;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.QueryCollectionNotExists;
 import lombok.extern.java.Log;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 @Log
 public class CriteriaEvaluator {
@@ -25,20 +30,25 @@ public class CriteriaEvaluator {
     }
 
     public StudentEvaluationResult check(List<Query> queries) {
-        queries.forEach(this::checkQuery);
+        for (Query query: queries) {
+            try {
+                checkQuery(query);
+            } catch (Exception e) {
+                log.warning(e.getMessage());
+                StudentEvaluator.studentLogCollector.addLog(Level.WARNING, LogTypes.CHECKER, e.getMessage());
+            }
+        }
         return new StudentEvaluationResult(collectAllResults());
     }
 
     private void checkQuery(Query query) {
         QueryTypes type = query.getType();
         if (!children.containsKey(type)) {
-            log.severe("Criteria for Query type " + type + " are not defined.");
-            return;
+            throw new NotDefinedCriteriaQueryType(type);
         }
         if (type.isInCollectionScope()
             && !documentStorage.containsCollection(query.getCollection())) {
-            log.severe(query.getQuery() + " is working on a non-existent collection='" + query.getCollection() + "'.");
-            return;
+            throw new QueryCollectionNotExists(query);
         }
         if (type != QueryTypes.UNKNOWN) {
             children.get(QueryTypes.GENERAL).check(query);

@@ -1,5 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm.state.query.parameter;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.StudentEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.enums.LogTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.fsm.state.ScriptState;
@@ -7,13 +9,16 @@ import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.iterator.LineI
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.parser.preprocessor.StringPreprocessor;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.parameter.PipelineParameter;
+import lombok.extern.java.Log;
 import org.bson.BsonDocument;
 import org.bson.json.JsonParseException;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+@Log
 public class DocumentParameterState extends ParserState {
     private int depth;
     private int parenthesisCount;
@@ -80,7 +85,8 @@ public class DocumentParameterState extends ParserState {
                 pipeline.add(document);
             }
         } catch (JsonParseException e) {
-            System.err.println(e.getMessage());
+            log.warning(e.getMessage());
+            StudentEvaluator.studentLogCollector.addLog(Level.WARNING, LogTypes.CHECKER, e.getMessage());
             resetDocument();
             context.setState(new ScriptState(context));
         }

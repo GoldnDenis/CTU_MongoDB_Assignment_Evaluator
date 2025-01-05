@@ -1,4 +1,4 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.persistence;
+package cz.cvut.fel.mongodb_assignment_evaluator.persistence.repository;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.entity.CriterionGroup;
