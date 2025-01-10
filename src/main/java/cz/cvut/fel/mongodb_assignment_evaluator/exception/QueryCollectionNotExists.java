@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.exception;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.evaluation.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
 
 public class QueryCollectionNotExists extends RuntimeException {
     public QueryCollectionNotExists(Query query) {
