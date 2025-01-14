@@ -6,7 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
 
 public class QueryBuilderFactory {
-    public static QueryBuilder createQueryBuilder(QueryTypes type) {
+    public static QueryBuilder create(QueryTypes type) {
         switch (type) {
             case CREATE_COLLECTION -> {
                 return new CreateCollectionBuilder();

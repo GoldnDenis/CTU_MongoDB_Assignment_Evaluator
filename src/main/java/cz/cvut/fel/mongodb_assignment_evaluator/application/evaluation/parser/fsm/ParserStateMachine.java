@@ -86,7 +86,7 @@ public class ParserStateMachine {
         lastQueryOperation = operator;
 
         QueryTypes type = QueryTypes.fromString(operator);
-        queryBuilder = QueryBuilderFactory.createQueryBuilder(type);
+        queryBuilder = QueryBuilderFactory.create(type);
 
         queryBuilder.setPosition(currentLine, currentRow)
                 .setCollection(currentCollection)
