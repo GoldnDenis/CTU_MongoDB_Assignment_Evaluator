@@ -21,7 +21,6 @@ public class StringLiteralState extends ParserState {
 
             if (iterator.startsWith(".")) {
                 if (value.equals("system")) {
-                    // todo syntax error
                     processSyntaxError("'system.' prefix isn't allowed. (Reserved for internal use.)", iterator);
                     return;
                 }
@@ -36,10 +35,6 @@ public class StringLiteralState extends ParserState {
         } else if (iterator.hasNext()) {
             char c = iterator.next();
             if (!Character.isLetterOrDigit(c) && c != '_') {
-                //todo syntax error
-//                if (c == '$') {
-//                    processSyntaxError("'$' шs not allowed in collection, operation names", iterator);
-//                }
                 processSyntaxError("'" + c + "' шs not allowed in collection, operation names", iterator);
                 return;
             }

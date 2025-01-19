@@ -34,7 +34,6 @@ public class StringParameterState extends ParserState {
             value = value.substring(1, value.length() - 1);
             valueAccumulator.append(value);
         } else if (iterator.hasNext()) {
-            // todo syntax error
             processSyntaxError("invalid character '" + iterator.peek() + "'", iterator);
         }
     }

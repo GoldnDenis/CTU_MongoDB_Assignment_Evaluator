@@ -3,12 +3,12 @@ package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.CheckerLeaf;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.group.CriteriaGroupChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.AggregateCountAggregatorCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.AggregateFirstLastAggregatorCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.AggregateMinMaxAggregatorCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.AggregateSumAvgAggregatorCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.interlink.AggregateInterlinkCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.quantity.AggregateFiveCriterionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.CountAggregatorChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.FirstLastAggregatorChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.MinMaxAggregatorChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.aggregator.SumAvgAggregatorChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.interlink.InterlinkChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.quantity.AggregateFiveChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.aggregate.stage.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.AggregateQuery;
 
@@ -22,19 +22,19 @@ public class AggregateGroupChecker extends CriteriaGroupChecker<AggregateQuery> 
     @Override
     protected List<CheckerLeaf<AggregateQuery>> initCriteria() {
         return List.of(
-                new AggregateFiveCriterionChecker(documentStorage),
-                new AggregateInterlinkCriterionChecker(documentStorage),
-                new AggregateMatchStageCriterionChecker(documentStorage),
-                new AggregateGroupStageCriterionChecker(documentStorage),
-                new AggregateSortStageCriterionChecker(documentStorage),
-                new AggregateProjectAddFieldsStageCriterionChecker(documentStorage),
-                new AggregateSkipStageCriterionChecker(documentStorage),
-                new AggregateLimitStageCriterionChecker(documentStorage),
-                new AggregateSumAvgAggregatorCriterionChecker(documentStorage),
-                new AggregateCountAggregatorCriterionChecker(documentStorage),
-                new AggregateMinMaxAggregatorCriterionChecker(documentStorage),
-                new AggregateFirstLastAggregatorCriterionChecker(documentStorage),
-                new AggregateLookupStageCriterionChecker(documentStorage)
+                new AggregateFiveChecker(documentStorage),
+                new InterlinkChecker(documentStorage),
+                new MatchStageChecker(documentStorage),
+                new GroupStageChecker(documentStorage),
+                new SortStageChecker(documentStorage),
+                new ProjectAddFieldsStageChecker(documentStorage),
+                new SkipStageChecker(documentStorage),
+                new LimitStageChecker(documentStorage),
+                new SumAvgAggregatorChecker(documentStorage),
+                new CountAggregatorChecker(documentStorage),
+                new MinMaxAggregatorChecker(documentStorage),
+                new FirstLastAggregatorChecker(documentStorage),
+                new LookupStageChecker(documentStorage)
         );
     }
 }

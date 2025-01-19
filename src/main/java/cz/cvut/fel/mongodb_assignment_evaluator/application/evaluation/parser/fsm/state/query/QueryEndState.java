@@ -22,7 +22,6 @@ public class QueryEndState extends ParserState {
         } else if (iterator.startsWith(".")) {
             context.setState(new QueryState(context, true));
         } else if (iterator.hasNext()) {
-            // todo syntax error
             processSyntaxError("After ')' was expecting '.' or ';'", iterator);
         }
     }

@@ -3,17 +3,17 @@ package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.CheckerLeaf;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.group.CriteriaGroupChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.modifier.FindSortModifierCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.projection.FindNegativeProjectionCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.projection.FindPositiveProjectionCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.elemmatch.FindElemMatchCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.logical.FindLogicalOperatorCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.quantity.FindFiveQueriesCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.selector.FindArrayValueCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.selector.FindConditionCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.selector.FindValueCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.type.FindArrayCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.type.FindDateComparisonCriterionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.modifier.FindSortModifierChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.projection.NegativeProjectionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.projection.PositiveProjectionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.elemmatch.ElemMatchChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.logical.LogicalOperatorChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.quantity.FindFiveChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.selector.FindArrayValueChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.selector.FindConditionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.selector.FindValueChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.type.FindArrayChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.find.type.FindDateComparisonChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.FindQuery;
 
 import java.util.List;
@@ -26,18 +26,18 @@ public class FindGroupChecker extends CriteriaGroupChecker<FindQuery> {
     @Override
     protected List<CheckerLeaf<FindQuery>> initCriteria() {
         return List.of(
-                new FindFiveQueriesCriterionChecker(documentStorage),
-                new FindLogicalOperatorCriterionChecker(documentStorage),
-                new FindElemMatchCriterionChecker(documentStorage),
-                new FindPositiveProjectionCriterionChecker(documentStorage),
-                new FindNegativeProjectionCriterionChecker(documentStorage),
-                new FindSortModifierCriterionChecker(documentStorage),
+                new FindFiveChecker(documentStorage),
+                new LogicalOperatorChecker(documentStorage),
+                new ElemMatchChecker(documentStorage),
+                new PositiveProjectionChecker(documentStorage),
+                new NegativeProjectionChecker(documentStorage),
+                new FindSortModifierChecker(documentStorage),
 
-                new FindValueCriterionChecker(documentStorage),
-                new FindConditionCriterionChecker(documentStorage),
-                new FindDateComparisonCriterionChecker(documentStorage),
-                new FindArrayCriterionChecker(documentStorage),
-                new FindArrayValueCriterionChecker(documentStorage)
+                new FindValueChecker(documentStorage),
+                new FindConditionChecker(documentStorage),
+                new FindDateComparisonChecker(documentStorage),
+                new FindArrayChecker(documentStorage),
+                new FindArrayValueChecker(documentStorage)
         );
     }
 }

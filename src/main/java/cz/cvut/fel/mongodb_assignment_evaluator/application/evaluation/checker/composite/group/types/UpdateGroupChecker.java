@@ -3,15 +3,15 @@ package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.InsertedDocumentStorage;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.CheckerLeaf;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.group.CriteriaGroupChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.field.UpdateAddFieldCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.field.UpdateRemoveFieldCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.array.UpdateArrayAddCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.array.UpdateArrayRemoveCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.array.UpdateArrayReplaceCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.nested.UpdateNestedDocumentCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.many.UpdateIncreaseMultiplyCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.one.UpdateOneDocumentCriterionChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.upsert.UpdateUpsertUsedCriterionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.field.UpdateAddFieldChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.field.UpdateRemoveFieldChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.array.UpdateArrayAddChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.array.UpdateArrayRemoveChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.array.UpdateArrayReplaceChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.nested.UpdateNestedDocumentChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.many.IncreaseMultiplyChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.one.UpdateOneChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.update.upsert.UpdateUpsertChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.UpdateQuery;
 
 import java.util.List;
@@ -25,15 +25,15 @@ public class UpdateGroupChecker extends CriteriaGroupChecker<UpdateQuery> {
     @Override
     protected List<CheckerLeaf<UpdateQuery>> initCriteria() {
         return List.of(
-                new UpdateOneDocumentCriterionChecker(documentStorage),
-                new UpdateIncreaseMultiplyCriterionChecker(documentStorage),
-                new UpdateAddFieldCriterionChecker(documentStorage),
-                new UpdateRemoveFieldCriterionChecker(documentStorage),
-                new UpdateNestedDocumentCriterionChecker(documentStorage),
-                new UpdateArrayReplaceCriterionChecker(documentStorage),
-                new UpdateArrayAddCriterionChecker(documentStorage),
-                new UpdateArrayRemoveCriterionChecker(documentStorage),
-                new UpdateUpsertUsedCriterionChecker(documentStorage)
+                new UpdateOneChecker(documentStorage),
+                new IncreaseMultiplyChecker(documentStorage),
+                new UpdateAddFieldChecker(documentStorage),
+                new UpdateRemoveFieldChecker(documentStorage),
+                new UpdateNestedDocumentChecker(documentStorage),
+                new UpdateArrayReplaceChecker(documentStorage),
+                new UpdateArrayAddChecker(documentStorage),
+                new UpdateArrayRemoveChecker(documentStorage),
+                new UpdateUpsertChecker(documentStorage)
         );
     }
 }

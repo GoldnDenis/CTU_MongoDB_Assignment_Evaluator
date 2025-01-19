@@ -18,7 +18,6 @@ public class QueryState extends ParserState {
         iterator.skipWhitespaces();
 
         if (iterator.startsWith(".system.")) {
-            // todo syntax error
             processSyntaxError("'.system.' isn't allowed in collection or operation", iterator);
         }  else if (iterator.startsWith("//")) {
             iterator.nextAll();
@@ -34,7 +33,6 @@ public class QueryState extends ParserState {
             context.appendToQuery(iterator.next());
             context.setState(new QueryEndState(context));
         } else if (iterator.hasNext()) {
-            // todo syntax error
             processSyntaxError("Invalid query syntax. Expected '.', '(' or ')'", iterator);
         }
     }

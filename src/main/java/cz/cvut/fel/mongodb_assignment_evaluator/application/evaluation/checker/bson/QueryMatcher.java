@@ -26,7 +26,6 @@ public class QueryMatcher {
                 }
             }
         } catch (UnsupportedOperationException e) {
-            // todo
             log.severe(e.getMessage());
             return true;
         } catch (IllegalArgumentException e) {
@@ -61,8 +60,6 @@ public class QueryMatcher {
             default -> throw new UnsupportedOperationException("Unsupported selector: " + selector);
         };
     }
-
-    // todo :: extend on array selectors
 
     private static boolean evaluateElemMatch(BsonValue filterValue, BsonValue documentValue) {
         if (!filterValue.isDocument()) {

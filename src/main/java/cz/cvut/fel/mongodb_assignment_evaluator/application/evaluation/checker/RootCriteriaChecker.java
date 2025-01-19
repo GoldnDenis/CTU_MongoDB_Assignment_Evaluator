@@ -7,7 +7,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.CheckerNode;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.unknown.UnknownQueryCriterionChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.leaf.types.unknown.UnknownQueryChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.StudentEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.exception.NotDefinedCriteriaQueryType;
 import cz.cvut.fel.mongodb_assignment_evaluator.exception.QueryCollectionNotExists;
@@ -69,6 +69,6 @@ public class RootCriteriaChecker {
         children.put(QueryTypes.FIND, new FindGroupChecker(documentStorage));
         children.put(QueryTypes.AGGREGATE, new AggregateGroupChecker(documentStorage));
         children.put(QueryTypes.GENERAL, new GeneralChecker(documentStorage));
-        children.put(QueryTypes.UNKNOWN, new UnknownQueryCriterionChecker(documentStorage));
+        children.put(QueryTypes.UNKNOWN, new UnknownQueryChecker(documentStorage));
     }
 }

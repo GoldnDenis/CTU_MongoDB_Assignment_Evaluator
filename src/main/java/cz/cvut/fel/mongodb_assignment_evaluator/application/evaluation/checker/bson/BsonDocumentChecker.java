@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BsonDocumentChecker {
-    //todo :: check behavior
     public static boolean containsImplicitEquality(BsonDocument document) {
         for (Map.Entry<String, BsonValue> entry : document.entrySet()) {
             String key = entry.getKey();
@@ -38,7 +37,6 @@ public class BsonDocumentChecker {
             BsonValue value = entry.getValue();
             Matcher matcher = pattern.matcher(key);
             if (matcher.find()) {
-                //todo could be improved
                 return Optional.of(matcher.group().split("\\.")[0]);
             }
             if (value.isDocument()) {
