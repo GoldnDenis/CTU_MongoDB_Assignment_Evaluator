@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StudentEvaluator;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.group.types.*;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.ErrorTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.enums.StudentErrorTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.composite.CheckerNode;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.CriterionEvaluationResult;
@@ -34,7 +34,7 @@ public class RootCriteriaChecker {
             try {
                 checkQuery(query);
             } catch (Exception e) {
-                StudentEvaluator.getErrorCollector().addLog(Level.WARNING, ErrorTypes.CHECKER, e.getMessage());
+                StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.CHECKER, e.getMessage());
             }
         }
         return new StudentEvaluationResult(collectAllResults());

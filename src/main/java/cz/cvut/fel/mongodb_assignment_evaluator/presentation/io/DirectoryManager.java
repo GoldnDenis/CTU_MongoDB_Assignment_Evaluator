@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.presentation.io;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.log.ErrorCollector;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.error.StudentErrorCollector;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.FinalEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.StudentEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.FileFormats;
@@ -33,11 +33,11 @@ public class DirectoryManager {
         resultFolder = DirectoryUtils.createFolder(rootDirectory, "results");
     }
 
-    public void createStudentEvaluationOutput(String studentName, StudentEvaluationResult evaluationResult, ErrorCollector errorCollector) throws IOException {
+    public void createStudentEvaluationOutput(String studentName, StudentEvaluationResult evaluationResult, StudentErrorCollector studentErrorCollector) throws IOException {
         File studentResultFolder = DirectoryUtils.createFolder(resultFolder, studentName);
         String resultContents = outputFormatter.formatToString(evaluationResult);
         FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.CSV, resultContents);
-        String errorLogContents = outputFormatter.formatToString(errorCollector);
+        String errorLogContents = outputFormatter.formatToString(studentErrorCollector);
         FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.LOG, errorLogContents);
     }
 

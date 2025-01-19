@@ -1,0 +1,32 @@
+Implement the project block with MongoDB
+Explicitly create one or two collections (for example, one collection for orders or two collections: orders and order_items)
+I.e., create it using createCollection method
+Insert 10 documents into each collection
+These documents must be realistic, non-trivial, and with both embedded objects and arrays
+Interlink the documents using references
+Use both insertOne and insertMany
+Express update operations:
+Replace the value of the document
+Update an individual field of one document
+Update an individual field in documents by criterion; use a formula or increase/multiply the value
+Add and remove a field in the document(s)
+Modify a nested document
+Replace, add, and delete a single array element
+Use the upsert mode at least once
+Express at least 5 find queries (with non-trivial selections, i.e. the first parameter cannot be empty)
+Use at least one logical operator ($and, $or, $not)
+Use $elemMatch operator on array fields at least once
+Use both positive and negative projections (each at least once)
+Use sort modifier
+The search criteria should contain (each item at least once):
+matching the value of one or more fields
+condition on the value of one or more fields (e.g., containing greater than or less than, etc.)
+comparing dates or parts of dates (for example, all orders for a given date or all orders for a given year)
+matching the whole array
+searching for a value in the array
+Describe the real-world meaning of all your queries in comments
+Express 5 aggregate operations. Use 2 created collections for entities of different types. If necessary, insert more documents into each one of them
+Use at least once each of $match, $group, $sort, $project (or $addFields), $skip and $limit stages
+Use at least once each of $sum (or $avg), $count, $min (or $max), $first (or $last) aggregators
+Use lookup (if you have two collections)
+Describe the real-world meaning of all your queries in comments

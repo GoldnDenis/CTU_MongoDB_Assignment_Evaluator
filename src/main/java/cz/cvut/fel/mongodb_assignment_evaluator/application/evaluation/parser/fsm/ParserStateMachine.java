@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StudentEvaluator;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.ErrorTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.enums.StudentErrorTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ScriptState;
@@ -102,7 +102,7 @@ public class ParserStateMachine {
                 queryBuilder.addParameter(parameter);
             }
         } catch (IllegalArgumentException e) {
-            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, ErrorTypes.PARSER, e.getMessage());
+            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
             state = new ScriptState(this);
             resetAccumulators();
         }

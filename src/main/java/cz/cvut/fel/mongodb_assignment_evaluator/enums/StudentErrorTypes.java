@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ErrorTypes {
+public enum StudentErrorTypes {
     READER("While Reading."),
     PARSER("While Parsing."),
     CHECKER("While Checking criteria."),;

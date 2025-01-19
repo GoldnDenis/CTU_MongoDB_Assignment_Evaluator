@@ -3,7 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.presentation.format;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.ResultStates;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.log.ErrorCollector;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.error.StudentErrorCollector;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.FinalEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.StudentEvaluationResult;
@@ -86,7 +86,7 @@ public class OutputFormatter {
         return resultBuilder.toString();
     }
 
-    public String formatToString(ErrorCollector errorCollector) {
-        return String.join("\n", errorCollector.getLogList());
+    public String formatToString(StudentErrorCollector studentErrorCollector) {
+        return String.join("\n", studentErrorCollector.getLogList());
     }
 }

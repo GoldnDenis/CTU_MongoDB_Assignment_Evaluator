@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StudentEvaluator;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.ErrorTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.enums.StudentErrorTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ScriptState;
@@ -83,7 +83,7 @@ public class DocumentParameterState extends ParserState {
                 pipeline.add(document.getDocument());
             }
         } catch (JsonParseException e) {
-            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, ErrorTypes.CHECKER, e.getMessage());
+            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
             resetDocument();
             context.setState(new ScriptState(context));
         }

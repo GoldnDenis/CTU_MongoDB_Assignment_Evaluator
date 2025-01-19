@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.checker.RootCriteriaChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.log.ErrorCollector;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.error.StudentErrorCollector;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.StudentEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.ScriptParser;
@@ -14,7 +14,7 @@ import java.util.List;
 public class StudentEvaluator {
     private final String studentName;
     @Getter
-    private final static ErrorCollector errorCollector = new ErrorCollector();
+    private final static StudentErrorCollector errorCollector = new StudentErrorCollector();
 
     public StudentEvaluator(String studentName) {
         this.studentName = studentName;
