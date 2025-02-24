@@ -1,109 +1,167 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StudentEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.StudentErrorTypes;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.modifier.ModifierBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.factory.QueryBuilderFactory;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.QueryBuilder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class ParserStateMachine {
-    @Setter
-    private ParserState state;
+public class ParserStateMachine implements StateMachine<ParserState> {
+    private ParserState currentState;
     @Getter
     private final List<Query> queryList;
-
     @Getter
-    private QueryBuilder queryBuilder;
+    private final StringBuilder currentWord;
     @Getter
-    private ModifierBuilder modifierBuilder;
-    @Setter
-    private String lastQueryOperation;
-    @Setter
-    private String currentCollection;
-    private int currentLine;
-    private int currentRow;
+    private final QueryTokenAssembler queryTokenAssembler;
 
-    private final StringBuilder queryAccumulator;
-    private final StringBuilder lastCommentBuilder;
+    //    @Getter
+//    private QueryBuilder queryBuilder;
+//    @Getter
+//    private ModifierBuilder modifierBuilder;
+//    @Setter
+//    private String lastQueryOperation;
+//    @Setter
+//    private String currentCollection;
+//    private int currentLine;
+//    private int currentRow;
+//
+//    private final StringBuilder queryAccumulator;
+//    private final StringBuilder lastCommentBuilder;
 
     public ParserStateMachine() {
-        this.state = new ScriptState(this);
-        this.queryList = new ArrayList<>();
+        currentState = new ScriptState(this, ParserStates.INITIAL);
+        queryList = new ArrayList<>();
 
-        this.queryBuilder = new QueryBuilder();
-        this.modifierBuilder = new ModifierBuilder();
+        currentWord = new StringBuilder();
+        queryTokenAssembler = new QueryTokenAssembler();
 
-        this.lastQueryOperation = "";
-
-        this.currentCollection = "";
-        this.currentLine = -1;
-        this.currentRow = -1;
-
-        this.lastCommentBuilder = new StringBuilder();
-        this.queryAccumulator = new StringBuilder();
+//        this.queryBuilder = new QueryBuilder();
+//        this.modifierBuilder = new ModifierBuilder();
+//
+//        lastQueryOperation = "";
+//
+//        this.currentCollection = "";
+//        currentLine = 0;
+//        currentRow = 0;
+//
+//        this.lastCommentBuilder = new StringBuilder();
+//        this.queryAccumulator = new StringBuilder();
     }
 
-    public void parseLine(LineIterator line) {
-        while (line.hasNext()) {
-            state.process(line);
+    public void parseLine(LineIterator lineIterator) {
+        while (lineIterator.hasNext()) {
+//            context.appendToQuery(value);
+            currentState.process(lineIterator);
         }
+
     }
 
-    public void appendToComment(String comment) {
-        if (!lastQueryOperation.isEmpty()) {
-            lastCommentBuilder.setLength(0);
-        }
-        if (!lastCommentBuilder.isEmpty()) {
-            lastCommentBuilder.append("\n");
-        }
-        lastCommentBuilder.append(comment);
+//    public void parseLine(String line) {
+//        currentLine++;
+//        for (Character c: line.toCharArray()) {
+//            currentRow++;
+//            currentState.process(c);
+//        }
+//    }
+
+    @Override
+    public void transition(ParserState state) {
+        currentState = state;
     }
 
-    public void appendToQuery(String string) {
-        queryAccumulator.append(string);
+//    @Override
+//    public void transition(ParserStates state) {
+//        ParserStates current = currentState.getEnumeration();
+//        switch (state) {
+//            case INITIAL, SCRIPT -> {
+//                currentState = new ScriptState(this, current);
+//            }
+//            case SINGLE_LINE_COMMENT -> {
+//                currentState = new SingleLineCommentState(this, current);
+//            }
+//            case MULTI_LINE_COMMENT -> {
+//                currentState = new MultiLineCommentState(this, current);
+//            }
+//            case QUERY_BODY -> {
+//                currentState = new QueryBodyState(this, current);
+//            }
+//            case QUERY_END -> {
+//                currentState = new QueryEndState(this, current);
+//            }
+//            case STRING -> {
+//                currentState = new StringState(this, current);
+//            }
+//            case QUERY_PARAMETER -> {
+//                currentState = new QueryParameterState(this, current);
+//            }
+//            case FUNCTION -> {
+//                currentState = new FunctionParameterState(this, current);
+//            }
+//            case DOCUMENT -> {
+//                currentState = new DocumentParameterState(this, current);
+//            }
+//        }
+//    }
+
+    @Override
+    public void acceptWord() {
+        currentWord.setLength(0);
     }
 
-    public void appendToQuery(Character character) {
-        queryAccumulator.append(character);
-    }
+//    public void appendToComment(String comment) {
+//        if (!lastQueryOperation.isEmpty()) {
+//            lastCommentBuilder.setLength(0);
+//        }
+//        if (!lastCommentBuilder.isEmpty()) {
+//            lastCommentBuilder.append("\n");
+//        }
+//        lastCommentBuilder.append(comment);
+//    }
+//
+//    public void appendToQuery(String string) {
+//        queryAccumulator.append(string);
+//    }
+//
+//    public void appendToQuery(Character character) {
+//        queryAccumulator.append(character);
+//    }
 
-    public void setQueryOperator(String operator) {
-        if (!lastQueryOperation.isBlank() && !lastQueryOperation.equals(operator)) {
-            lastCommentBuilder.setLength(0);
-        }
-        lastQueryOperation = operator;
-
-        QueryTypes type = QueryTypes.fromString(operator);
-        queryBuilder = QueryBuilderFactory.create(type);
-
-        queryBuilder.setPosition(currentLine, currentRow)
-                .setCollection(currentCollection)
-                .setOperator(operator)
-                .setType(type);
-    }
+//    public void setQueryOperator(String operator) {
+//        if (!lastQueryOperation.isBlank() && !lastQueryOperation.equals(operator)) {
+//            lastCommentBuilder.setLength(0);
+//        }
+//        lastQueryOperation = operator;
+//
+//        QueryTypes type = QueryTypes.fromString(operator);
+//        queryBuilder = QueryBuilderFactory.create(type);
+//
+//        queryBuilder.setPosition(currentLine, currentRow)
+//                .setCollection(currentCollection)
+//                .setOperator(operator)
+//                .setType(type);
+//    }
 
     public void addParameter(QueryParameter parameter, Boolean isModifier) {
         try {
-            if (isModifier) {
-                modifierBuilder.setParameter(parameter);
-            } else {
-                queryBuilder.addParameter(parameter);
-            }
+//            if (isModifier) {
+//                modifierBuilder.setParameter(parameter);
+//            } else {
+//                queryBuilder.addParameter(parameter);
+//            }
         } catch (IllegalArgumentException e) {
             StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
-            state = new ScriptState(this);
+            currentState = new ScriptState(this);
             resetAccumulators();
         }
     }
@@ -117,22 +175,23 @@ public class ParserStateMachine {
         currentLine = -1;
     }
 
-    public void setCurrentPosition(LineIterator iterator) {
-        currentLine = iterator.getRowIndex() + 1;
-        currentRow = iterator.getCurrentColumnIndex() + 1;
-    }
+//    public void setCurrentPosition(LineIterator iterator) {
+//        currentLine = iterator.getRowIndex() + 1;
+//        currentRow = iterator.getCurrentIndex() + 1;
+//    }
 
-    public void saveModifier() {
-        queryBuilder.addModifier(modifierBuilder.build());
-        this.modifierBuilder = new ModifierBuilder();
-    }
+//    public void saveModifier() {
+//        queryBuilder.addModifier(modifierBuilder.build());
+//        this.modifierBuilder = new ModifierBuilder();
+//    }
 
     public void saveQuery() {
-        queryList.add(
-                queryBuilder.setComment(lastCommentBuilder.toString())
-                        .setQuery(queryAccumulator.toString())
-                        .build()
-        );
-        resetAccumulators();
+        queryList.add(queryTokenAssembler.createQuery());
+//        queryList.add(
+//                queryBuilder.setComment(lastCommentBuilder.toString())
+//                        .setQuery(queryAccumulator.toString())
+//                        .build()
+//        );
+//        resetAccumulators();
     }
 }

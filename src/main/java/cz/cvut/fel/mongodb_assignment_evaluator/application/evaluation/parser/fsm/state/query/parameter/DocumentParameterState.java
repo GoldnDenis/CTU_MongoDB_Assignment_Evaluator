@@ -20,12 +20,12 @@ import java.util.logging.Level;
 public class DocumentParameterState extends ParserState {
     private int depth;
     private int parenthesisCount;
-    private Boolean isModifier;
-    private Boolean isPipeline;
-    private List<BsonDocument> pipeline;
+    private final Boolean isModifier;
+    private final Boolean isPipeline;
+    private final List<BsonDocument> pipeline;
 
-    public DocumentParameterState(ParserStateMachine context, Boolean isModifier, Boolean isPipeline) {
-        super(context);
+    public DocumentParameterState(ParserStateMachine context, ParserState previousState, Boolean isModifier, Boolean isPipeline) {
+        super(context, previousState);
         this.isModifier = isModifier;
         this.isPipeline = isPipeline;
         this.pipeline = new ArrayList<>();
@@ -78,14 +78,14 @@ public class DocumentParameterState extends ParserState {
             resetDocument();
             if (!isPipeline) {
                 context.addParameter(document, isModifier);
-                context.setState(new ParameterState(context, isModifier));
+                context.setCurrentState(new QueryParameterState(context, isModifier));
             } else {
                 pipeline.add(document.getDocument());
             }
         } catch (JsonParseException e) {
             StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
             resetDocument();
-            context.setState(new ScriptState(context));
+            context.setCurrentState(new ScriptState(context));
         }
     }
 
@@ -93,7 +93,7 @@ public class DocumentParameterState extends ParserState {
         context.appendToQuery(']');
 
         context.addParameter(new PipelineParameter(pipeline), isModifier);
-        context.setState(new ParameterState(context, isModifier));
+        context.setCurrentState(new QueryParameterState(context, isModifier));
     }
 
     private void resetDocument() {

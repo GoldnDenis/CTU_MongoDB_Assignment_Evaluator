@@ -38,7 +38,7 @@ public class FunctionParameterState extends ParserState {
 
             context.addParameter(new FunctionParameter(value), isModifier);
 
-            context.setState(new ParameterState(context, isModifier));
+            context.setCurrentState(new QueryParameterState(context, isModifier));
         }
     }
 }

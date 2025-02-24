@@ -63,14 +63,31 @@ public class DirectoryManager {
 
     public List<String> readAllJSFilesAllLines(File folder) throws IOException {
         File[] jsFiles = DirectoryUtils.getFilesOfFormat(folder, FileFormats.JS);
-        List<String> lines = new ArrayList<>();
+        List<String> fileLines = new ArrayList<>();
+        List<String> createCollectionFileLines = new ArrayList<>();
+        List<String> insertFileLines = new ArrayList<>();
+
+
         for (File file : jsFiles) {
             try {
-                lines.addAll(FileReaderUtil.readAllLines(file));
+                String content = FileReaderUtil.readContent(file);
+                List<String> lines = Arrays.stream(content.split("\n")).toList();
+                if (content.contains(".createCollection")) {
+                    createCollectionFileLines.addAll(lines);
+                } else if (content.contains(".insert")) {
+                    insertFileLines.addAll(lines);
+                } else {
+                    fileLines.addAll(lines);
+                }
             } catch (IOException e) {
                 throw new IOException(e.getMessage());
             }
         }
-        return lines;
+
+        List<String> prioritySortedLines = new ArrayList<>();
+        prioritySortedLines.addAll(createCollectionFileLines);
+        prioritySortedLines.addAll(insertFileLines);
+        prioritySortedLines.addAll(fileLines);
+        return prioritySortedLines;
     }
 }

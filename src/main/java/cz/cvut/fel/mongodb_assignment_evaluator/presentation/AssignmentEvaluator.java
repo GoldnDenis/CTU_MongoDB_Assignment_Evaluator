@@ -25,9 +25,9 @@ public class AssignmentEvaluator {
     public void evaluate(String rootDirectoryPath) {
         try {
             directoryManager.openRootDirectory(rootDirectoryPath);
-            directoryManager.createResultFolder();
+//            directoryManager.createResultFolder();
             directoryManager.getStudentFolders().forEach(this::processStudentFolder);
-            directoryManager.createFinalTable(finalEvaluationResult);
+//            directoryManager.createFinalTable(finalEvaluationResult);
         } catch (Exception e) {
             logger.error(e.getMessage());
             log.severe("Evaluation failed: " + e.getMessage());
@@ -42,7 +42,7 @@ public class AssignmentEvaluator {
             StudentEvaluationResult evaluationResult = new StudentEvaluator(studentName).evaluateScript(scriptLines);
             finalEvaluationResult.addStudentResult(studentName, evaluationResult);
 
-            directoryManager.createStudentEvaluationOutput(studentName, evaluationResult, StudentEvaluator.getErrorCollector());
+//            directoryManager.createStudentEvaluationOutput(studentName, evaluationResult, StudentEvaluator.getErrorCollector());
             log.info("Successfully generated output for " + studentName);
         } catch (IOException e) {
             logger.error(e.getMessage());

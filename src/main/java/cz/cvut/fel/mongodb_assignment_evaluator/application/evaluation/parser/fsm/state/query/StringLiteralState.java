@@ -31,7 +31,7 @@ public class StringLiteralState extends ParserState {
                 context.setQueryOperator(value);
             }
             context.appendToQuery(value);
-            context.setState(new QueryState(context, isModifier));
+            context.setCurrentState(new QueryBodyState(context, isModifier));
         } else if (iterator.hasNext()) {
             char c = iterator.next();
             if (!Character.isLetterOrDigit(c) && c != '_') {

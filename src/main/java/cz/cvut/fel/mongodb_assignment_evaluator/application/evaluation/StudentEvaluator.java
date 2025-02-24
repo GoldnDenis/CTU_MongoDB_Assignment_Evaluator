@@ -8,6 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.Sc
 import lombok.Getter;
 import lombok.extern.java.Log;
 
+import java.util.Collections;
 import java.util.List;
 
 @Log
@@ -23,7 +24,8 @@ public class StudentEvaluator {
     public StudentEvaluationResult evaluateScript(List<String> scriptLines) {
         List<Query> queryList = new ScriptParser().parse(scriptLines);
         log.info("Successfully parsed the script of " + studentName);
-        StudentEvaluationResult studentResult = new RootCriteriaChecker().checkQueries(queryList);
+//        StudentEvaluationResult studentResult = new RootCriteriaChecker().checkQueries(queryList);
+        StudentEvaluationResult studentResult = new StudentEvaluationResult(Collections.emptyList());
         log.info("Script of " + studentName + " has been evaluated");
         return studentResult;
     }
