@@ -1,16 +1,18 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StringUtility;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.FunctionParameter;
 
 public class FunctionParameterState extends ParserState {
-    private Boolean isModifier;
+    private final Boolean isModifier;
     private int parenthesisCount;
 
-    public FunctionParameterState(ParserStateMachine context, Boolean isModifier) {
-        super(context);
+    public FunctionParameterState(ParserStateMachine context, ParserState previousState, Boolean isModifier) {
+        super(context, previousState);
         this.isModifier = isModifier;
         this.parenthesisCount = 1;
     }
@@ -24,22 +26,25 @@ public class FunctionParameterState extends ParserState {
         }
 
         if (parenthesisCount > 0) {
-            if (iterator.startsWithStringConstruct()) {
-                String value = iterator.nextStringConstruct();
-                valueAccumulator.append(value);
-            } else if (Character.isWhitespace(iterator.peek()) && valueAccumulator.toString().endsWith(" ")) {
-                iterator.skipWhitespaces();
+            if (iterator.startsWithStringQuote()) {
+                context.transition(new StringState(context, this, iterator.next()));
+            } else if (startsWithDoubleWhitespace(iterator)) {
+                iterator.next();
             } else {
-                valueAccumulator.append(iterator.next());
+                context.accumulate(iterator.next());
             }
-        } else if (!valueAccumulator.isEmpty()) {
-            String value = valueAccumulator.toString();
-            context.appendToQuery(value);
-
-            context.addParameter(new FunctionParameter(value), isModifier);
-
-            context.setCurrentState(new QueryParameterState(context, isModifier));
+        } else if (!context.getAccumulatedWord().isBlank()) {
+            assembler.addParameter(new FunctionParameter(context.getAccumulatedWord()), isModifier);
+            context.transition(new QueryParameterState(context, this, isModifier));
         }
+    }
+
+    private boolean startsWithDoubleWhitespace(LineIterator iterator) {
+        if (!iterator.startsWithWhitespace()) {
+            return false;
+        }
+        char lastChar = StringUtility.getLastChar(context.getAccumulatedWord());
+        return Character.isWhitespace(lastChar);
     }
 }
 

@@ -9,11 +9,11 @@ import org.bson.BsonDocument;
 @Getter
 public class DocumentParameter implements QueryParameter {
     private BsonDocument document;
-    private int depth;
+//    private int depth;
 
     public DocumentParameter() {
         document = new BsonDocument();
-        depth = 0;
+//        depth = 0;
     }
 
     @Override

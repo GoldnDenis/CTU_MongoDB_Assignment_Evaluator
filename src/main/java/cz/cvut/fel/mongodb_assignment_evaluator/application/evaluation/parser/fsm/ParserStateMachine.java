@@ -1,15 +1,11 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StudentEvaluator;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.StudentErrorTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.modifier.ModifierBuilder;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.QueryBuilder;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -20,10 +16,9 @@ public class ParserStateMachine implements StateMachine<ParserState> {
     private ParserState currentState;
     @Getter
     private final List<Query> queryList;
+    private final StringBuilder wordAccumulator;
     @Getter
-    private final StringBuilder currentWord;
-    @Getter
-    private final QueryTokenAssembler queryTokenAssembler;
+    private final QueryTokenAssembler assembler;
 
     //    @Getter
 //    private QueryBuilder queryBuilder;
@@ -33,18 +28,18 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 //    private String lastQueryOperation;
 //    @Setter
 //    private String currentCollection;
-//    private int currentLine;
+    private int currentLine;
 //    private int currentRow;
 //
 //    private final StringBuilder queryAccumulator;
 //    private final StringBuilder lastCommentBuilder;
 
     public ParserStateMachine() {
-        currentState = new ScriptState(this, ParserStates.INITIAL);
+        currentState = new ScriptState(this);
         queryList = new ArrayList<>();
 
-        currentWord = new StringBuilder();
-        queryTokenAssembler = new QueryTokenAssembler();
+        wordAccumulator = new StringBuilder();
+        assembler = new QueryTokenAssembler();
 
 //        this.queryBuilder = new QueryBuilder();
 //        this.modifierBuilder = new ModifierBuilder();
@@ -59,12 +54,34 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 //        this.queryAccumulator = new StringBuilder();
     }
 
+    public String getAccumulatedWord() {
+        return wordAccumulator.toString();
+    }
+
+    public void accumulate(String subWord) {
+        wordAccumulator.append(subWord);
+    }
+
+    public void accumulate(Character character) {
+        wordAccumulator.append(character);
+    }
+
+    public void initAssembler(int currentColumn) {
+        assembler.resetAccumulators();
+        assembler.setCurrentPosition(currentLine, currentColumn);
+    }
+
     public void parseLine(LineIterator lineIterator) {
         while (lineIterator.hasNext()) {
 //            context.appendToQuery(value);
-            currentState.process(lineIterator);
+            currentLine++;
+            try {
+                currentState.process(lineIterator);
+            } catch (Exception e) {
+                StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
+                currentState = new ScriptState(this);
+            }
         }
-
     }
 
 //    public void parseLine(String line) {
@@ -78,6 +95,22 @@ public class ParserStateMachine implements StateMachine<ParserState> {
     @Override
     public void transition(ParserState state) {
         currentState = state;
+    }
+
+    public void processAccumulatedWord(Boolean appendFlag) {
+        if (appendFlag) {
+            assembler.appendRawQuery(wordAccumulator.toString());
+        }
+        wordAccumulator.setLength(0);
+    }
+
+    protected void processWhitespace(LineIterator iterator) {
+        char nextChar = iterator.next();
+        int lastIndex = valueAccumulator.length() - 1;
+        char lastChar = valueAccumulator.charAt(lastIndex);
+        if (!Character.isWhitespace(lastChar)) {
+            valueAccumulator.append(nextChar);
+        }
     }
 
 //    @Override
@@ -114,27 +147,22 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 //        }
 //    }
 
-    @Override
-    public void acceptWord() {
-        currentWord.setLength(0);
-    }
-
 //    public void appendToComment(String comment) {
 //        if (!lastQueryOperation.isEmpty()) {
 //            lastCommentBuilder.setLength(0);
 //        }
 //        if (!lastCommentBuilder.isEmpty()) {
-//            lastCommentBuilder.append("\n");
+//            lastCommentBuilder.accumulate("\n");
 //        }
-//        lastCommentBuilder.append(comment);
+//        lastCommentBuilder.accumulate(comment);
 //    }
 //
 //    public void appendToQuery(String string) {
-//        queryAccumulator.append(string);
+//        queryTokenAssembler.appendRawQuery(string);
 //    }
 //
 //    public void appendToQuery(Character character) {
-//        queryAccumulator.append(character);
+//        queryTokenAssembler.appendRawQuery(Character.toString(character));
 //    }
 
 //    public void setQueryOperator(String operator) {
@@ -152,29 +180,29 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 //                .setType(type);
 //    }
 
-    public void addParameter(QueryParameter parameter, Boolean isModifier) {
-        try {
-//            if (isModifier) {
-//                modifierBuilder.setParameter(parameter);
-//            } else {
-//                queryBuilder.addParameter(parameter);
-//            }
-        } catch (IllegalArgumentException e) {
-            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
-            currentState = new ScriptState(this);
-            resetAccumulators();
-        }
-    }
+//    public void addParameter(QueryParameter parameter, Boolean isModifier) {
+//        try {
+////            if (isModifier) {
+////                modifierBuilder.setParameter(parameter);
+////            } else {
+////                queryBuilder.addParameter(parameter);
+////            }
+//        } catch (IllegalArgumentException e) {
+//            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
+//            currentState = new ScriptState(this);
+//            resetAccumulators();
+//        }
+//    }
 
-    public void resetAccumulators() {
-        queryBuilder = new QueryBuilder();
-        modifierBuilder = new ModifierBuilder();
-        queryAccumulator.setLength(0);
-        currentCollection = "";
-        currentRow = -1;
-        currentLine = -1;
-    }
-
+//    public void resetAccumulators() {
+//        queryBuilder = new QueryBuilder();
+//        modifierBuilder = new ModifierBuilder();
+//        queryAccumulator.setLength(0);
+//        currentCollection = "";
+//        currentRow = -1;
+//        currentLine = -1;
+//    }
+//
 //    public void setCurrentPosition(LineIterator iterator) {
 //        currentLine = iterator.getRowIndex() + 1;
 //        currentRow = iterator.getCurrentIndex() + 1;
@@ -186,7 +214,7 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 //    }
 
     public void saveQuery() {
-        queryList.add(queryTokenAssembler.createQuery());
+        queryList.add(assembler.createQuery());
 //        queryList.add(
 //                queryBuilder.setComment(lastCommentBuilder.toString())
 //                        .setQuery(queryAccumulator.toString())

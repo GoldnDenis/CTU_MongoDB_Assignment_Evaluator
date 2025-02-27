@@ -2,5 +2,4 @@ package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.f
 
 public interface StateMachine<S> {
     void transition(S state);
-    void acceptWord();
 }

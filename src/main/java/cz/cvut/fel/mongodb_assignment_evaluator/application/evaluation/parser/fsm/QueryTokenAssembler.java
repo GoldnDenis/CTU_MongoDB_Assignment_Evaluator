@@ -15,10 +15,8 @@ public class QueryTokenAssembler {
     private String lastQueryOperator;
     private QueryBuilder queryBuilder;
     private ModifierBuilder modifierBuilder;
-//    @Setter
-//    private int line;
-//    @Setter
-//    private int column;
+    private int line;
+    private int column;
     @Setter
     protected String collection;
 //    @Setter
@@ -69,24 +67,37 @@ public class QueryTokenAssembler {
         }
     }
 
+    public void setModifierOperator(String operator) {
+        modifierBuilder.setModifier(operator);
+    }
+
     public void addModifier() {
         queryBuilder.addModifier(modifierBuilder.build());
         modifierBuilder = new ModifierBuilder();
     }
 
-    public void startQueryAssemble(String operator, int line, int column) {
-        if (!lastQueryOperator.isBlank() && !lastQueryOperator.equals(operator)) {
-            commentAccumulator.setLength(0);
+    public void setCurrentPosition(int line, int column) {
+        this.line = line;
+        this.column = column;
+    }
+
+    public void setOperator(String operator, Boolean isModifier) {
+        if (!isModifier) {
+            if (!lastQueryOperator.isBlank() && !lastQueryOperator.equals(operator)) {
+                commentAccumulator.setLength(0);
+            }
+            lastQueryOperator = operator;
+
+            QueryTypes type = QueryTypes.fromString(operator);
+            queryBuilder = QueryBuilderFactory.create(type);
+
+            queryBuilder.setPosition(line, column)
+                    .setCollection(collection)
+                    .setOperator(operator)
+                    .setType(type);
+        } else {
+            modifierBuilder.setModifier(operator);
         }
-        lastQueryOperator = operator;
-
-        QueryTypes type = QueryTypes.fromString(operator);
-        queryBuilder = QueryBuilderFactory.create(type);
-
-        queryBuilder.setPosition(line + 1, column + 1)
-                .setCollection(collection)
-                .setOperator(operator)
-                .setType(type);
     }
 
     public void resetAccumulators() {
@@ -99,8 +110,10 @@ public class QueryTokenAssembler {
     }
 
     public Query createQuery() {
-        return queryBuilder.setComment(commentAccumulator.toString())
+        Query query = queryBuilder.setComment(commentAccumulator.toString())
                 .setQuery(rawQueryAccumulator.toString())
                 .build();
+        resetAccumulators();
+        return query;
     }
 }

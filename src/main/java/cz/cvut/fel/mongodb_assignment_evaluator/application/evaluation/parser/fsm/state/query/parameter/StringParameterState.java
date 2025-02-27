@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.QueryTokenAssembler;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.SingleLineCommentState;
@@ -19,8 +20,7 @@ public class StringParameterState extends ParserState {
     @Override
     public void process(LineIterator iterator) {
         if (iterator.startsWith(",") || iterator.startsWith(")")) {
-            String value = valueAccumulator.toString();
-            context.addParameter(new StringParameter(value), isModifier);
+            assembler.addParameter(new StringParameter(context.getAccumulatedWord()), isModifier);
             context.transition(previousState);
         } else if (iterator.startsWith("//")) {
             context.transition(new SingleLineCommentState(context, this));
@@ -30,14 +30,6 @@ public class StringParameterState extends ParserState {
             iterator.next();
         } else if (iterator.startsWithStringQuote()) {
             context.transition(new StringState(context, this, iterator.next()));
-//            String value = iterator.nextStringConstruct();
-//            if (!valueAccumulator.isEmpty()) {
-//                valueAccumulator.append(" ");
-//                context.appendToQuery(" ");
-//            }
-//            context.appendToQuery(value);
-//            value = value.substring(1, value.length() - 1);
-//            valueAccumulator.append(value);
         } else if (iterator.hasNext()) {
             // todo processSyntaxError("invalid character '" + iterator.peek() + "'", iterator);
         }
