@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class QueryAssembler {
-    @Getter
-    private QueryBuilder queryBuilder;
-    @Getter
-    private ModifierBuilder modifierBuilder;
-    @Setter
-    private String lastQueryOperation;
-    @Setter
-    private String currentCollection;
-    private int currentLine;
-    private int currentRow;
-
-    private final StringBuilder queryAccumulator;
+//    @Getter
+//    private QueryBuilder queryBuilder;
+//    @Getter
+//    private ModifierBuilder modifierBuilder;
+//    @Setter
+//    private String lastQueryOperation;
+//    @Setter
+//    private String currentCollection;
+//    private int currentLine;
+//    private int currentRow;
+//
+//    private final StringBuilder queryAccumulator;
 }

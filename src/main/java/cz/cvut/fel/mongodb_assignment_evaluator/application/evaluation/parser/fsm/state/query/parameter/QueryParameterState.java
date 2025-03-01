@@ -27,6 +27,7 @@ public class QueryParameterState extends ParserState {
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
         } else if (iterator.startsWith("{")) {
+//            context.accumulate(iterator.next());
             context.transition(new DocumentParameterState(context, this, isModifier, false));
         } else if (iterator.startsWith("[")) {
             context.accumulate(iterator.next());
@@ -37,6 +38,9 @@ public class QueryParameterState extends ParserState {
         } else if (iterator.startsWith(")")) {
             if (isParameterEmpty()) {
                 assembler.addParameter(new EmptyParameter(), isModifier);
+            }
+            if (isModifier) {
+                assembler.addModifier();
             }
             context.accumulate(iterator.next());
             context.processAccumulatedWord(true);
@@ -53,7 +57,7 @@ public class QueryParameterState extends ParserState {
             if (!Character.isWhitespace(lastChar)) {
                 context.accumulate(nextChar);
             }
-        } else if (iterator.hasNext()) { //todo
+        } else if (iterator.hasNext()) {
             context.transition(new FunctionParameterState(context, this, isModifier));
         }
     }

@@ -7,6 +7,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fs
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 
 public class QueryEndState extends ParserState {
     public QueryEndState(ParserStateMachine context, ParserState previousState) {
@@ -31,7 +32,7 @@ public class QueryEndState extends ParserState {
             context.processAccumulatedWord(true);
             context.transition(new QueryBodyState(context, this, true));
         } else if (iterator.hasNext()) {
-//            todo processSyntaxError("Was expecting '.' or ';' after ')'", iterator);
+            throw new IncorrectParseSyntax("Was expecting '.' or ';' after ')'");
         }
     }
 }

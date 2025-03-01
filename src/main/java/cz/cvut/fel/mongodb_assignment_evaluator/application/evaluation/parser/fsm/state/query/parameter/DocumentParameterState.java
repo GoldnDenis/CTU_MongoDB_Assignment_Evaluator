@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StringUtility;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StudentEvaluator;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.MultiLineCommentState;
@@ -30,7 +31,8 @@ public class DocumentParameterState extends ParserState {
 
     public DocumentParameterState(ParserStateMachine context, ParserState previousState, Boolean isModifier, Boolean isPipeline) {
         super(context, previousState);
-        this.parenthesisCount = 1;
+//        this.parenthesisCount = 1;
+        this.parenthesisCount = 0;
         this.isModifier = isModifier;
         this.isPipeline = isPipeline;
         this.pipeline = new ArrayList<>();
@@ -88,42 +90,36 @@ public class DocumentParameterState extends ParserState {
             context.transition(new MultiLineCommentState(context, this));
         }
 
+        char nextChar = iterator.next();
         if (parenthesisCount > 0) {
-            if (iterator.startsWithStringQuote()) {
-                context.transition(new StringState(context, this, iterator.next()));
+            if (nextChar == '"' || nextChar == '\'') {
+                context.transition(new StringState(context, this, nextChar));
             } else {
-                context.accumulate(iterator.next());
+                context.accumulate(nextChar);
             }
         } else if (!context.getAccumulatedWord().isBlank()) {
             processDocumentEnd();
-        } else if (iterator.startsWith("]")) {
-            processPipelineEnd(iterator);
+        } else if (nextChar == ']') {
+            processPipelineEnd();
         }
     }
 
-    private void processDocumentEnd () {
-        context.accumulate("}");
+    private void processDocumentEnd () throws JsonParseException {
+        context.accumulate('}');
 //        parenthesisCount = 0;
         String processedDocument = StringPreprocessor.preprocessEJson(context.getAccumulatedWord());
-        try {
-//            DocumentParameter document = new DocumentParameter(BsonDocument.parse(value), depth);
-            BsonDocument document = BsonDocument.parse(processedDocument);
-            if (isPipeline) {
-                context.processAccumulatedWord(true);
-                pipeline.add(document);
-            } else {
-                assembler.addParameter(new DocumentParameter(document), isModifier);
-                context.transition(new QueryParameterState(context, this, isModifier));
-            }
-        } catch (JsonParseException e) {
-            StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
-            context.processAccumulatedWord(false);
-            context.transition(new ScriptState(context));
+        BsonDocument document = BsonDocument.parse(processedDocument);
+        if (isPipeline) {
+            context.processAccumulatedWord(true);
+            pipeline.add(document);
+        } else {
+            assembler.addParameter(new DocumentParameter(document), isModifier);
+            context.transition(new QueryParameterState(context, this, isModifier));
         }
     }
 
-    private void processPipelineEnd(LineIterator iterator) {
-        context.accumulate(iterator.next());
+    private void processPipelineEnd() {
+        context.accumulate(']');
         assembler.addParameter(new PipelineParameter(pipeline), isModifier);
         context.transition(new QueryParameterState(context, this, isModifier));
     }

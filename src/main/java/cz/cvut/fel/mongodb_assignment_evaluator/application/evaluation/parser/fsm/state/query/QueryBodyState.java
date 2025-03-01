@@ -9,6 +9,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fs
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter.QueryParameterState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 
 /**
  * A state that consumes a collection/operator, then transitions to the parameter state.
@@ -26,7 +27,7 @@ public class QueryBodyState extends ParserState {
         if (iterator.startsWithWhitespace()) {
             String accumulatedWord = context.getAccumulatedWord();
             if (!accumulatedWord.isBlank() && !Character.isWhitespace(accumulatedWord.charAt(0))) {
-//             todo error processSyntaxError("'system.' prefix isn't allowed. (Reserved for internal use.)", iterator);
+                throw new IncorrectParseSyntax("A collection/operator name cannot contain whitespace in-between");
             }
             iterator.next();
         } else if (iterator.startsWith("//")) {
@@ -35,11 +36,11 @@ public class QueryBodyState extends ParserState {
             context.transition(new MultiLineCommentState(context, this));
         } else if (iterator.startsWith(".system")) {
             iterator.nextMatch(".system");
-//             todo error processSyntaxError("'system.' prefix isn't allowed. (Reserved for internal use.)", iterator);
+            throw new IncorrectParseSyntax("'system.' prefix isn't allowed. (Reserved for internal use.)");
         } else if (iterator.startsWith(".")) {
             String accumulatedWord = context.getAccumulatedWord();
             if (accumulatedWord.isBlank()) {
-                // todo error
+                throw new IncorrectParseSyntax("A collection cannot be blank");
             }
             assembler.setCollection(accumulatedWord);
             context.accumulate(iterator.next());
@@ -47,7 +48,7 @@ public class QueryBodyState extends ParserState {
         } else if (iterator.startsWith("(")) {
             String accumulatedWord = context.getAccumulatedWord();
             if (accumulatedWord.isBlank()) {
-                // todo error
+                throw new IncorrectParseSyntax("An operator cannot be blank");
             }
             assembler.setOperator(accumulatedWord, isModifier);
             context.accumulate(iterator.next());
@@ -56,8 +57,7 @@ public class QueryBodyState extends ParserState {
         } else if (iterator.hasNext() ) {
             char c = iterator.next();
             if (!characterIsAllowed(c)) {
-                // todo error processSyntaxError("'" + c + "' шs not allowed in collection, operation names", iterator);
-                return;
+                throw new IncorrectParseSyntax("Character '" + c + "' is not allowed in a collection/operator name.");
             }
             context.accumulate(c);
         }

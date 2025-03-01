@@ -38,7 +38,7 @@ public class CreateCollectionBuilder extends QueryBuilder {
     @Override
     public void visitStringParameter(StringParameter parameter) {
         switch (parameters.size()) {
-            case 0 -> collectionName = parameter.getString();
+            case 0 -> collectionName = parameter.getValue();
             default -> throw new IllegalArgumentException();
         }
     }

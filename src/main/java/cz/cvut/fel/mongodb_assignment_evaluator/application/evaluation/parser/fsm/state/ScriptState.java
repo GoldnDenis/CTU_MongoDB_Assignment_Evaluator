@@ -46,7 +46,7 @@ public class ScriptState extends ParserState {
             context.transition(new SingleLineCommentState(context, this));
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
-        } else if (iterator.startsWithStringQuote()) { // todo test
+        } else if (iterator.startsWithStringQuote()) {
             context.transition(new StringState(context, this, iterator.next()));
             context.processAccumulatedWord(false);
         } else if (iterator.startsWith("db")) {

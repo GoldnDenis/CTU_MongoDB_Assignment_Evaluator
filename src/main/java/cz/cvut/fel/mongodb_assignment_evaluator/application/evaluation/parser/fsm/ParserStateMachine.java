@@ -68,17 +68,20 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 
     public void initAssembler(int currentColumn) {
         assembler.resetAccumulators();
+        System.out.println(currentLine + ":" + currentColumn); //todo
         assembler.setCurrentPosition(currentLine, currentColumn);
     }
 
     public void parseLine(LineIterator lineIterator) {
+        currentLine++;
         while (lineIterator.hasNext()) {
 //            context.appendToQuery(value);
-            currentLine++;
             try {
                 currentState.process(lineIterator);
             } catch (Exception e) {
-                StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, e.getMessage());
+                String position = (currentLine - 1) + "r" + lineIterator.getCurrentIndex() + "c";
+                String errorMessage = "An error has occurred at " + position + ": " + e.getMessage();
+                StudentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, errorMessage);
                 currentState = new ScriptState(this);
             }
         }
@@ -104,14 +107,14 @@ public class ParserStateMachine implements StateMachine<ParserState> {
         wordAccumulator.setLength(0);
     }
 
-    protected void processWhitespace(LineIterator iterator) {
-        char nextChar = iterator.next();
-        int lastIndex = valueAccumulator.length() - 1;
-        char lastChar = valueAccumulator.charAt(lastIndex);
-        if (!Character.isWhitespace(lastChar)) {
-            valueAccumulator.append(nextChar);
-        }
-    }
+//    protected void processWhitespace(LineIterator iterator) {
+//        char nextChar = iterator.next();
+//        int lastIndex = valueAccumulator.length() - 1;
+//        char lastChar = valueAccumulator.charAt(lastIndex);
+//        if (!Character.isWhitespace(lastChar)) {
+//            valueAccumulator.append(nextChar);
+//        }
+//    }
 
 //    @Override
 //    public void transition(ParserStates state) {

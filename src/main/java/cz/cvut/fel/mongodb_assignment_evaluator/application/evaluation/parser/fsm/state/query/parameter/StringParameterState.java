@@ -8,6 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fs
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.StringParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 
 public class StringParameterState extends ParserState {
     private final boolean isModifier;
@@ -31,7 +32,7 @@ public class StringParameterState extends ParserState {
         } else if (iterator.startsWithStringQuote()) {
             context.transition(new StringState(context, this, iterator.next()));
         } else if (iterator.hasNext()) {
-            // todo processSyntaxError("invalid character '" + iterator.peek() + "'", iterator);
+            throw new IncorrectParseSyntax("Was expecting '+', string quote or a comment");
         }
     }
 }

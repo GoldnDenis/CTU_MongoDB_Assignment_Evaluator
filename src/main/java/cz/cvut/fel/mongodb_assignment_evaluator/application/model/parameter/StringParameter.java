@@ -1,13 +1,15 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.visitor.QueryParameterVisitor;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class StringParameter implements QueryParameter {
-    private String string;
+    private String value;
+
+    public StringParameter(String value) {
+        this.value = value.substring(1, value.length() - 1);
+    }
 
     @Override
     public void accept(QueryParameterVisitor visitor) {
@@ -16,6 +18,6 @@ public class StringParameter implements QueryParameter {
 
     @Override
     public boolean isTrivial() {
-        return string.isBlank();
+        return value.isBlank();
     }
 }

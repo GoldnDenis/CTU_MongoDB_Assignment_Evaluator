@@ -7,6 +7,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fs
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 
 
 /**
@@ -30,7 +31,7 @@ public class DotState extends ParserState {
         } else if (iterator.startsWithWhitespace()) {
             iterator.next();
         } else {
-            // todo error
+            throw new IncorrectParseSyntax("Was expecting a dot after 'db'");
         }
     }
 }

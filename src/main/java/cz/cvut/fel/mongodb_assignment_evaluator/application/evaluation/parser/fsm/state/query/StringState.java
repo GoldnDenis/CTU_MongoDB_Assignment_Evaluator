@@ -8,6 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fs
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
+import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 
 /**
  * A state that accumulates a string until it encounters a closing quote. It is capable of catching escape sequences.
@@ -38,7 +39,7 @@ public class StringState extends ParserState {
         } else if (iterator.hasNext()) {
             context.accumulate(iterator.next());
         } else {
-            // todo error
+            throw new IncorrectParseSyntax("Was expecting a closing string quote ('" + quote + "')");
         }
     }
 }
