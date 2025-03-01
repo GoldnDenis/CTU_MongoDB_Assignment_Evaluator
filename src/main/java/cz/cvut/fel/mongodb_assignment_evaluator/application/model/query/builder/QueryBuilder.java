@@ -80,28 +80,32 @@ public class QueryBuilder implements QueryParameterVisitor {
         return new Query(line, column, comment, query, type, operation, collection, parameters, modifiers);
     }
 
+    public int getParameterCount() {
+        return parameters.size();
+    }
+
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting a document parameter");
+        throw new IllegalArgumentException("Wasn't expecting an document parameter");
     }
 
     @Override
     public void visitStringParameter(StringParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting a string parameter");
+        throw new IllegalArgumentException("Wasn't expecting an string parameter");
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting a pipeline parameter");
+        throw new IllegalArgumentException("Wasn't expecting an pipeline parameter");
     }
 
     @Override
     public void visitEmptyParameter(EmptyParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting a empty parameter");
+        throw new IllegalArgumentException("Wasn't expecting an empty parameter");
     }
 
     @Override
     public void visitFunctionParameter(FunctionParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting a function parameter");
+        throw new IllegalArgumentException("Wasn't expecting an function parameter");
     }
 }

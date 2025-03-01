@@ -22,6 +22,9 @@ public class StudentEvaluator {
     }
 
     public StudentEvaluationResult evaluateScript(List<String> scriptLines) {
+        if (studentName.equals("kulikvl1")) { //todo
+            System.out.println(1);
+        }
         List<Query> queryList = new ScriptParser().parse(scriptLines);
         log.info("Successfully parsed the script of " + studentName);
 //        StudentEvaluationResult studentResult = new RootCriteriaChecker().checkQueries(queryList);

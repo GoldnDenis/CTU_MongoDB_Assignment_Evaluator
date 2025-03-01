@@ -74,6 +74,9 @@ public class ParserStateMachine implements StateMachine<ParserState> {
 
     public void parseLine(LineIterator lineIterator) {
         currentLine++;
+        if (currentLine == 225) { // todo
+            System.out.println(1);
+        }
         while (lineIterator.hasNext()) {
 //            context.appendToQuery(value);
             try {

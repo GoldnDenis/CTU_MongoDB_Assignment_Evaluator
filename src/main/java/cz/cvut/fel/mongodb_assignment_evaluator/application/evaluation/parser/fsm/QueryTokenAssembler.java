@@ -116,4 +116,8 @@ public class QueryTokenAssembler {
         resetAccumulators();
         return query;
     }
+
+    public int getParameterCount() {
+        return queryBuilder.getParameterCount();
+    }
 }

@@ -23,7 +23,10 @@ public class ScriptParser {
 
     public List<Query> parse(List<String> fileLines) {
         ParserStateMachine stateMachine = new ParserStateMachine();
-        fileLines.forEach(line -> stateMachine.parseLine(new LineIterator(line)));
+        for (String fileLine : fileLines) {
+            stateMachine.parseLine(new LineIterator(fileLine));
+        }
+//        fileLines.forEach(line -> stateMachine.parseLine(new LineIterator(line)));
         return stateMachine.getQueryList();
     }
 }

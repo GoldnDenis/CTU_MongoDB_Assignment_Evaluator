@@ -24,13 +24,7 @@ public class QueryBodyState extends ParserState {
 
     @Override
     public void process(LineIterator iterator) {
-        if (iterator.startsWithWhitespace()) {
-            String accumulatedWord = context.getAccumulatedWord();
-            if (!accumulatedWord.isBlank() && !Character.isWhitespace(accumulatedWord.charAt(0))) {
-                throw new IncorrectParseSyntax("A collection/operator name cannot contain whitespace in-between");
-            }
-            iterator.next();
-        } else if (iterator.startsWith("//")) {
+        if (iterator.startsWith("//")) {
             context.transition(new SingleLineCommentState(context, this));
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
@@ -54,8 +48,14 @@ public class QueryBodyState extends ParserState {
             context.accumulate(iterator.next());
             context.processAccumulatedWord(true);
             context.transition(new QueryParameterState(context, this, isModifier));
+        } else if (iterator.startsWithWhitespace()) {
+            iterator.next();
         } else if (iterator.hasNext() ) {
             char c = iterator.next();
+            String accumulatedWord = context.getAccumulatedWord();
+            if (Character.isWhitespace(c) && Character.isWhitespace(StringUtility.getLastChar(accumulatedWord))) {
+                throw new IncorrectParseSyntax("A collection/operator name cannot contain whitespace in-between");
+            }
             if (!characterIsAllowed(c)) {
                 throw new IncorrectParseSyntax("Character '" + c + "' is not allowed in a collection/operator name.");
             }

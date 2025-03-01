@@ -36,7 +36,7 @@ public class QueryParameterState extends ParserState {
         } else if (iterator.startsWithStringQuote()) {
             context.transition(new StringParameterState(context, this, isModifier));
         } else if (iterator.startsWith(")")) {
-            if (isParameterEmpty()) {
+            if (isParameterEmpty() && assembler.getParameterCount() == 0) {
                 assembler.addParameter(new EmptyParameter(), isModifier);
             }
             if (isModifier) {

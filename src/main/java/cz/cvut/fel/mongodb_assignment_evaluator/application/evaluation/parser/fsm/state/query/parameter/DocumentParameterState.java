@@ -75,32 +75,29 @@ public class DocumentParameterState extends ParserState {
 
     @Override
     public void process(LineIterator iterator) {
-        if (startsWithDoubleWhitespace(iterator)) {
-            iterator.next();
-            return;
-        }
-
-        if (iterator.startsWith("{")) {
-            parenthesisCount++;
-        } else if (iterator.startsWith("}")) {
-            parenthesisCount--;
-        } else if (iterator.startsWith("//")) {
+        if (iterator.startsWith("//")) {
             context.transition(new SingleLineCommentState(context, this));
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
-        }
-
-        char nextChar = iterator.next();
-        if (parenthesisCount > 0) {
-            if (nextChar == '"' || nextChar == '\'') {
-                context.transition(new StringState(context, this, nextChar));
-            } else {
-                context.accumulate(nextChar);
+        } else {
+            if (iterator.startsWith("{")) {
+                parenthesisCount++;
+            } else if (iterator.startsWith("}")) {
+                parenthesisCount--;
             }
-        } else if (!context.getAccumulatedWord().isBlank()) {
-            processDocumentEnd();
-        } else if (nextChar == ']') {
-            processPipelineEnd();
+
+            char nextChar = iterator.next();
+            if (parenthesisCount > 0) {
+                if (nextChar == '"' || nextChar == '\'') {
+                    context.transition(new StringState(context, this, nextChar));
+                } else if (isNotDoubleWhitespace(nextChar)) {
+                    context.accumulate(nextChar);
+                }
+            } else if (!context.getAccumulatedWord().isBlank()) {
+                processDocumentEnd();
+            } else if (nextChar == ']') {
+                processPipelineEnd();
+            }
         }
     }
 
@@ -124,11 +121,8 @@ public class DocumentParameterState extends ParserState {
         context.transition(new QueryParameterState(context, this, isModifier));
     }
 
-    private boolean startsWithDoubleWhitespace(LineIterator iterator) {
-        if (!iterator.startsWithWhitespace()) {
-            return false;
-        }
+    private boolean isNotDoubleWhitespace(char nextChar) {
         char lastChar = StringUtility.getLastChar(context.getAccumulatedWord());
-        return Character.isWhitespace(lastChar);
+        return !Character.isWhitespace(lastChar) || !Character.isWhitespace(nextChar);
     }
 }
