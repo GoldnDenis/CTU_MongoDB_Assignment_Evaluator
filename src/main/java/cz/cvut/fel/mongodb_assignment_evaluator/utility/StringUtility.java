@@ -1,4 +1,4 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation;
+package cz.cvut.fel.mongodb_assignment_evaluator.utility;
 
 public class StringUtility {
     public static char getLastChar(String string) {

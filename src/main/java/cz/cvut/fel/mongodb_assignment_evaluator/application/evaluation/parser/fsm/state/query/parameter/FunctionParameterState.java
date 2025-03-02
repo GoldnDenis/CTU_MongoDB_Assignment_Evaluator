@@ -1,11 +1,11 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StringUtility;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.FunctionParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.FunctionParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.utility.StringUtility;
 
 public class FunctionParameterState extends ParserState {
     private final Boolean isModifier;

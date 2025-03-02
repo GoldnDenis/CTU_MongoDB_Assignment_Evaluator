@@ -1,9 +1,9 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm;
+package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.modifier.ModifierBuilder;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.QueryParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.modifier.ModifierBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.QueryBuilder;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.factory.QueryBuilderFactory;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.factory.QueryBuilderFactory;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
 import lombok.Setter;
@@ -19,12 +19,6 @@ public class QueryTokenAssembler {
     private int column;
     @Setter
     protected String collection;
-//    @Setter
-//    protected String operator;
-//    protected QueryTypes type;
-//    protected final List<QueryParameter> parameters;
-
-//    protected final List<QueryModifier> modifiers;
 
     public QueryTokenAssembler() {
         commentAccumulator = new StringBuilder();
@@ -32,13 +26,7 @@ public class QueryTokenAssembler {
         lastQueryOperator = "";
         queryBuilder = new QueryBuilder();
         modifierBuilder = new ModifierBuilder();
-//        line = 0;
-//        column = 0;
         collection = "";
-//        operator = "";
-//        type = QueryTypes.UNKNOWN;
-//        parameters = new ArrayList<>();
-//        modifiers = new ArrayList<>();
     }
 
     public void appendComment(String comment) {
@@ -55,20 +43,12 @@ public class QueryTokenAssembler {
         rawQueryAccumulator.append(string);
     }
 
-    public void appendRawQuery(Character c) {
-        rawQueryAccumulator.append(c);
-    }
-
     public void addParameter(QueryParameter parameter, Boolean isModifier) {
         if (isModifier) {
             modifierBuilder.setParameter(parameter);
         } else {
             queryBuilder.addParameter(parameter);
         }
-    }
-
-    public void setModifierOperator(String operator) {
-        modifierBuilder.setModifier(operator);
     }
 
     public void addModifier() {
@@ -87,10 +67,8 @@ public class QueryTokenAssembler {
                 commentAccumulator.setLength(0);
             }
             lastQueryOperator = operator;
-
             QueryTypes type = QueryTypes.fromString(operator);
             queryBuilder = QueryBuilderFactory.create(type);
-
             queryBuilder.setPosition(line, column)
                     .setCollection(collection)
                     .setOperator(operator)
@@ -105,8 +83,6 @@ public class QueryTokenAssembler {
         modifierBuilder = new ModifierBuilder();
         rawQueryAccumulator.setLength(0);
         collection = "";
-//        currentRow = -1;
-//        currentLine = -1;
     }
 
     public Query createQuery() {

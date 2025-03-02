@@ -1,6 +1,6 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.application.model.modifier;
+package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.modifier;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.QueryParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.QueryParameter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

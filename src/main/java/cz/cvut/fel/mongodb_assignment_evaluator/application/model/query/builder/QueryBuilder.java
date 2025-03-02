@@ -1,9 +1,9 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.visitor.QueryParameterVisitor;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.modifier.QueryModifier;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.visitor.QueryParameterVisitor;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.Query;
 
 import java.util.ArrayList;

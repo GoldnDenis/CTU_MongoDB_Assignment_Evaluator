@@ -1,13 +1,13 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StringUtility;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.QueryEndState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.EmptyParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.EmptyParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.utility.StringUtility;
 
 /**
  * A state that identifies parameter type and consumes accumulated values.
@@ -27,7 +27,6 @@ public class QueryParameterState extends ParserState {
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
         } else if (iterator.startsWith("{")) {
-//            context.accumulate(iterator.next());
             context.transition(new DocumentParameterState(context, this, isModifier, false));
         } else if (iterator.startsWith("[")) {
             context.accumulate(iterator.next());

@@ -1,6 +1,7 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.visitor;
+package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.visitor;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.*;
 
 public interface QueryParameterVisitor {
     void visitDocumentParameter(DocumentParameter parameter);

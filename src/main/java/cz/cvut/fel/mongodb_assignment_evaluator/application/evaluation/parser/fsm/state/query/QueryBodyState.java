@@ -1,15 +1,13 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.StringUtility;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.QueryTokenAssembler;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter.QueryParameterState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
 import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
+import cz.cvut.fel.mongodb_assignment_evaluator.utility.StringUtility;
 
 /**
  * A state that consumes a collection/operator, then transitions to the parameter state.
@@ -50,7 +48,7 @@ public class QueryBodyState extends ParserState {
             context.transition(new QueryParameterState(context, this, isModifier));
         } else if (iterator.startsWithWhitespace()) {
             iterator.next();
-        } else if (iterator.hasNext() ) {
+        } else if (iterator.hasNext()) {
             char c = iterator.next();
             String accumulatedWord = context.getAccumulatedWord();
             if (Character.isWhitespace(c) && Character.isWhitespace(StringUtility.getLastChar(accumulatedWord))) {

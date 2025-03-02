@@ -1,13 +1,8 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.ParserStateMachine;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.QueryTokenAssembler;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ParserState;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.ScriptState;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.fsm.state.query.parameter.QueryParameterState;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.ParserStates;
 import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 
 /**
@@ -17,7 +12,6 @@ import cz.cvut.fel.mongodb_assignment_evaluator.exception.IncorrectParseSyntax;
 public class StringState extends ParserState {
     private final char quote;
     private final String escape;
-//    private boolean isModifier;
 
     public StringState(ParserStateMachine context, ParserState previousState, char quote) {
         super(context, previousState);
@@ -33,8 +27,6 @@ public class StringState extends ParserState {
             context.accumulate(iterator.nextMatch(escape));
         } else if (iterator.startsWith(quote)) {
             context.accumulate(iterator.next());
-//            Boolean appendFlag = !previousState.getClass().equals(ScriptState.class);
-//            context.processAccumulatedWord(appendFlag);
             context.transition(previousState);
         } else if (iterator.hasNext()) {
             context.accumulate(iterator.next());

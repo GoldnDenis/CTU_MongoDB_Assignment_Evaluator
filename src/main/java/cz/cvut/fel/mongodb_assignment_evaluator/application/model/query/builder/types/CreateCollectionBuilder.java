@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.types;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.DocumentParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.StringParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.DocumentParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.StringParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type.CreateCollectionQuery;
 import org.bson.BsonDocument;

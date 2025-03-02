@@ -23,7 +23,7 @@ public class StringPreprocessor {
                     (dateString.startsWith("'") && dateString.endsWith("'"))) {
                 replacement = matcher.group(1);
             } else {
-                String newDate = "\"" + new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss z").format(new Date())  + "\"";
+                String newDate = "\"" + new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss z").format(new Date()) + "\"";
                 replacement = matcher.group().replace(matcher.group(1), newDate);
             }
             eJson = eJson.replace(matcher.group(), replacement);

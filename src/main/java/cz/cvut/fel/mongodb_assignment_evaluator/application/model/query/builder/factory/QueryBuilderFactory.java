@@ -1,4 +1,4 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.factory;
+package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.factory;
 
 
 import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.builder.*;

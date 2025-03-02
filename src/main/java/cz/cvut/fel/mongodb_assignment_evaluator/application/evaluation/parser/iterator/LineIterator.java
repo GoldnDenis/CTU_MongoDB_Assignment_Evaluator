@@ -4,12 +4,11 @@ import lombok.Getter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.regex.Pattern;
 
 @Getter
 public class LineIterator implements Iterator<Character> {
     private final String line;
-//    private int rowIndex;
+    //    private int rowIndex;
     private int currentIndex;
 
 //    private final Pattern stringConstructPattern;

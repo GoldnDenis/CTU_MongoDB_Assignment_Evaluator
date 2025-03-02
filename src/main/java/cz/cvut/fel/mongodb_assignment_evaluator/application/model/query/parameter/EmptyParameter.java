@@ -1,6 +1,6 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter;
+package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.visitor.QueryParameterVisitor;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.visitor.QueryParameterVisitor;
 
 public class EmptyParameter implements QueryParameter {
     @Override

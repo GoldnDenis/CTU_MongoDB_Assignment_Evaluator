@@ -1,8 +1,8 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.type;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.enums.QueryTypes;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.modifier.QueryModifier;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.parameter.QueryParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.modifier.QueryModifier;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.model.query.parameter.QueryParameter;
 import lombok.Getter;
 import org.bson.BsonDocument;
 
