@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.presentation.io;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.FileFormats;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.FileFormats;
 
 import java.io.File;
 import java.io.IOException;

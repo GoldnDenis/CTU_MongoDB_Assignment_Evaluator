@@ -1,9 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.presentation.io;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.error.StudentErrorCollector;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.FinalEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.application.model.result.StudentEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.enums.FileFormats;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.FileFormats;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.error.StudentErrorCollector;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.FinalEvaluationResult;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.GradedSubmission;
 import cz.cvut.fel.mongodb_assignment_evaluator.presentation.format.OutputFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +22,7 @@ import java.util.regex.Pattern;
 @Component
 @RequiredArgsConstructor
 public class DirectoryManager {
-    public static final Pattern STUDENT_FOLDER_PATTERN = Pattern.compile("^(f[0-9]+_)([a-zA-Z0-9]+)-mongodb-[0-9]+-[0-9]+");
+    public static final Pattern STUDENT_FOLDER_PATTERN = Pattern.compile("^(f[0-9]+)_([a-zA-Z0-9]+)-mongodb-([0-9]+)-([0-9]+)");
 
     private final OutputFormatter outputFormatter;
     private File rootDirectory;
@@ -33,7 +36,7 @@ public class DirectoryManager {
         resultFolder = DirectoryUtils.createFolder(rootDirectory, "results");
     }
 
-    public void createStudentEvaluationOutput(String studentName, StudentEvaluationResult evaluationResult, StudentErrorCollector studentErrorCollector) throws IOException {
+    public void createStudentEvaluationOutput(String studentName, GradedSubmission evaluationResult, StudentErrorCollector studentErrorCollector) throws IOException {
         File studentResultFolder = DirectoryUtils.createFolder(resultFolder, studentName);
         String resultContents = outputFormatter.formatToString(evaluationResult);
         FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.CSV, resultContents);
@@ -46,19 +49,22 @@ public class DirectoryManager {
         FileWriterUtil.writeFile(resultFolder, "final_table", FileFormats.CSV, finalResultTableContents);
     }
 
-    public Map<String, File> getStudentFolders() throws IOException {
-        Map<String, File> studentFolders = new LinkedHashMap<>();
-        List<File> subfolders = Arrays.stream(DirectoryUtils.getFiles(rootDirectory))
-                .filter(File::isDirectory)
-                .toList();
-        for (File folder : subfolders) {
+    public List<StudentSubmission> getStudentWorks() throws IOException {
+        List<StudentSubmission> studentSubmissionList = new ArrayList<>();
+        for (File folder : DirectoryUtils.getFiles(rootDirectory)) {
+            if (!folder.isDirectory()) {
+                continue;
+            }
             Matcher matcher = DirectoryManager.STUDENT_FOLDER_PATTERN.matcher(folder.getName());
             if (matcher.matches()) {
+                String year = matcher.group(1);
                 String studentName = matcher.group(2);
-                studentFolders.put(studentName, folder);
+                String date = matcher.group(3);
+                String time = matcher.group(4);
+                studentSubmissionList.add(new StudentSubmission(year, studentName, date, time, folder));
             }
         }
-        return studentFolders;
+        return studentSubmissionList;
     }
 
     public List<String> readAllJSFilesAllLines(File folder) throws IOException {
