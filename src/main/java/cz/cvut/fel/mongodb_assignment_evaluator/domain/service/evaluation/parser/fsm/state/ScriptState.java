@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
@@ -11,7 +12,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
  * A state that represents a starting point. Its purpose to accumulate comments and initiate a query token accumulation.
  */
 public class ScriptState extends ParserState {
-    public ScriptState(ParserStateMachine context) {
+    public ScriptState(ScriptParser context) {
         super(context, null);
     }
 

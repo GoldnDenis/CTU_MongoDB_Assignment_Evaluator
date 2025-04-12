@@ -1,12 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.newcri.GradedCriteria;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.GradedCriteria;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 public class GradedSubmission {

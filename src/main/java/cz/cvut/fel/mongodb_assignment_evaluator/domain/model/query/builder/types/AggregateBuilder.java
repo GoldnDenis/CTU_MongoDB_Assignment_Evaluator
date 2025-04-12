@@ -11,11 +11,11 @@ import java.util.List;
 
 public class AggregateBuilder extends QueryBuilder {
     private final List<BsonDocument> aggregationPipeline;
-    private BsonDocument options;
+//    private BsonDocument options;
 
     public AggregateBuilder() {
-        this.aggregationPipeline = new ArrayList<>();
-        this.options = new BsonDocument();
+        aggregationPipeline = new ArrayList<>();
+//        this.options = new BsonDocument();
     }
 
     @Override
@@ -26,23 +26,33 @@ public class AggregateBuilder extends QueryBuilder {
                 operation,
                 parameters, modifiers,
                 collection,
-                aggregationPipeline, options
+                aggregationPipeline
         );
+//        return new AggregateQuery(
+//                line, column,
+//                comment, query, type,
+//                operation,
+//                parameters, modifiers,
+//                collection,
+//                aggregationPipeline, options
+//        );
     }
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        switch (parameters.size()) {
-            case 1 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException();
-        }
+        aggregationPipeline.add(parameter.getDocument());
+//        switch (parameters.size()) {
+//            case 0 -> aggregationPipeline.add(parameter.getDocument());
+//            case 1 -> options = parameter.getDocument();
+//            default -> throw new IllegalArgumentException();
+//        }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        switch (parameters.size()) {
-            case 0 -> aggregationPipeline.addAll(parameter.getDocumentList());
-            default -> throw new IllegalArgumentException();
+        if (!aggregationPipeline.isEmpty()) {
+            throw new IllegalArgumentException(); // todo exception
         }
+        aggregationPipeline.addAll(parameter.getDocumentList());
     }
 }

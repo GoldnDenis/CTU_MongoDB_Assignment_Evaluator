@@ -12,9 +12,9 @@ public class FindBuilder extends QueryBuilder {
     private BsonDocument options;
 
     public FindBuilder() {
-        this.filter = new BsonDocument();
-        this.projection = new BsonDocument();
-        this.options = new BsonDocument();
+        filter = new BsonDocument();
+        projection = new BsonDocument();
+        options = new BsonDocument();
     }
 
     @Override
@@ -35,15 +35,15 @@ public class FindBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> projection = parameter.getDocument();
             case 2 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException();
+            default -> throw new IllegalArgumentException(); // todo make an exception
         }
     }
 
     @Override
     public void visitEmptyParameter(EmptyParameter parameter) {
-        switch (parameters.size()) {
-            case 0 -> filter = new BsonDocument();
-            default -> throw new IllegalArgumentException();
+        if (!parameters.isEmpty()) {
+            throw new IllegalArgumentException(); // todo make an exception
         }
+        filter = new BsonDocument();
     }
 }

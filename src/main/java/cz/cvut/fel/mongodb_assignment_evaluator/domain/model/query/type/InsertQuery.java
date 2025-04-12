@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
@@ -18,7 +19,7 @@ public class InsertQuery extends Query {
     @Getter
     private final BsonDocument options;
 
-    public InsertQuery(int lineNumber, int columnNumber, String comment, String query, QueryTypes type, String operator,
+    public InsertQuery(int lineNumber, int columnNumber, String comment, String query, Operators type, String operator,
                        List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection,
                        List<BsonDocument> insertedDocuments, BsonDocument options) {
         super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
@@ -36,23 +37,14 @@ public class InsertQuery extends Query {
         return returnDocumentList;
     }
 
-    public List<BsonDocument> getNonTrivialInsertedDocuments() {
-        return getInsertedDocuments().stream()
-                .filter(d -> !d.isEmpty())
-                .toList();
-    }
-
-    public boolean isInsertOne() {
-        return operator.equalsIgnoreCase(INSERT_ONE);
-    }
-
-    public boolean isInsertMany() {
-        return operator.equalsIgnoreCase(INSERT_MANY);
-    }
-
     @Override
     public boolean isTrivial() {
         return insertedDocuments.stream()
                 .allMatch(BsonDocument::isEmpty);
+    }
+
+    @Override
+    public int getQueryResultCount() {
+        return getInsertedDocuments(false).size();
     }
 }

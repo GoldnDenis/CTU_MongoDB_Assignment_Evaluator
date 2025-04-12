@@ -29,17 +29,17 @@ public class CreateCollectionBuilder extends QueryBuilder {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        switch (parameters.size()) {
-            case 1 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException();
+        if (collectionName.isBlank()) {
+            throw new IllegalArgumentException(); // todo make an exception
         }
+        options = parameter.getDocument();
     }
 
     @Override
     public void visitStringParameter(StringParameter parameter) {
-        switch (parameters.size()) {
-            case 0 -> collectionName = parameter.getValue();
-            default -> throw new IllegalArgumentException();
+        if (!collectionName.isBlank()) {
+            throw new IllegalArgumentException(); // todo make an exception
         }
+        collectionName = parameter.getValue();
     }
 }

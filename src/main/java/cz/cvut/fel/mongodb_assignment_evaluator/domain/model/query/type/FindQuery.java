@@ -1,15 +1,16 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QuerySelectors;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.checker.bson.BsonDocumentChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.bson.BsonDocumentChecker;
 import lombok.Getter;
 import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Getter
 public class FindQuery extends Query {
@@ -17,7 +18,7 @@ public class FindQuery extends Query {
     private final BsonDocument projection;
     private final BsonDocument options;
 
-    public FindQuery(int lineNumber, int columnNumber, String comment, String query, QueryTypes type, String operator,
+    public FindQuery(int lineNumber, int columnNumber, String comment, String query, Operators type, String operator,
                      List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection,
                      BsonDocument filter, BsonDocument projection, BsonDocument options) {
         super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
@@ -26,38 +27,38 @@ public class FindQuery extends Query {
         this.options = options;
     }
 
-    public boolean filterContainsSelector(QuerySelectors selector) {
-        return filterContainsSelector(selector, BsonDocumentChecker.getDepth(filter));
+    public boolean containsSelectors(QuerySelectors selectors) {
+        for (String selector: selectors.getOperators()) {
+            boolean found = false;
+            if (selector.equalsIgnoreCase("$and") || selector.equalsIgnoreCase("$or")) {
+                found = BsonDocumentChecker.getRecursive(filter, selector, 1).isPresent();
+            } else {
+                found = BsonDocumentChecker.getRecursive(filter, selector).isPresent();
+            }
+            if (found) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean filterContainsSelector(QuerySelectors selector, int level) {
-        return BsonDocumentChecker.getRecursive(filter, selector.getValue(), level).isPresent();
-    }
-
-    public boolean projectionIsPositive() {
+    public boolean containsProjection(boolean needPositive) {
         if (projection.isEmpty()) {
             return false;
         }
-        return projection.entrySet().stream()
+        Stream<BsonValue> fieldStream = projection.entrySet().stream()
                 .filter(e -> !e.getKey().equalsIgnoreCase("_id"))
-                .map(Map.Entry::getValue)
-                .allMatch(e ->
-                        (e.isBoolean() && e.asBoolean().getValue()) ||
-                                (e.isNumber() && e.asInt32().getValue() == 1)
-                );
-    }
-
-    public boolean projectionIsNegative() {
-        if (projection.isEmpty()) {
-            return false;
+                .map(Map.Entry::getValue);
+        if (needPositive) {
+            return fieldStream.allMatch(e ->
+                    (e.isBoolean() && e.asBoolean().getValue()) ||
+                            (e.isNumber() && e.asInt32().getValue() == 1)
+            );
         }
-        return projection.entrySet().stream()
-                .filter(e -> !e.getKey().equalsIgnoreCase("_id"))
-                .map(Map.Entry::getValue)
-                .allMatch(e ->
-                        (e.isBoolean() && !e.asBoolean().getValue()) ||
-                                (e.isNumber() && e.asInt32().getValue() == 0)
-                );
+        return fieldStream.allMatch(e ->
+                (e.isBoolean() && !e.asBoolean().getValue()) ||
+                        (e.isNumber() && e.asInt32().getValue() == 0)
+        );
     }
 
     @Override

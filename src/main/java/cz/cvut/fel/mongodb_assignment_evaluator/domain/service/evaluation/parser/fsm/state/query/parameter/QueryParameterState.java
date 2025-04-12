@@ -1,11 +1,12 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.EmptyParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.QueryEndState;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter.document.DocumentParameterState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 
@@ -15,7 +16,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUti
 public class QueryParameterState extends ParserState {
     private final Boolean isModifier;
 
-    public QueryParameterState(ParserStateMachine context, ParserState previousState, Boolean isModifier) {
+    public QueryParameterState(ScriptParser context, ParserState previousState, Boolean isModifier) {
         super(context, previousState);
         this.isModifier = isModifier;
     }

@@ -1,31 +1,75 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
+import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringPreprocessor {
-    private static final Pattern DATE_PATTERN = Pattern.compile("new Date\\((.*?(\\((.*?)\\).*?)?)\\)");
-//    private static final Pattern OBJECT_ID_PATTERN = Pattern.compile("ObjectId\\([a-zA-Z0-9]*\\)");
-
     public static String preprocessEJson(String eJson) {
         eJson = eJson.replaceAll("\\/\\*.*?\\*\\/", "");
         eJson = eJson.replaceAll("ObjectId\\([a-zA-Z0-9]*\\)", generateHex24());
-        Matcher matcher = DATE_PATTERN.matcher(eJson);
+        eJson = processDate(eJson);
+        eJson = processNestedQuery(eJson);
+        eJson = processVariableCall(eJson);
+        return eJson;
+    }
+
+    private static String processNestedQuery(String eJson) {
+        Matcher matcher = Pattern.compile(RegularExpressions.MONGODB_QUERY_START.getRegex()).matcher(eJson);
         while (matcher.find()) {
-            String dateString = matcher.group(1);
-            String replacement = "";
-            if (dateString == null || dateString.isBlank()) {
-                replacement = "\"" + new Date() + "\"";
-            } else if ((dateString.startsWith("\"") && dateString.endsWith("\"")) ||
-                    (dateString.startsWith("'") && dateString.endsWith("'"))) {
-                replacement = matcher.group(1);
-            } else {
-                String newDate = "\"" + new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss z").format(new Date()) + "\"";
-                replacement = matcher.group().replace(matcher.group(1), newDate);
+            String query = StringUtility.substringTillParenthesis(eJson, matcher.group(), '(');
+            String rest = eJson.substring(eJson.indexOf(query) + query.length());
+            matcher = Pattern.compile(RegularExpressions.NESTED_MODIFIER.getRegex()).matcher(rest);
+            if (matcher.find()) {
+                query = query + matcher.group();
             }
+            String replacement = '"' + query.trim().replaceAll("\"", "\\\\\"") + '"';
+            eJson = eJson.replace(query, replacement);
+        }
+        return eJson;
+    }
+
+    private static String processVariableCall(String eJson) {
+        String rest = eJson;
+        Matcher matcher = Pattern.compile(RegularExpressions.VARIABLE_CALL.getRegex()).matcher(rest);
+        while (matcher.find()) {
+            String variableCall = StringUtility.substringTillParenthesis(rest, matcher.group(), '[');
+            String replacement = '"' + variableCall.trim().replaceAll("\"", "\\\\\"") + '"';
+            eJson = eJson.replace(variableCall, replacement);
+            rest = eJson.substring(eJson.indexOf(variableCall) + variableCall.length());
+        }
+        return eJson;
+    }
+
+    private static String processDate(String eJson) {
+        Matcher matcher = Pattern.compile(RegularExpressions.DATE_FIELD.getRegex()).matcher(eJson);
+        while (matcher.find()) {
+            String dateString = matcher.group(4);
+            String innerDateString = matcher.group(7);
+            String[] parts = innerDateString != null ? innerDateString.split("-") : new String[]{};
+            String replacement = dateString;
+            if (dateString == null ||
+                    (!dateString.trim().startsWith("\"") && !dateString.trim().startsWith("'"))) {
+                replacement = '"' + LocalDate.now().toString() + '"';
+            } else if (parts.length > 0) {
+                StringBuilder newInnerDateString = new StringBuilder();
+                for (int i = 0; i < parts.length; i++) {
+                    String part = parts[i];
+                    if (part.length() == 1) {
+                        newInnerDateString.append("0");
+                    }
+                    newInnerDateString.append(part);
+                    if (i != parts.length - 1) {
+                        newInnerDateString.append("-");
+                    }
+                }
+                replacement = '"' + newInnerDateString.toString() + '"';
+            }
+            replacement = "ISODate(" + replacement + ")";
             eJson = eJson.replace(matcher.group(), replacement);
         }
         return eJson;

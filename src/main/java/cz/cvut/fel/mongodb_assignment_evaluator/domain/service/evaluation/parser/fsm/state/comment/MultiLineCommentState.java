@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
@@ -9,7 +10,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
  * On exit returns back to a previous state.
  */
 public class MultiLineCommentState extends ParserState {
-    public MultiLineCommentState(ParserStateMachine context, ParserState previousState) {
+    public MultiLineCommentState(ScriptParser context, ParserState previousState) {
         super(context, previousState);
     }
 

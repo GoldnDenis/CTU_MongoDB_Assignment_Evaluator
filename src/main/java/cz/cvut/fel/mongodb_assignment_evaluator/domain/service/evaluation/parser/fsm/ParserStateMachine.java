@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class ParserStateMachine implements StateMachine<ParserState> {
+public class ParserStateMachine extends StateMachine<ParserState> {
     private ParserState currentState;
     @Getter
     private final List<Query> queryList;
@@ -23,7 +23,7 @@ public class ParserStateMachine implements StateMachine<ParserState> {
     private int currentLine;
 
     public ParserStateMachine() {
-        currentState = new ScriptState(this);
+//        currentState = new ScriptState(this);
         queryList = new ArrayList<>();
         wordAccumulator = new StringBuilder();
         assembler = new QueryTokenAssembler();
@@ -58,8 +58,8 @@ public class ParserStateMachine implements StateMachine<ParserState> {
             } catch (Exception e) {
                 String position = (currentLine - 1) + "r" + lineIterator.getCurrentIndex() + "c";
                 String errorMessage = "An error has occurred at " + position + ": " + e.getMessage();
-                StudentAssignmentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, errorMessage);
-                currentState = new ScriptState(this);
+//                StudentAssignmentEvaluator.getErrorCollector().addLog(Level.WARNING, StudentErrorTypes.PARSER, errorMessage);
+//                currentState = new ScriptState(this);
             }
         }
     }

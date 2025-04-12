@@ -7,12 +7,10 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.CriterionEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.FinalEvaluationResult;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.GradedSubmission;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.newcri.GradedCriteria;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.GradedCriteria;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Component
 public class OutputFormatter {
@@ -109,7 +107,7 @@ public class OutputFormatter {
                 .append(",").append(criterion.getDescription().replace("\n", " ").replace(",", ";"))
                 .append(",").append(resultState.getText());
         resultBuilder.append(",").append(evaluationResult.getScore());
-        if (criterion != Criteria.UNKNOWN_UNRECOGNISED) {
+        if (criterion != Criteria.UNRECOGNIZED_QUERY) {
             resultBuilder.append("/").append(evaluationResult.getRequiredCount());
         }
         resultBuilder.append(",");

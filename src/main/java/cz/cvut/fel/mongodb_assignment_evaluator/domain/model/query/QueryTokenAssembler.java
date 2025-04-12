@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.factory.QueryBuilderFactory;
@@ -67,7 +68,7 @@ public class QueryTokenAssembler {
                 commentAccumulator.setLength(0);
             }
             lastQueryOperator = operator;
-            QueryTypes type = QueryTypes.fromString(operator);
+            Operators type = Operators.fromString(operator);
             queryBuilder = QueryBuilderFactory.create(type);
             queryBuilder.setPosition(line, column)
                     .setCollection(collection)

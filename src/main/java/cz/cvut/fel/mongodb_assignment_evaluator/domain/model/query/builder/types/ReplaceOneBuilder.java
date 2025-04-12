@@ -11,9 +11,9 @@ public class ReplaceOneBuilder extends QueryBuilder {
     private BsonDocument options;
 
     public ReplaceOneBuilder() {
-        this.filter = new BsonDocument();
-        this.replacement = new BsonDocument();
-        this.options = new BsonDocument();
+        filter = new BsonDocument();
+        replacement = new BsonDocument();
+        options = new BsonDocument();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ReplaceOneBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> replacement = parameter.getDocument();
             case 2 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException();
+            default -> throw new IllegalArgumentException(); // todo exception
         }
     }
 }

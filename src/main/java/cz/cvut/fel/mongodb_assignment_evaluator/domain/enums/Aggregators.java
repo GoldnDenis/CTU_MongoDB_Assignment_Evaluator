@@ -3,16 +3,18 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 public enum Aggregators {
     COUNT("$count"),
-    FIRST("$first"),
-    LAST("$last"),
-    MIN("$min"),
-    MAX("$max"),
-    SUM("$sum"),
-    AVG("$avg");
+    MIN_MAX("$min", "$max"),
+    SUM_AVG("$sum", "$avg");
 
-    private final String value;
+    Aggregators(String... aggregators) {
+        this.aggregators = new HashSet<>(Set.of(aggregators));
+    }
+
+    private final Set<String> aggregators;
 }

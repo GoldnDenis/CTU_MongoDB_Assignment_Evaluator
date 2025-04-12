@@ -15,9 +15,9 @@ public class UpdateBuilder extends QueryBuilder {
     private BsonDocument options;
 
     public UpdateBuilder() {
-        this.filter = new BsonDocument();
-        this.updateDocuments = new ArrayList<>();
-        this.options = new BsonDocument();
+        filter = new BsonDocument();
+        updateDocuments = new ArrayList<>();
+        options = new BsonDocument();
     }
 
     @Override
@@ -38,15 +38,15 @@ public class UpdateBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> updateDocuments.add(parameter.getDocument());
             case 2 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException();
+            default -> throw new IllegalArgumentException(); // todo make an exception
         }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        switch (parameters.size()) {
-            case 1 -> updateDocuments.addAll(parameter.getDocumentList());
-            default -> throw new IllegalArgumentException();
+        if (!updateDocuments.isEmpty()) {
+            throw new IllegalArgumentException(); // todo make an exception
         }
+        updateDocuments.addAll(parameter.getDocumentList());
     }
 }

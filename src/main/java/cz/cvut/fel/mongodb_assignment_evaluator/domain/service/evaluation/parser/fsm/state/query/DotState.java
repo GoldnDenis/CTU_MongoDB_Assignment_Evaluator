@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParseSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
@@ -12,7 +12,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
  * A transitional state that should be preceded by consuming "db". Its purpose to guarantee that the substring is followed by a dot.
  */
 public class DotState extends ParserState {
-    public DotState(ParserStateMachine context, ParserState previousState) {
+    public DotState(ScriptParser context, ParserState previousState) {
         super(context, previousState);
     }
 
@@ -29,7 +29,7 @@ public class DotState extends ParserState {
         } else if (iterator.startsWithWhitespace()) {
             iterator.next();
         } else {
-            throw new IncorrectParseSyntax("Was expecting a dot after 'db'");
+            throw new IncorrectParserSyntax("Was expecting a dot after 'db'");
         }
     }
 }

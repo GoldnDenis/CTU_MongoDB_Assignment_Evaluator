@@ -49,7 +49,7 @@ public class DirectoryManager {
         FileWriterUtil.writeFile(resultFolder, "final_table", FileFormats.CSV, finalResultTableContents);
     }
 
-    public List<StudentSubmission> getStudentWorks() throws IOException {
+    public List<StudentSubmission> getStudentSumbissions() throws IOException {
         List<StudentSubmission> studentSubmissionList = new ArrayList<>();
         for (File folder : DirectoryUtils.getFiles(rootDirectory)) {
             if (!folder.isDirectory()) {
@@ -67,7 +67,7 @@ public class DirectoryManager {
         return studentSubmissionList;
     }
 
-    public List<String> readAllJSFilesAllLines(File folder) throws IOException {
+    public List<String> readAllJSLines(File folder) throws IOException {
         File[] jsFiles = DirectoryUtils.getFilesOfFormat(folder, FileFormats.JS);
         List<String> fileLines = new ArrayList<>();
         List<String> createCollectionFileLines = new ArrayList<>();

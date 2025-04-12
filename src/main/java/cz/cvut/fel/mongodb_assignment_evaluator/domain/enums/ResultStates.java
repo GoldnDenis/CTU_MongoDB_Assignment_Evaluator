@@ -12,7 +12,7 @@ public enum ResultStates {
 
     private final String text;
 
-    public static ResultStates evaluate(int currentScore, int requiredScore) {
+    public static ResultStates evaluate(long currentScore, long requiredScore) {
         if (currentScore <= 0) {
             return UNFULFILLED;
         } else if (currentScore >= requiredScore) {

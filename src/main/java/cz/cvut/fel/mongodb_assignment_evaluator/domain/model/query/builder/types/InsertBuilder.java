@@ -34,15 +34,15 @@ public class InsertBuilder extends QueryBuilder {
         switch (parameters.size()) {
             case 0 -> insertedDocuments.add(parameter.getDocument());
             case 1 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException();
+            default -> throw new IllegalArgumentException(); // todo make an exception
         }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        switch (parameters.size()) {
-            case 0 -> insertedDocuments.addAll(parameter.getDocumentList());
-            default -> throw new IllegalArgumentException();
+        if (!insertedDocuments.isEmpty()) {
+            throw new IllegalArgumentException(); // todo make an exception
         }
+        insertedDocuments.addAll(parameter.getDocumentList());
     }
 }

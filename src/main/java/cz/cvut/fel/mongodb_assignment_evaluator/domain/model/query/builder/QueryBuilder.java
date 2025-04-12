@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.*;
@@ -14,22 +15,22 @@ public class QueryBuilder implements QueryParameterVisitor {
     protected int column;
     protected String comment;
     protected String query;
-    protected QueryTypes type;
+    protected Operators type;
     protected String operation;
     protected String collection;
     protected final List<QueryParameter> parameters;
     protected final List<QueryModifier> modifiers;
 
     public QueryBuilder() {
-        this.line = -1;
-        this.column = -1;
-        this.comment = "";
-        this.query = "";
-        this.type = QueryTypes.UNKNOWN;
-        this.operation = "";
-        this.collection = "";
-        this.parameters = new ArrayList<>();
-        this.modifiers = new ArrayList<>();
+        line = -1;
+        column = -1;
+        comment = "";
+        query = "";
+        type = Operators.UNRECOGNIZED;
+        operation = "";
+        collection = "";
+        parameters = new ArrayList<>();
+        modifiers = new ArrayList<>();
     }
 
     public QueryBuilder setPosition(int line, int column) {
@@ -48,7 +49,7 @@ public class QueryBuilder implements QueryParameterVisitor {
         return this;
     }
 
-    public QueryBuilder setType(QueryTypes type) {
+    public QueryBuilder setType(Operators type) {
         this.type = type;
         return this;
     }
@@ -64,7 +65,7 @@ public class QueryBuilder implements QueryParameterVisitor {
     }
 
     public QueryBuilder addParameter(QueryParameter parameter) {
-        if (type != QueryTypes.UNKNOWN) {
+        if (!type.equals(Operators.UNRECOGNIZED)) {
             parameter.accept(this);
         }
         this.parameters.add(parameter);
@@ -86,26 +87,26 @@ public class QueryBuilder implements QueryParameterVisitor {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an document parameter");
+        throw new IllegalArgumentException("Wasn't expecting an document parameter"); // todo make an exception
     }
 
     @Override
     public void visitStringParameter(StringParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an string parameter");
+        throw new IllegalArgumentException("Wasn't expecting an string parameter"); // todo make an exception
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an pipeline parameter");
+        throw new IllegalArgumentException("Wasn't expecting an pipeline parameter"); // todo make an exception
     }
 
     @Override
     public void visitEmptyParameter(EmptyParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an empty parameter");
+        throw new IllegalArgumentException("Wasn't expecting an empty parameter"); // todo make an exception
     }
 
     @Override
     public void visitFunctionParameter(FunctionParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an function parameter");
+        throw new IllegalArgumentException("Wasn't expecting an function parameter"); // todo make an exception
     }
 }

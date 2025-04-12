@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParseSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 
@@ -13,7 +13,7 @@ public class StringState extends ParserState {
     private final char quote;
     private final String escape;
 
-    public StringState(ParserStateMachine context, ParserState previousState, char quote) {
+    public StringState(ScriptParser context, ParserState previousState, char quote) {
         super(context, previousState);
         this.quote = quote;
         this.escape = "\\" + quote;
@@ -31,7 +31,7 @@ public class StringState extends ParserState {
         } else if (iterator.hasNext()) {
             context.accumulate(iterator.next());
         } else {
-            throw new IncorrectParseSyntax("Was expecting a closing string quote ('" + quote + "')");
+            throw new IncorrectParserSyntax("Was expecting a closing string quote ('" + quote + "')");
         }
     }
 }

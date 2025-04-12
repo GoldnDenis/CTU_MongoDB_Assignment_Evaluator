@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.FunctionParameter;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.StringState;
@@ -11,7 +12,7 @@ public class FunctionParameterState extends ParserState {
     private final Boolean isModifier;
     private int parenthesisCount;
 
-    public FunctionParameterState(ParserStateMachine context, ParserState previousState, Boolean isModifier) {
+    public FunctionParameterState(ScriptParser context, ParserState previousState, Boolean isModifier) {
         super(context, previousState);
         this.isModifier = isModifier;
         this.parenthesisCount = 1;

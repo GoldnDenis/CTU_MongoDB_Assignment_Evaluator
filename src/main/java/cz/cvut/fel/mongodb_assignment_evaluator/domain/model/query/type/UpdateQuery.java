@@ -1,28 +1,26 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.UpdateGroups;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.checker.bson.BsonDocumentChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.bson.BsonDocumentChecker;
 import lombok.Getter;
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Getter
 public class UpdateQuery extends Query {
-    public final static String UPDATE_ONE = "updateOne";
-    public final static String UPDATE_MANY = "updateMany";
-
     private final BsonDocument filter;
     private final List<BsonDocument> updateDocuments;
     private final BsonDocument options;
 
-    public UpdateQuery(int lineNumber, int columnNumber, String comment, String query, QueryTypes type,
+    public UpdateQuery(int lineNumber, int columnNumber, String comment, String query, Operators type,
                        String operator, List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection,
                        BsonDocument filter, List<BsonDocument> updateDocuments, BsonDocument options) {
         super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
@@ -31,32 +29,33 @@ public class UpdateQuery extends Query {
         this.options = options;
     }
 
-    public boolean isUpdateOne() {
-        return operator.equalsIgnoreCase(UPDATE_ONE);
+    public List<BsonValue> findUpdateGroup(UpdateGroups group) {
+        return updateDocuments.stream()
+                .map(doc -> BsonDocumentChecker.getAll(doc, group.getOperations()))
+                .flatMap(Collection::stream)
+                .toList();
     }
 
-    public boolean isUpdateMany() {
-        return operator.equalsIgnoreCase(UPDATE_MANY);
+    public List<BsonValue> findUpdateGroup(UpdateGroups group, int depth) {
+        return updateDocuments.stream()
+                .map(doc -> BsonDocumentChecker.getAll(doc, group.getOperations(), depth))
+                .flatMap(Collection::stream)
+                .toList();
     }
+
 
     public boolean containsOneOfUpdates(UpdateGroups updateGroups) {
-        return updateDocuments.stream().anyMatch(d -> !BsonDocumentChecker.getAllRecursive(d, updateGroups.getOperations()).isEmpty());
+        return updateDocuments.stream().anyMatch(d -> !BsonDocumentChecker.getAll(d, updateGroups.getOperations()).isEmpty());
     }
 
-    public boolean upsertIsPositive() {
+    public boolean containsUpsert(boolean needPositive) {
         Optional<BsonValue> optUpsertValue = BsonDocumentChecker.getRecursive(options, "upsert", 1);
         if (optUpsertValue.isPresent()) {
             BsonValue upsertValue = optUpsertValue.get();
-            return (upsertValue.isBoolean() && upsertValue.asBoolean().getValue()) ||
-                    (upsertValue.isInt32() && upsertValue.asInt32().getValue() == 1);
-        }
-        return false;
-    }
-
-    public boolean upsertIsNegative() {
-        Optional<BsonValue> optUpsertValue = BsonDocumentChecker.getRecursive(options, "upsert", 1);
-        if (optUpsertValue.isPresent()) {
-            BsonValue upsertValue = optUpsertValue.get();
+            if (needPositive) {
+                return (upsertValue.isBoolean() && upsertValue.asBoolean().getValue()) ||
+                        (upsertValue.isInt32() && upsertValue.asInt32().getValue() == 1);
+            }
             return (upsertValue.isBoolean() && !upsertValue.asBoolean().getValue()) ||
                     (upsertValue.isInt32() && upsertValue.asInt32().getValue() == 0);
         }

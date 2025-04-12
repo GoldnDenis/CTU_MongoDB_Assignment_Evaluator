@@ -1,8 +1,8 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParseSyntax;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
@@ -12,7 +12,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 public class StringParameterState extends ParserState {
     private final boolean isModifier;
 
-    public StringParameterState(ParserStateMachine context, ParserState previousState, boolean isModifier) {
+    public StringParameterState(ScriptParser context, ParserState previousState, boolean isModifier) {
         super(context, previousState);
         this.isModifier = isModifier;
     }
@@ -31,7 +31,7 @@ public class StringParameterState extends ParserState {
         } else if (iterator.startsWithStringQuote()) {
             context.transition(new StringState(context, this, iterator.next()));
         } else if (iterator.hasNext()) {
-            throw new IncorrectParseSyntax("Was expecting '+', string quote or a comment");
+            throw new IncorrectParserSyntax("Was expecting '+', string quote or a comment");
         }
     }
 }

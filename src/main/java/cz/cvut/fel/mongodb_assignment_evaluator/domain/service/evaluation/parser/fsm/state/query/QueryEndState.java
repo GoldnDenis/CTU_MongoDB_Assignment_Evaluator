@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParseSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ScriptState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
@@ -9,7 +9,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 
 public class QueryEndState extends ParserState {
-    public QueryEndState(ParserStateMachine context, ParserState previousState) {
+    public QueryEndState(ScriptParser context, ParserState previousState) {
         super(context, previousState);
     }
 
@@ -31,7 +31,7 @@ public class QueryEndState extends ParserState {
             context.processAccumulatedWord(true);
             context.transition(new QueryBodyState(context, this, true));
         } else if (iterator.hasNext()) {
-            throw new IncorrectParseSyntax("Was expecting '.' or ';' after ')'");
+            throw new IncorrectParserSyntax("Was expecting '.' or ';' after ')', but got '" + iterator.peek() + "'");
         }
     }
 }
