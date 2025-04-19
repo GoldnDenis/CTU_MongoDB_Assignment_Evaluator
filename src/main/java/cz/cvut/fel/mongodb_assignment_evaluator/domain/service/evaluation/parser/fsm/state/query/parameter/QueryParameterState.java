@@ -53,8 +53,7 @@ public class QueryParameterState extends ParserState {
             context.processAccumulatedWord(true);
         } else if (iterator.startsWithWhitespace()) {
             char nextChar = iterator.next();
-            char lastChar = StringUtility.getLastChar(context.getAccumulatedWord());
-            if (!Character.isWhitespace(lastChar)) {
+            if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {
                 context.accumulate(nextChar);
             }
         } else if (iterator.hasNext()) {

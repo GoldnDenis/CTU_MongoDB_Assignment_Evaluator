@@ -21,6 +21,18 @@ public class StringUtility {
         return true;
     }
 
+    public static Double parseDouble(String string) {
+        try {
+            return Double.parseDouble(string);
+        } catch (NumberFormatException e) {
+            return Double.NaN;
+        }
+    }
+
+    public static boolean isNumber(String string) {
+        return !Double.isNaN(parseDouble(string));
+    }
+
     public static String substringTillParenthesis(String string, String substring, char openingParenthesis) {
         if (string == null) {
             return string;

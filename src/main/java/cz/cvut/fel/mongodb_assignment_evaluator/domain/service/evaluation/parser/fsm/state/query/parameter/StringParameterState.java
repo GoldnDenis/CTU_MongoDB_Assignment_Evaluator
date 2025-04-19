@@ -6,7 +6,6 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 
 public class StringParameterState extends ParserState {
@@ -29,7 +28,7 @@ public class StringParameterState extends ParserState {
         } else if (iterator.startsWith("+") || iterator.startsWithWhitespace()) {
             iterator.next();
         } else if (iterator.startsWithStringQuote()) {
-            context.transition(new StringState(context, this, iterator.next()));
+            context.accumulate(iterator.nextStringConstruct());
         } else if (iterator.hasNext()) {
             throw new IncorrectParserSyntax("Was expecting '+', string quote or a comment");
         }

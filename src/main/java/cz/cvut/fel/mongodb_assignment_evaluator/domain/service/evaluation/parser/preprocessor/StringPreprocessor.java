@@ -1,6 +1,8 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ExpressionEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 
 import java.security.SecureRandom;
@@ -88,5 +90,32 @@ public class StringPreprocessor {
         hexString.append("\"");
 
         return hexString.toString();
+    }
+
+
+    public static String preprocess(String string) {
+        Pattern arithmeticExpressionPattern = Pattern.compile(RegularExpressions.ARITHMETIC_EXPRESSION.getRegex());
+//        Pattern idFunctionPattern = Pattern.compile(RegularExpressions.ID_FUNCTION.getRegex());
+        StringBuilder buffer = new StringBuilder();
+        LineIterator iterator = new LineIterator(string);
+        while (iterator.hasNext()) {
+            if (iterator.startsWithStringQuote()) {
+                buffer.append(iterator.nextStringConstruct());
+            } else if (iterator.startsWith(arithmeticExpressionPattern)) {
+                buffer.append(ExpressionEvaluator.eval(iterator.nextMatch(arithmeticExpressionPattern)).toString());
+            }
+//            else if (iterator.startsWith(idFunctionPattern)) {
+//                iterator.nextMatch(idFunctionPattern);
+//                buffer.append(generateHex24());
+//            }
+            else {
+                char next = iterator.next();
+                if (next == '"') {
+                    buffer.append('\\');
+                }
+                buffer.append(next);
+            }
+        }
+        return buffer.toString();
     }
 }

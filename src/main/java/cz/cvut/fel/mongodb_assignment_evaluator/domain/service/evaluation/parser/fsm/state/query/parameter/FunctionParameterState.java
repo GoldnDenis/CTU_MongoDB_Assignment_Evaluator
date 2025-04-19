@@ -2,9 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parse
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.FunctionParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 
@@ -28,7 +26,7 @@ public class FunctionParameterState extends ParserState {
 
         if (parenthesisCount > 0) {
             if (iterator.startsWithStringQuote()) {
-                context.transition(new StringState(context, this, iterator.next()));
+                context.accumulate(iterator.nextStringConstruct());
             } else if (startsWithDoubleWhitespace(iterator)) {
                 iterator.next();
             } else {

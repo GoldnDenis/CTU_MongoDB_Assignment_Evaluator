@@ -6,7 +6,6 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter.QueryParameterState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor.StringPreprocessor;
@@ -15,6 +14,7 @@ import org.bson.BsonDocument;
 import org.bson.json.JsonParseException;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DocumentParameterState extends ParserState {
@@ -38,50 +38,37 @@ public class DocumentParameterState extends ParserState {
             context.transition(new SingleLineCommentState(context, this));
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
-        } else {
-            if (iterator.startsWith("{")) {
-                parenthesisCount++;
-            } else if (iterator.startsWith("}")) {
-                parenthesisCount--;
-            }
-
-            char nextChar = iterator.next();
-            if (parenthesisCount > 0) {
-                if (nextChar == '"' || nextChar == '\'') {
-                    context.transition(new StringState(context, this, nextChar));
-                } else if (isNotDoubleWhitespace(nextChar)) {
-                    context.accumulate(nextChar);
+        } else if (iterator.startsWith("{")) {
+            context.accumulate(iterator.next());
+            context.transition(new DocumentKeyState(context, this));
+        } else if (iterator.startsWith("}")) {
+//            String processedDocument = StringPreprocessor.preprocessEJson(context.getAccumulatedWord());
+            context.accumulate(iterator.next());
+            try {
+                BsonDocument document = BsonDocument.parse(context.getAccumulatedWord());
+                if (isPipeline) {
+                    context.processAccumulatedWord(true);
+                    pipeline.add(document);
+                } else {
+                    assembler.addParameter(new DocumentParameter(document), isModifier);
+                    context.transition(new QueryParameterState(context, this, isModifier));
                 }
-            } else if (!context.getAccumulatedWord().isBlank()) {
-                processDocumentEnd();
-            } else if (nextChar == ']') {
-                processPipelineEnd();
+            } catch (JsonParseException e) {
+                System.out.println(e.getMessage());
+                // todo bendasta
             }
-        }
-    }
-
-    private void processDocumentEnd() throws JsonParseException {
-        context.accumulate('}');
-        String processedDocument = StringPreprocessor.preprocessEJson(context.getAccumulatedWord());
-        // todo add try catch
-        BsonDocument document = BsonDocument.parse(processedDocument);
-        if (isPipeline) {
-            context.processAccumulatedWord(true);
-            pipeline.add(document);
-        } else {
-            assembler.addParameter(new DocumentParameter(document), isModifier);
+        } else if (iterator.startsWith("]")) {
+            context.accumulate(iterator.next());
+            assembler.addParameter(new PipelineParameter(pipeline), isModifier);
             context.transition(new QueryParameterState(context, this, isModifier));
-        }
-    }
-
-    private void processPipelineEnd() {
-        context.accumulate(']');
-        assembler.addParameter(new PipelineParameter(pipeline), isModifier);
-        context.transition(new QueryParameterState(context, this, isModifier));
-    }
-
-    private boolean isNotDoubleWhitespace(char nextChar) {
-        char lastChar = StringUtility.getLastChar(context.getAccumulatedWord());
-        return !Character.isWhitespace(lastChar) || !Character.isWhitespace(nextChar);
+        } else if (iterator.startsWithWhitespace()) {
+            char nextChar = iterator.next();
+            if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {
+                context.accumulate(nextChar);
+            }
+        } else if (iterator.startsWith(",")) {
+            context.accumulate(iterator.next());
+            context.processAccumulatedWord(true);
+        } //todo potentially an else statement
     }
 }

@@ -1,9 +1,12 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
 import lombok.Getter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Getter
 public class LineIterator implements Iterator<Character> {
@@ -58,6 +61,41 @@ public class LineIterator implements Iterator<Character> {
         return line.substring(start, currentIndex);
     }
 
+    public String nextMatch(Pattern pattern) {
+        String rest = line.substring(currentIndex);
+        Matcher matcher = pattern.matcher(rest);
+        if (!matcher.find()) {
+            throw new NoSuchElementException("No substring that matches the pattern");
+        }
+        String found = matcher.group();
+        int end = rest.indexOf(found);
+        int start = currentIndex;
+        currentIndex += (end + found.length());
+        return line.substring(start, end);
+    }
+
+    // todo make a test
+    public String nextStringConstruct() {
+        if (!startsWithStringQuote() || !hasNext()) {
+            throw new NoSuchElementException("Iterator did not find a string construct");
+        }
+        StringBuilder builder = new StringBuilder();
+        char quote = next();
+        String escape = "\\" + quote;
+        builder.append(quote);
+        while (hasNext()) {
+            if (startsWith(escape)) {
+                builder.append(nextMatch(escape));
+            } else if (startsWith(quote)) {
+                builder.append(next());
+                return builder.toString();
+            } else {
+                builder.append(next());
+            }
+        }
+        throw new IncorrectParserSyntax("Was expecting a closing string quote ('" + quote + "')");
+    }
+
     public Character peek() {
         if (!hasNext()) {
             throw new NoSuchElementException("End of input");
@@ -75,6 +113,12 @@ public class LineIterator implements Iterator<Character> {
 
     public boolean startsWith(String substring) {
         return line.substring(currentIndex).startsWith(substring);
+    }
+
+    public boolean startsWith(Pattern pattern) {
+        String rest = line.substring(currentIndex);
+        Matcher matcher = pattern.matcher(rest);
+        return matcher.lookingAt();
     }
 
     public boolean startsWith(char c) {

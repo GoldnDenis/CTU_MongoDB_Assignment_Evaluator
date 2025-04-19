@@ -1,11 +1,9 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.ParserStateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.MultiLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.DotState;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.StringState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 
 /**
@@ -25,8 +23,7 @@ public class ScriptState extends ParserState {
         } else if (iterator.startsWith("/*")) {
             context.transition(new MultiLineCommentState(context, this));
         } else if (iterator.startsWithStringQuote()) {
-            context.transition(new StringState(context, this, iterator.next()));
-            context.processAccumulatedWord(false);
+            iterator.nextStringConstruct();
         } else if (iterator.startsWith("db")) {
             context.initAssembler(iterator.getCurrentIndex() + 1);
             context.accumulate(iterator.nextMatch("db"));
