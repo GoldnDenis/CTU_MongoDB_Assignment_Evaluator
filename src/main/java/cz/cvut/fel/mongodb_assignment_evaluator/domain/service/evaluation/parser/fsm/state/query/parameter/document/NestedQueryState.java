@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter.document;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
@@ -7,35 +8,31 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.HexIdGenerator;
 
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 public class NestedQueryState extends ParserState {
+    private static final Pattern nestedModifierPattern = Pattern.compile(RegularExpressions.NESTED_MODIFIER.getRegex());;
+    private boolean waitingModifier;
+
     public NestedQueryState(ScriptParser context, ParserState previousState) {
         super(context, previousState);
+        waitingModifier = false;
     }
 
     @Override
     public void process(LineIterator iterator) {
-        if (iterator.startsWith("(")) {
-            parenthesisDepth++;
-        } else if (iterator.startsWith(")")) {
-            parenthesisDepth--;
-        }
-        String next = (iterator.startsWithStringQuote()) ? iterator.nextStringConstruct() : String.valueOf(iterator.next());
-        if (parenthesisDepth > 0) {
-            buffer.append(next);
-        } else if (parenthesisDepth == 0) {
-            //todo possible to just utilize js evaluator fully
-            String bufferedString = buffer.toString();
-            if (context.getAccumulatedWord().endsWith("ISODate(")) {
-                bufferedString = LocalDate.now().toString();
-            } else if (context.getAccumulatedWord().endsWith("ObjectId(")) {
-                bufferedString = HexIdGenerator.generateHexId(24);
-            } else if (!bufferedString.isBlank() && (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'"))) {
-                bufferedString = StringPreprocessor.preprocess(bufferedString);
-            }
-            bufferedString = "\"" + bufferedString + "\")";
-            context.accumulate(bufferedString);
+        if (waitingModifier && iterator.startsWith(nestedModifierPattern)) { //todo
+            context.accumulate(iterator.nextMatch(nestedModifierPattern));
+        } else if (iterator.startsWith("(")) {
+            context.accumulate(iterator.next());
+            context.transition(new ObjectValueState(context, this));
+        } else if (iterator.startsWith(".")) {
+            waitingModifier = true;
+        } else if (iterator.startsWith(",") || iterator.startsWith("}") || iterator.startsWith("]")) {
+            context.accumulate("\"");
             context.transition(previousState);
+        } else if (iterator.startsWithWhitespace()) {
+            iterator.next();
         }
     }
 }

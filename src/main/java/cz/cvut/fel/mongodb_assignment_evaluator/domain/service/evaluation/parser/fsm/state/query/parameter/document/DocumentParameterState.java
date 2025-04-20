@@ -62,9 +62,9 @@ public class DocumentParameterState extends ParserState {
             assembler.addParameter(new PipelineParameter(pipeline), isModifier);
             context.transition(new QueryParameterState(context, this, isModifier));
         } else if (iterator.startsWithWhitespace()) {
-            char nextChar = iterator.next();
+            iterator.next();
             if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {
-                context.accumulate(nextChar);
+                context.accumulate(" ");
             }
         } else if (iterator.startsWith(",")) {
             context.accumulate(iterator.next());

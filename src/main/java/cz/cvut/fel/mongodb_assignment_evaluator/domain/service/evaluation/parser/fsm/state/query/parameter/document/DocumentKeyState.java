@@ -33,15 +33,15 @@ public class DocumentKeyState extends ParserState {
             context.transition(new DocumentValueState(context, this));
         } else if (iterator.startsWith("}")) {
             if (previousState.getClass().equals(DocumentValueState.class)) {
-                context.accumulate("\r" + iterator.next());
+                context.accumulate(iterator.next());
             }
             // todo json saving format, i.e. new lines, tabs, spaces, etc.
             context.transition(previousState);
 //            context.accumulate(iterator.next());
         } else if (iterator.startsWithWhitespace()) {
-            char c = iterator.next();
+            iterator.next();
             if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {
-                context.accumulate(c);
+                context.accumulate(" ");
             }
         } else if (iterator.hasNext()) {
             char c = iterator.next();

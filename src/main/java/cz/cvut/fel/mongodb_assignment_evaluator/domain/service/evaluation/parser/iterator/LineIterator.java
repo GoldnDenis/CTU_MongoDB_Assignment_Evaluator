@@ -67,11 +67,15 @@ public class LineIterator implements Iterator<Character> {
         if (!matcher.find()) {
             throw new NoSuchElementException("No substring that matches the pattern");
         }
-        String found = matcher.group();
-        int end = rest.indexOf(found);
         int start = currentIndex;
-        currentIndex += (end + found.length());
-        return line.substring(start, end);
+        while (hasNext()) {
+            if (matcher.lookingAt()) {
+                currentIndex += matcher.group().length();
+                break;
+            }
+            currentIndex++;
+        }
+        return line.substring(start, currentIndex);
     }
 
     // todo make a test

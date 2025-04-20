@@ -31,7 +31,7 @@ public class QueryEndState extends ParserState {
             context.processAccumulatedWord(true);
             context.transition(new QueryBodyState(context, this, true));
         } else if (iterator.hasNext()) {
-            throw new IncorrectParserSyntax("Was expecting '.' or ';' after ')', but got '" + iterator.peek() + "'");
+            throw new IncorrectParserSyntax("Was expecting an end of the query ('.' or ';'), but got '" + iterator.peek() + "'");
         }
     }
 }

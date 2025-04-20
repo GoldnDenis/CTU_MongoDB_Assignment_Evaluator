@@ -29,18 +29,19 @@ public class ScriptParser extends StateMachine<ParserState> {
         this.submission = submission;
         currentLine = 1;
         for (int i = 0; i < submission.getScriptLines().size(); i++, currentLine++) {
-            LineIterator lineIterator = new LineIterator(submission.getScriptLines().get(i));
-            while (lineIterator.hasNext()) {
+            LineIterator iterator = new LineIterator(submission.getScriptLines().get(i));
+            while (iterator.hasNext()) {
                 try {
-//                    if (currentLine == 277) {
-//                        System.out.println("ds");
+//                    if (submission.getUsername().equalsIgnoreCase("tychtjan") && currentLine == 201) {
+//                        System.out.println();
 //                    }
-                    currentState.process(lineIterator);
+                    currentState.process(iterator);
                 } catch (Exception e) {
-                    String errorMessage = "An error has occurred at "
+                    String errorMessage = "Parser caught an error at "
                             + currentLine + "r"
-                            + lineIterator.getCurrentIndex() + "c"
-                            + ": " + e.getMessage();
+                            + iterator.getCurrentIndex() + "c"
+                            + ": " + e.getMessage()
+                            + ". Manual inspection is required.";
                     submission.addLog(Level.WARNING, StudentErrorTypes.PARSER, errorMessage);
                     currentState = new ScriptState(this);
                 }

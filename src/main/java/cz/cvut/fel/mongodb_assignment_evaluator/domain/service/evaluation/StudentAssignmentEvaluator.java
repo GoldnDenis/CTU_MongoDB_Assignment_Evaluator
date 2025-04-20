@@ -26,11 +26,12 @@ public class StudentAssignmentEvaluator {
     }
 
     public void evaluateStudent(StudentSubmission submission) {
-//        if (studentName.equals("kulikvl1")) { //todo debug
-//            System.out.println(1);
-//        }
         scriptParser.extractQueries(submission);
         criteriaEvaluator.evaluateQueries(submission);
+
+//        if (submission.getUsername().equalsIgnoreCase("banertam")) {
+//            System.out.println();
+//        }
 
 //        log.info("Successfully parsed the script of " + studentName);
 //        StudentEvaluationResult studentResult = new RootCriteriaChecker().checkQueries(queryList);

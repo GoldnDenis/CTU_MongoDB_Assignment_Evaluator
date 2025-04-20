@@ -1,6 +1,8 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Value;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -8,12 +10,11 @@ import javax.script.ScriptException;
 import java.util.*;
 
 public class ExpressionEvaluator {
-    private static ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
-
-    public static Object eval(String expr) {
-        try {
-            return engine.eval(expr);
-        } catch (ScriptException e) {
+    public static String eval(String expr) {
+        try (Context context = Context.newBuilder("js").allowAllAccess(true).build()) {
+            Value value = context.eval("js", expr);
+            return value.toString();
+        } catch (Exception e) {
             return expr;
         }
     }

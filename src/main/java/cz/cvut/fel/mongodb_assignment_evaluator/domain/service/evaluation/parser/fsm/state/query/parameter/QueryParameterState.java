@@ -52,9 +52,9 @@ public class QueryParameterState extends ParserState {
             context.accumulate(iterator.next());
             context.processAccumulatedWord(true);
         } else if (iterator.startsWithWhitespace()) {
-            char nextChar = iterator.next();
+            iterator.next();
             if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {
-                context.accumulate(nextChar);
+                context.accumulate(" ");
             }
         } else if (iterator.hasNext()) {
             context.transition(new FunctionParameterState(context, this, isModifier));

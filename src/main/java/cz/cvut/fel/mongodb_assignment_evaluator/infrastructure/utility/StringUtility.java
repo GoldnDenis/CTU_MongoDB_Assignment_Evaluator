@@ -29,8 +29,20 @@ public class StringUtility {
         }
     }
 
-    public static boolean isNumber(String string) {
+    public static Integer parseInteger(String string) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
+        }
+    }
+
+    public static boolean isDouble(String string) {
         return !Double.isNaN(parseDouble(string));
+    }
+
+    public static boolean isInt(String string) {
+        return !parseInteger(string).equals(Integer.MIN_VALUE);
     }
 
     public static String substringTillParenthesis(String string, String substring, char openingParenthesis) {

@@ -100,20 +100,16 @@ public class StringPreprocessor {
         LineIterator iterator = new LineIterator(string);
         while (iterator.hasNext()) {
             if (iterator.startsWithStringQuote()) {
-                buffer.append(iterator.nextStringConstruct());
+                buffer.append(iterator.nextStringConstruct().replaceAll("\"", "\\\\\""));
             } else if (iterator.startsWith(arithmeticExpressionPattern)) {
-                buffer.append(ExpressionEvaluator.eval(iterator.nextMatch(arithmeticExpressionPattern)).toString());
+                buffer.append(ExpressionEvaluator.eval(iterator.nextMatch(arithmeticExpressionPattern)));
             }
 //            else if (iterator.startsWith(idFunctionPattern)) {
 //                iterator.nextMatch(idFunctionPattern);
 //                buffer.append(generateHex24());
 //            }
             else {
-                char next = iterator.next();
-                if (next == '"') {
-                    buffer.append('\\');
-                }
-                buffer.append(next);
+                buffer.append(iterator.next());
             }
         }
         return buffer.toString();

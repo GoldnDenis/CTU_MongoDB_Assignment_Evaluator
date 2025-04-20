@@ -13,13 +13,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DocumentValueState extends ParserState {
-    private boolean openArray;
     private final StringBuilder buffer;
+    private int arrayCounter;
 
     public DocumentValueState(ScriptParser context, ParserState previousState) {
         super(context, previousState);
-        openArray = false;
         buffer = new StringBuilder();
+        arrayCounter = 0;
     }
 
     @Override
@@ -33,22 +33,30 @@ public class DocumentValueState extends ParserState {
         } else if (iterator.startsWith("{")) {
             context.transition(new DocumentKeyState(context, this));
         } else if (iterator.startsWith("[")) {
-            context.accumulate(iterator.next());
-            openArray = true;
+            if (arrayCounter == 0) {
+                context.accumulate(iterator.next());
+            } else {
+                buffer.append(iterator.next());
+            }
+            arrayCounter++;
         } else if (iterator.startsWith("]")) {
-            acceptValue();
-            context.accumulate(iterator.next());
-            openArray = false;
-        } else if (iterator.startsWith(",") && openArray) {
+            arrayCounter--;
+            if (arrayCounter == 0) {
+                acceptValue();
+                context.accumulate(iterator.next());
+            } else {
+                buffer.append(iterator.next());
+            }
+        } else if (iterator.startsWith(",") && arrayCounter > 0) {
             acceptValue();
             context.accumulate(iterator.next());
         } else if (iterator.startsWith(",") || iterator.startsWith("}")) {
             acceptValue();
             context.transition(previousState);
         } else if (iterator.startsWithWhitespace()) {
-            char c = iterator.next();
-            if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {
-                buffer.append(c);
+            iterator.next();
+            if (!Character.isWhitespace(StringUtility.getLastChar(buffer.toString()))) {
+                buffer.append(" ");
             }
         } else if (iterator.startsWith("(")) {
             String bufferedString = buffer.toString().trim();
@@ -60,24 +68,29 @@ public class DocumentValueState extends ParserState {
             } else if (bufferedString.equalsIgnoreCase("UUID")) {
                 bufferedString = "ObjectId";
             }
-            bufferedString = bufferedString + iterator.next();
             if (Pattern.compile(RegularExpressions.MONGODB_QUERY_START.getRegex()).matcher(bufferedString).matches()) {
                 bufferedString = "\"" + bufferedString;
+                context.transition(new NestedQueryState(context, this));
+            } else {
+                bufferedString = bufferedString + iterator.next();
+                context.transition(new ObjectValueState(context, this));
             }
             buffer.setLength(0);
+
             context.accumulate(bufferedString);
-            context.transition(new ObjectValueState(context, this));
         } else if (iterator.hasNext()) {
-            char c = iterator.next();
-            buffer.append(c);
+            buffer.append(iterator.next());
         }
     }
 
     private void acceptValue() {
         String bufferedString = buffer.toString().trim();
         if (!bufferedString.isBlank()) {
-            if (!StringUtility.isNumber(bufferedString) &&
-                    (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'"))) {
+            if (StringUtility.isInt(bufferedString)) {
+                bufferedString = StringUtility.parseInteger(bufferedString).toString();
+            } else if (StringUtility.isDouble(bufferedString)) {
+                bufferedString  = StringUtility.parseDouble(bufferedString).toString();
+            } else if (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'")) {
                 bufferedString = "\"" + StringPreprocessor.preprocess(bufferedString) + "\"";
             }
             context.accumulate(bufferedString);

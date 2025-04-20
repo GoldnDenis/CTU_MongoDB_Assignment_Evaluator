@@ -5,6 +5,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor.StringPreprocessor;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.HexIdGenerator;
+import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 
 import java.time.LocalDate;
 
@@ -27,20 +28,35 @@ public class ObjectValueState extends ParserState {
         }
         String next = (iterator.startsWithStringQuote()) ? iterator.nextStringConstruct() : String.valueOf(iterator.next());
         if (parenthesisDepth > 0) {
-            buffer.append(next);
+            if (next.isBlank()) {
+                if (!Character.isWhitespace(StringUtility.getLastChar(buffer.toString()))) {
+                    buffer.append(" ");
+                }
+            } else {
+                buffer.append(next);
+            }
         } else if (parenthesisDepth == 0) {
             //todo possible to just utilize js evaluator fully
             String bufferedString = buffer.toString();
-            if (context.getAccumulatedWord().endsWith("ISODate(")) {
-                bufferedString = LocalDate.now().toString();
-            } else if (context.getAccumulatedWord().endsWith("ObjectId(")) {
-                bufferedString = HexIdGenerator.generateHexId(24);
-            } else if (!bufferedString.isBlank() && (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'"))) {
-                bufferedString = StringPreprocessor.preprocess(bufferedString);
+            bufferedString = StringPreprocessor.preprocess(bufferedString);
+            if (!previousState.getClass().equals(NestedQueryState.class)) {
+                if (context.getAccumulatedWord().endsWith("ISODate(")) {
+                    bufferedString = LocalDate.now().toString();
+                } else if (context.getAccumulatedWord().endsWith("ObjectId(")) {
+                    bufferedString = HexIdGenerator.generateHexId(24);
+                }
+//                else if (!bufferedString.isBlank() && (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'"))) {
+//                    bufferedString = StringPreprocessor.preprocess(bufferedString);
+//                }
+                bufferedString = "\"" + bufferedString + "\"";
             }
-            bufferedString = "\"" + bufferedString + "\")";
-            context.accumulate(bufferedString);
+            context.accumulate(bufferedString + ")");
             context.transition(previousState);
         }
+    }
+
+    private boolean isDoubleWhitespace(char current) {
+        return Character.isWhitespace(current) &&
+                Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()));
     }
 }

@@ -8,8 +8,10 @@ import lombok.Getter;
 public enum RegularExpressions {
 //    MONGODB_QUERY("db\\.([._0-9a-zA-Z]+)\\(([\\s\\S]*?)(\\)(\\.[\\s\\S]*?\\)))*;"),
 //    MONGODB_QUERY_START("db[\\s]*\\.([\\s]*[_0-9a-zA-Z]+\\.)*[\\s]*[_0-9a-zA-Z]+\\("),
-    MONGODB_QUERY_START("db\\s*\\.\\s*[_0-9a-zA-Z]+(\\.\\s*[_0-9a-zA-Z]+)?\\("),
-    NESTED_MODIFIER("([\\s]*\\.[\\s]*[^}]+)+"),
+//    MONGODB_QUERY_START("db\\s*\\.\\s*[_0-9a-zA-Z]+(\\.\\s*[_0-9a-zA-Z]+)?\\("),
+    MONGODB_QUERY_START("db\\s*\\.\\s*[_0-9a-zA-Z]+(\\.\\s*[_0-9a-zA-Z]+)?"),
+//    NESTED_MODIFIER("([\\s]*\\.[\\s]*[^}]+)+"),
+    NESTED_MODIFIER("\\.\\s*[_0-9a-zA-Z]+"),
     VARIABLE_CALL("[a-zA-Z0-9_-]+([\\s]*\\.[a-zA-Z0-9_-]+)*\\["),
 //    DATE_FIELD("new Date\\((.*?(\\((.*?)\\).*?)?)\\)"),
     DATE_FIELD("((new Date)|(ISODate))\\((((\"|')([0-9]+-[0-9]+-[0-9]+)(\"|'))|(.*?(\\((.*?)\\).*?)?))\\)"),
