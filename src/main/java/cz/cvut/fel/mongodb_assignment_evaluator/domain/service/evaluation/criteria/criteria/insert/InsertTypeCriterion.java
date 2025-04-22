@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.InsertQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.bson.BsonDocumentChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 import org.bson.BsonType;
 
 public class InsertTypeCriterion extends EvaluationCriterion<InsertQuery> {

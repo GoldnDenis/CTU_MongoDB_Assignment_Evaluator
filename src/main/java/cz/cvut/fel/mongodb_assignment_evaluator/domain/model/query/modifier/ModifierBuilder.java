@@ -1,6 +1,5 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.EmptyParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
 

@@ -32,9 +32,6 @@ public class ScriptParser extends StateMachine<ParserState> {
             LineIterator iterator = new LineIterator(submission.getScriptLines().get(i));
             while (iterator.hasNext()) {
                 try {
-//                    if (submission.getUsername().equalsIgnoreCase("tychtjan") && currentLine == 201) {
-//                        System.out.println();
-//                    }
                     currentState.process(iterator);
                 } catch (Exception e) {
                     String errorMessage = "Parser caught an error at "

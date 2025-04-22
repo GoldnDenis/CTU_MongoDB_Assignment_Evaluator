@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QuerySelectors;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.bson.BsonDocumentChecker;
@@ -28,7 +29,7 @@ public class FindQuery extends Query {
     }
 
     public boolean containsSelectors(QuerySelectors selectors) {
-        for (String selector: selectors.getOperators()) {
+        for (String selector : selectors.getOperators()) {
             boolean found = false;
             if (selector.equalsIgnoreCase("$and") || selector.equalsIgnoreCase("$or")) {
                 found = BsonDocumentChecker.getRecursive(filter, selector, 1).isPresent();

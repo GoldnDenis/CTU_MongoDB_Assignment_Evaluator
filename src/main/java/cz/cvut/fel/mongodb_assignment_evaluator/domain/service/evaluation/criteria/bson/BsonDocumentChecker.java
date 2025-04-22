@@ -10,21 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BsonDocumentChecker {
-//    public static boolean containsImplicitEquality(BsonDocument document) {
-//        for (Map.Entry<String, BsonValue> entry : document.entrySet()) {
-//            String key = entry.getKey();
-//            BsonValue value = entry.getValue();
-//            if (key.startsWith("$")) {
-//                continue;
-//            }
-//            if (value.isDocument() || value.isArray()) {
-//                continue;
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
-
     public static Optional<String> findKeyMatchesPattern(BsonDocument document, Pattern pattern) {
         return findKeyMatchesPattern(document, pattern, getDepth(document));
     }
@@ -38,7 +23,6 @@ public class BsonDocumentChecker {
             BsonValue value = entry.getValue();
             Matcher matcher = pattern.matcher(key);
             if (matcher.find()) {
-//                return Optional.of(matcher.group().split("\\.")[0]);
                 return Optional.of(matcher.group());
             }
             if (value.isDocument()) {
@@ -47,20 +31,13 @@ public class BsonDocumentChecker {
                     return found;
                 }
             } else if (value.isArray()) {
-                for (BsonValue arrayValue: value.asArray()) {
+                for (BsonValue arrayValue : value.asArray()) {
                     if (arrayValue.isDocument()) {
                         Optional<String> found = findKeyMatchesPattern(arrayValue.asDocument(), pattern, depth - 1);
                         if (found.isPresent()) {
                             return found;
                         }
-                    }
-//                    else if (nestedValue.isString()) {
-//                        matcher = pattern.matcher(nestedValue.asString().getValue());
-//                        if (matcher.find()) {
-//                            return Optional.of(matcher.group().split("\\.")[0]);
-//                        }
-//                    }
-                    else {
+                    } else {
                         break;
                     }
                 }
@@ -90,7 +67,7 @@ public class BsonDocumentChecker {
                     return found;
                 }
             } else if (value.isArray()) {
-                for (BsonValue arrayValue: value.asArray()) {
+                for (BsonValue arrayValue : value.asArray()) {
                     if (arrayValue.isString()) {
                         String valueString = arrayValue.asString().toString();
                         Matcher matcher = pattern.matcher(valueString);
@@ -120,7 +97,7 @@ public class BsonDocumentChecker {
             return false;
         }
         if (value.isString() &&
-            document.containsKey(value.asString().getValue())) {
+                document.containsKey(value.asString().getValue())) {
             return true;
         }
         if (document.containsValue(value)) {
@@ -227,7 +204,7 @@ public class BsonDocumentChecker {
                     return true;
                 }
             } else if (value.isArray()) {
-                for (BsonValue arrayValue: value.asArray()) {
+                for (BsonValue arrayValue : value.asArray()) {
                     if (arrayValue.getBsonType().equals(type)) {
                         return true;
                     }

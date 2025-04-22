@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="criterionGroups")
+@Table(name = "criterionGroups")
 //@NotNull
 //@Getter
 //@Setter
 public class CriterionGroup extends AbstractEntity implements Cloneable {
-    @Column(unique=true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @OneToMany

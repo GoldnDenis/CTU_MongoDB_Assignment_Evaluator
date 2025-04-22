@@ -1,7 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.factory.QueryBuilderFactory;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.ModifierBuilder;

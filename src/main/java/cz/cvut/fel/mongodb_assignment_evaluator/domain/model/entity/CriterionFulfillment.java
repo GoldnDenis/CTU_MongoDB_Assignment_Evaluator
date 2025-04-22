@@ -3,7 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="criterionFulfillments")
+@Table(name = "criterionFulfillments")
 public class CriterionFulfillment {
     @EmbeddedId
     private CriterionFulfillmentId id;
@@ -22,7 +22,8 @@ public class CriterionFulfillment {
     @JoinColumn(name = "criterion_id")
     private Criterion criterion;
 
-    public CriterionFulfillment() {}
+    public CriterionFulfillment() {
+    }
 
     public CriterionFulfillment(Criterion criterion, Student student) {
         this.id = new CriterionFulfillmentId(criterion.getId(), student.getId());

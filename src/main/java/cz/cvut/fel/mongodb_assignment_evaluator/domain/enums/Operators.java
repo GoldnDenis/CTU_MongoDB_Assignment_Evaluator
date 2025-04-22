@@ -20,44 +20,44 @@ public enum Operators {
     UNRECOGNIZED("unrecognized");
 
     public static Operators fromString(String operator) {
-      switch (operator.toUpperCase()) {
-          case "CREATECOLLECTION" -> {
-              return Operators.CREATE_COLLECTION;
-          }
-          case "INSERT" -> {
-              return Operators.INSERT;
-          }
-          case "INSERTONE" -> {
-              return Operators.INSERT_ONE;
-          }
-          case "INSERTMANY" -> {
-              return Operators.INSERT_MANY;
-          }
-          case "UPDATEONE" -> {
-              return Operators.UPDATE_ONE;
-          }
-          case "UPDATEMANY" -> {
-              return Operators.UPDATE_MANY;
-          }
-          case "REPLACEONE" -> {
-              return Operators.REPLACE_ONE;
-          }
-          case "FIND" -> {
-              return Operators.FIND;
-          }
-          case "FINDONE" -> {
-              return Operators.FIND_ONE;
-          }
-          case "AGGREGATE" -> {
-              return Operators.AGGREGATE;
-          }
-          case "SORT" -> {
-              return Operators.SORT;
-          }
-          default -> {
-              return Operators.UNRECOGNIZED;
-          }
-      }
+        switch (operator.toUpperCase()) {
+            case "CREATECOLLECTION" -> {
+                return Operators.CREATE_COLLECTION;
+            }
+            case "INSERT" -> {
+                return Operators.INSERT;
+            }
+            case "INSERTONE" -> {
+                return Operators.INSERT_ONE;
+            }
+            case "INSERTMANY" -> {
+                return Operators.INSERT_MANY;
+            }
+            case "UPDATEONE" -> {
+                return Operators.UPDATE_ONE;
+            }
+            case "UPDATEMANY" -> {
+                return Operators.UPDATE_MANY;
+            }
+            case "REPLACEONE" -> {
+                return Operators.REPLACE_ONE;
+            }
+            case "FIND" -> {
+                return Operators.FIND;
+            }
+            case "FINDONE" -> {
+                return Operators.FIND_ONE;
+            }
+            case "AGGREGATE" -> {
+                return Operators.AGGREGATE;
+            }
+            case "SORT" -> {
+                return Operators.SORT;
+            }
+            default -> {
+                return Operators.UNRECOGNIZED;
+            }
+        }
     }
 
     private final String operator;

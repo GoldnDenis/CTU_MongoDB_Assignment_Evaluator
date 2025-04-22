@@ -8,25 +8,20 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.comment.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.query.parameter.QueryParameterState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor.StringPreprocessor;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 import org.bson.BsonDocument;
 import org.bson.json.JsonParseException;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class DocumentParameterState extends ParserState {
-    //    private int depth;
-    private int parenthesisCount;
     private final Boolean isModifier;
     private final Boolean isPipeline;
     private final List<BsonDocument> pipeline;
 
     public DocumentParameterState(ScriptParser context, ParserState previousState, Boolean isModifier, Boolean isPipeline) {
         super(context, previousState);
-        this.parenthesisCount = 0;
         this.isModifier = isModifier;
         this.isPipeline = isPipeline;
         this.pipeline = new ArrayList<>();
@@ -42,7 +37,6 @@ public class DocumentParameterState extends ParserState {
             context.accumulate(iterator.next());
             context.transition(new DocumentKeyState(context, this));
         } else if (iterator.startsWith("}")) {
-//            String processedDocument = StringPreprocessor.preprocessEJson(context.getAccumulatedWord());
             context.accumulate(iterator.next());
             try {
                 BsonDocument document = BsonDocument.parse(context.getAccumulatedWord());
@@ -55,7 +49,6 @@ public class DocumentParameterState extends ParserState {
                 }
             } catch (JsonParseException e) {
                 System.out.println(e.getMessage());
-                // todo bendasta
             }
         } else if (iterator.startsWith("]")) {
             context.accumulate(iterator.next());

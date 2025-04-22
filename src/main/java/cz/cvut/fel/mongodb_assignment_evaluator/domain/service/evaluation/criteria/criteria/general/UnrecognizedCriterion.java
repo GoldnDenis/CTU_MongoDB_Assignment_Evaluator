@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
 public class UnrecognizedCriterion extends EvaluationCriterion<Query> {
     public UnrecognizedCriterion(int priority) {

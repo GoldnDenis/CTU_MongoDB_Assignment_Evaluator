@@ -4,14 +4,12 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.iterator.LineIterator;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor.StringPreprocessor;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.HexIdGenerator;
 
-import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 public class NestedQueryState extends ParserState {
-    private static final Pattern nestedModifierPattern = Pattern.compile(RegularExpressions.NESTED_MODIFIER.getRegex());;
+    private static final Pattern nestedModifierPattern = Pattern.compile(RegularExpressions.NESTED_MODIFIER.getRegex());
+    ;
     private boolean waitingModifier;
 
     public NestedQueryState(ScriptParser context, ParserState previousState) {

@@ -9,7 +9,6 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.preprocessor.StringPreprocessor;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DocumentValueState extends ParserState {
@@ -89,20 +88,12 @@ public class DocumentValueState extends ParserState {
             if (StringUtility.isInt(bufferedString)) {
                 bufferedString = StringUtility.parseInteger(bufferedString).toString();
             } else if (StringUtility.isDouble(bufferedString)) {
-                bufferedString  = StringUtility.parseDouble(bufferedString).toString();
+                bufferedString = StringUtility.parseDouble(bufferedString).toString();
             } else if (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'")) {
                 bufferedString = "\"" + StringPreprocessor.preprocess(bufferedString) + "\"";
             }
             context.accumulate(bufferedString);
         }
         buffer.setLength(0);
-    }
-
-    private boolean isConstructor(String string) {
-        return string.equalsIgnoreCase("ISODate") ||
-                string.equalsIgnoreCase("ObjectId") ||
-                string.equalsIgnoreCase("NumberLong") ||
-                string.equalsIgnoreCase("NumberInt") ||
-                string.equalsIgnoreCase("new ISODate");
     }
 }

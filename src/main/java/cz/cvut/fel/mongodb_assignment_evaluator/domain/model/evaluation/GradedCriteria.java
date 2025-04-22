@@ -1,4 +1,4 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria;
+package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.ResultStates;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;

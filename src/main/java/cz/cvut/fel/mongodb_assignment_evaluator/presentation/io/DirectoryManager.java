@@ -2,9 +2,6 @@ package cz.cvut.fel.mongodb_assignment_evaluator.presentation.io;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.FileFormats;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.error.StudentErrorCollector;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.FinalEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.GradedSubmission;
 import cz.cvut.fel.mongodb_assignment_evaluator.presentation.format.OutputFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -36,20 +33,21 @@ public class DirectoryManager {
         resultFolder = DirectoryUtils.createFolder(rootDirectory, "results");
     }
 
-    public void createStudentEvaluationOutput(String studentName, GradedSubmission evaluationResult, StudentErrorCollector studentErrorCollector) throws IOException {
+    public void createStudentEvaluationFiles(StudentSubmission submission) throws IOException {
+        String studentName = submission.getUsername();
         File studentResultFolder = DirectoryUtils.createFolder(resultFolder, studentName);
-        String resultContents = outputFormatter.formatToString(evaluationResult);
-        FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.CSV, resultContents);
-        String errorLogContents = outputFormatter.formatToString(studentErrorCollector);
-        FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.LOG, errorLogContents);
+        String resultTable = outputFormatter.generateTable(submission.getGradedCriteria());
+        FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.CSV, resultTable);
+        String logFileContents = outputFormatter.formatLogs(submission.getLogList());
+        FileWriterUtil.writeFile(studentResultFolder, studentName, FileFormats.LOG, logFileContents);
     }
 
-    public void createFinalTable(FinalEvaluationResult evaluationResult) throws IOException {
-        String finalResultTableContents = outputFormatter.formatToString(evaluationResult);
+    public void createFinalTable(List<StudentSubmission> studentSubmissions, List<String> criteriaNames) throws IOException {
+        String finalResultTableContents = outputFormatter.generateCrossTab(studentSubmissions, criteriaNames);
         FileWriterUtil.writeFile(resultFolder, "final_table", FileFormats.CSV, finalResultTableContents);
     }
 
-    public List<StudentSubmission> getStudentSumbissions() throws IOException {
+    public List<StudentSubmission> getStudentSubmissions() throws IOException {
         List<StudentSubmission> studentSubmissionList = new ArrayList<>();
         for (File folder : DirectoryUtils.getFiles(rootDirectory)) {
             if (!folder.isDirectory()) {
@@ -72,8 +70,6 @@ public class DirectoryManager {
         List<String> fileLines = new ArrayList<>();
         List<String> createCollectionFileLines = new ArrayList<>();
         List<String> insertFileLines = new ArrayList<>();
-
-
         for (File file : jsFiles) {
             try {
                 String content = FileReaderUtil.readContent(file);
@@ -89,7 +85,6 @@ public class DirectoryManager {
                 throw new IOException(e.getMessage());
             }
         }
-
         List<String> prioritySortedLines = new ArrayList<>();
         prioritySortedLines.addAll(createCollectionFileLines);
         prioritySortedLines.addAll(insertFileLines);

@@ -13,5 +13,6 @@ public class CriterionFulfillmentId implements Serializable {
     private Long criterionId;
     private Long studentId;
 
-    public CriterionFulfillmentId() {}
+    public CriterionFulfillmentId() {
+    }
 }

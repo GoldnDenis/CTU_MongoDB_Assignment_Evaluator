@@ -4,7 +4,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.UpdateGroups;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.bson.BsonDocumentChecker;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 import org.bson.BsonValue;
 
 import java.util.Optional;
@@ -29,19 +29,5 @@ public class UpdatePatternCriterion extends EvaluationCriterion<UpdateQuery> {
                 .map(doc -> BsonDocumentChecker.findKeyMatchesPattern(doc, requiredPattern))
                 .filter(Optional::isPresent)
                 .count();
-
-//        for (BsonDocument updateDocument : query.getUpdateDocuments()) {
-//            List<BsonValue> foundOperatorValues = BsonDocumentChecker.getAll(updateDocument, Set.of("$set", "$mul", "$inc"), 1);
-//            for (BsonValue operatorValue : foundOperatorValues) {
-//                if (!operatorValue.isDocument()) {
-//                    continue;
-//                }
-//                Optional<String> foundNestedKey = BsonDocumentChecker.findKeyMatchesPattern(operatorValue.asDocument(), requiredPattern);
-//                if (foundNestedKey.isPresent()) {
-//                    currentScore++;
-//                    return;
-//                }
-//            }
-//        }
     }
 }

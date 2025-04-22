@@ -11,11 +11,9 @@ import java.util.List;
 
 public class AggregateBuilder extends QueryBuilder {
     private final List<BsonDocument> aggregationPipeline;
-//    private BsonDocument options;
 
     public AggregateBuilder() {
         aggregationPipeline = new ArrayList<>();
-//        this.options = new BsonDocument();
     }
 
     @Override
@@ -28,24 +26,11 @@ public class AggregateBuilder extends QueryBuilder {
                 collection,
                 aggregationPipeline
         );
-//        return new AggregateQuery(
-//                line, column,
-//                comment, query, type,
-//                operation,
-//                parameters, modifiers,
-//                collection,
-//                aggregationPipeline, options
-//        );
     }
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         aggregationPipeline.add(parameter.getDocument());
-//        switch (parameters.size()) {
-//            case 0 -> aggregationPipeline.add(parameter.getDocument());
-//            case 1 -> options = parameter.getDocument();
-//            default -> throw new IllegalArgumentException();
-//        }
     }
 
     @Override

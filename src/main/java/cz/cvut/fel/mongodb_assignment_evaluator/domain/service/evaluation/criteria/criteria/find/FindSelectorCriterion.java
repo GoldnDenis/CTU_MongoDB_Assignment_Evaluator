@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QuerySelectors;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.FindQuery;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
 public class FindSelectorCriterion extends EvaluationCriterion<FindQuery> {
     private final QuerySelectors requiredSelectors;

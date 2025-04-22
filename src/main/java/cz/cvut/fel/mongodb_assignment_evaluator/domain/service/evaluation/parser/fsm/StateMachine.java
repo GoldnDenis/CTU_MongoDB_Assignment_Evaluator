@@ -1,7 +1,5 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser.fsm.state.ParserState;
-
 public abstract class StateMachine<S> {
     protected S currentState;
     protected final StringBuilder wordAccumulator;

@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "topics")
 public class Topic extends AbstractEntity implements Cloneable {
-//    @Column(unique = true)
+    //    @Column(unique = true)
     @NotNull
     private String name;
 

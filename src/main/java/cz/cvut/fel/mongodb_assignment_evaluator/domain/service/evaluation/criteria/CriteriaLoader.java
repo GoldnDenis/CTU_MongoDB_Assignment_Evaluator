@@ -2,6 +2,8 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.factory.CriteriaFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +19,7 @@ public class CriteriaLoader {
             try {
                 criteriaEvaluators.put(crit, factory.createEvaluationCriterion(crit.getName()));
             } catch (Exception e) {
-                // some exception
+                // todo some exception
             }
         }
         return criteriaEvaluators.entrySet().stream()
@@ -28,7 +30,7 @@ public class CriteriaLoader {
     // todo temp criteria load
     private List<Crit> load() {
         List<Crit> loadedCriteria = new ArrayList<>();
-        for (Criteria crit: Criteria.values()) {
+        for (Criteria crit : Criteria.values()) {
             loadedCriteria.add(new Crit(crit.name(), crit.getDescription()));
         }
         return loadedCriteria;

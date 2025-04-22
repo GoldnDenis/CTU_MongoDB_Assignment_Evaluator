@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "students")
-public class Student extends AbstractEntity implements Cloneable{
+public class Student extends AbstractEntity implements Cloneable {
     @NotNull
     private String username;
     @NotNull

@@ -1,11 +1,12 @@
-package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria;
+package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.factory;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.UnknownCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.*;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.aggregate.AggregationCriterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.find.FindTypeCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.find.FindSelectorCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.find.FindTypeCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.find.ProjectionCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.general.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.insert.InsertTypeCriterion;

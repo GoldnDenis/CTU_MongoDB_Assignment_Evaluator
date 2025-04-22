@@ -1,123 +1,64 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.presentation.format;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Criteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.ResultStates;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.error.StudentErrorCollector;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.CriterionEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.FinalEvaluationResult;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.result.GradedSubmission;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.GradedCriteria;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class OutputFormatter {
-//    public String formatToString(GradedSubmission gradedSubmission) {
-//        StringBuilder resultBuilder = new StringBuilder();
-//        resultBuilder.append("Criterion")
-//                .append(",").append("Description")
-//                .append(",").append("Status")
-//                .append(",").append("Found Count")
-//                .append(",").append("Fulfilled Queries");
-//        for (CriterionEvaluationResult criterionEvaluationResult : gradedSubmission.getCriteriaScoreMap().keySet()) {
-//            resultBuilder.append("\n");
-//            resultBuilder.append(formatToString(criterionEvaluationResult));
-//        }
-//        resultBuilder.append("\n");
-//        return resultBuilder.toString();
-//    }
-
-    public String formatToString(GradedSubmission gradedSubmission) {
+    public String generateTable(List<GradedCriteria> criteria) {
         StringBuilder resultBuilder = new StringBuilder();
         resultBuilder.append("Criterion")
                 .append(",").append("Description")
                 .append(",").append("Status")
-                .append(",").append("Found Count")
+                .append(",").append("Score")
                 .append(",").append("Fulfilled Queries");
-        for (GradedCriteria graded : gradedSubmission.getGradedCriteria()) {
-            resultBuilder.append("\n");
-            resultBuilder.append(formatToString(graded));
+        for (GradedCriteria criterion : criteria) {
+            String name = criterion.getName();
+            String score = String.valueOf(criterion.getScore());
+            String scoreOutput = name.equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name()) ? score : score + "/" + criterion.getRequiredScore();
+            String formattedQueries = name.equalsIgnoreCase(Criteria.COMMENT.name()) ? "" : formatQueryList(criterion.getFulfilledQueries());
+            resultBuilder.append("\n").append(name)
+                    .append(",").append(criterion.getDescription().replace("\n", " ").replace(",", ";"))
+                    .append(",").append(criterion.getResultState().getText())
+                    .append(",").append(scoreOutput)
+                    .append(",").append(formattedQueries);
         }
         resultBuilder.append("\n");
         return resultBuilder.toString();
     }
 
-    public String formatToString(GradedCriteria gradedCriteria) {
-        String name = gradedCriteria.getName();
-        StringBuilder resultBuilder = new StringBuilder();
-        resultBuilder.append(name)
-                .append(",").append(gradedCriteria.getDescription().replace("\n", " ").replace(",", ";"))
-                .append(",").append(gradedCriteria.getResultState().getText());
-        resultBuilder.append(",").append(gradedCriteria.getScore());
-        if (!name.equalsIgnoreCase("UNRECOGNISED")) {
-            resultBuilder.append("/").append(gradedCriteria.getRequiredScore());
-        }
-        resultBuilder.append(",");
-        if (!name.equalsIgnoreCase("COMMENT")) {
-            resultBuilder.append(formatToString(gradedCriteria.getFulfilledQueries()));
-        }
-        return resultBuilder.toString();
-    }
-
-    public String formatToString(List<Query> queryList) {
+    public String formatQueryList(List<Query> queryList) {
         StringBuilder resultBuilder = new StringBuilder();
         for (int i = 0; i < queryList.size(); i++) {
-            if (i != 0) {
-                resultBuilder.append(" ");
-            }
+            String queryEnd = (i + 1 < queryList.size()) ? "; " : ";";
             resultBuilder.append(i + 1)
                     .append(") ")
                     .append(queryList.get(i).getQuery().replace("\r", " ").replace("\n", " ").replace(",", ";"))
-                    .append(";");
+                    .append(queryEnd);
         }
         return resultBuilder.toString().replace(";;", ";");
     }
 
-    public String formatToString(FinalEvaluationResult finalEvaluationResult) {
-        StringBuilder resultBuilder = new StringBuilder();
-//        boolean init = false;
-//        for (Map.Entry<String, GradedSubmission> entry : finalEvaluationResult.getStudentResultMap().entrySet()) {
-//            String student = entry.getKey();
-//            Map<CriterionEvaluationResult, Integer> criterionCounts = entry.getValue().getCriteriaScoreMap();
-//            Set<CriterionEvaluationResult> criteriaResults = criterionCounts.keySet();
-//            if (!init) {
-//                init = true;
-//                resultBuilder.append("StudentName");
-//                for (CriterionEvaluationResult result : criteriaResults) {
-//                    resultBuilder.append(",").append(result.getCriterion().name());
-//                }
-//                resultBuilder.append("\n");
-//            }
-//            resultBuilder.append(student);
-//            for (CriterionEvaluationResult result : criteriaResults) {
-//                resultBuilder.append(",").append(criterionCounts.get(result));
-//            }
-//            resultBuilder.append("\n");
-//        }
-        return resultBuilder.toString();
+    public String formatLogs(List<String> logList) {
+        return String.join("\n", logList);
     }
 
-    public String formatToString(CriterionEvaluationResult evaluationResult) {
+    public String generateCrossTab(List<StudentSubmission> submissions, List<String> criteriaNames) {
         StringBuilder resultBuilder = new StringBuilder();
-        Criteria criterion = evaluationResult.getCriterion();
-        ResultStates resultState = evaluationResult.evaluateState();
-        resultBuilder.append(criterion.name())
-                .append(",").append(criterion.getDescription().replace("\n", " ").replace(",", ";"))
-                .append(",").append(resultState.getText());
-        resultBuilder.append(",").append(evaluationResult.getScore());
-        if (criterion != Criteria.UNRECOGNIZED_QUERY) {
-            resultBuilder.append("/").append(evaluationResult.getRequiredCount());
+        resultBuilder.append("Student");
+        criteriaNames.forEach(name -> resultBuilder.append(",").append(name));
+        for (StudentSubmission submission : submissions) {
+            String studentName = submission.getUsername();
+            resultBuilder.append("\n")
+                    .append(studentName);
+            submission.getGradedCriteria().forEach(criterion -> resultBuilder.append(",").append(criterion.getScore()));
         }
-        resultBuilder.append(",");
-        if (criterion != Criteria.COMMENT) {
-            resultBuilder.append(formatToString(evaluationResult.getSatisfiedQueryScoreMap().keySet().stream().toList()));
-        }
+        resultBuilder.append("\n");
         return resultBuilder.toString();
-    }
-
-    public String formatToString(StudentErrorCollector studentErrorCollector) {
-        return String.join("\n", studentErrorCollector.getLogList());
     }
 }

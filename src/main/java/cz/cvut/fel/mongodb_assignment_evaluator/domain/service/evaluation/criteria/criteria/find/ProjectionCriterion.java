@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.find;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.FindQuery;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
 public class ProjectionCriterion extends EvaluationCriterion<FindQuery> {
     private final boolean needPositive;

@@ -45,18 +45,10 @@ public class ObjectValueState extends ParserState {
                 } else if (context.getAccumulatedWord().endsWith("ObjectId(")) {
                     bufferedString = HexIdGenerator.generateHexId(24);
                 }
-//                else if (!bufferedString.isBlank() && (!bufferedString.startsWith("\"") && !bufferedString.startsWith("'"))) {
-//                    bufferedString = StringPreprocessor.preprocess(bufferedString);
-//                }
                 bufferedString = "\"" + bufferedString + "\"";
             }
             context.accumulate(bufferedString + ")");
             context.transition(previousState);
         }
-    }
-
-    private boolean isDoubleWhitespace(char current) {
-        return Character.isWhitespace(current) &&
-                Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()));
     }
 }

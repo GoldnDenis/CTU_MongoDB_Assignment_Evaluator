@@ -3,7 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ModifierOperatorCriterion<Q extends Query> extends EvaluationCriter
     public void evaluate(Query query) {
         List<QueryModifier> modifiers = query.getModifiers();
         if (modifiers.isEmpty() ||
-            query.isTrivial()) {
+                query.isTrivial()) {
             return;
         }
         for (QueryModifier modifier : modifiers) {

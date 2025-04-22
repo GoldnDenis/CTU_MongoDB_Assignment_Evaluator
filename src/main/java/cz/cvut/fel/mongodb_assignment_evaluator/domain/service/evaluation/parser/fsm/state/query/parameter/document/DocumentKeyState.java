@@ -8,13 +8,6 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.parser
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
 
 public class DocumentKeyState extends ParserState {
-//    private final boolean isNested;
-
-//    public DocumentKeyState(ScriptParser context, ParserState previousState, boolean isNested) {
-//        super(context, previousState);
-//        this.isNested = isNested;
-//    }
-
     public DocumentKeyState(ScriptParser context, ParserState previousState) {
         super(context, previousState);
     }
@@ -29,7 +22,6 @@ public class DocumentKeyState extends ParserState {
             context.transition(new MultiLineCommentState(context, this));
         } else if (iterator.startsWith(":")) {
             context.accumulate(iterator.next());
-//            context.processAccumulatedWord(true);
             context.transition(new DocumentValueState(context, this));
         } else if (iterator.startsWith("}")) {
             if (previousState.getClass().equals(DocumentValueState.class)) {
@@ -37,7 +29,6 @@ public class DocumentKeyState extends ParserState {
             }
             // todo json saving format, i.e. new lines, tabs, spaces, etc.
             context.transition(previousState);
-//            context.accumulate(iterator.next());
         } else if (iterator.startsWithWhitespace()) {
             iterator.next();
             if (!Character.isWhitespace(StringUtility.getLastChar(context.getAccumulatedWord()))) {

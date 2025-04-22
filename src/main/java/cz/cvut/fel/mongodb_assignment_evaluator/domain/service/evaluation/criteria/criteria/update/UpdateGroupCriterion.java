@@ -3,7 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.UpdateGroups;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQuery;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
 public class UpdateGroupCriterion extends EvaluationCriterion<UpdateQuery> {
     private final UpdateGroups requiredGroup;
@@ -27,12 +27,5 @@ public class UpdateGroupCriterion extends EvaluationCriterion<UpdateQuery> {
             return;
         }
         currentScore = query.findUpdateGroup(requiredGroup).size();
-//        List<BsonDocument> updateDocuments = query.getUpdateDocuments();
-//        if (updateDocuments.stream()
-//                .anyMatch(d ->
-//                        !BsonDocumentChecker.getAll(d, requiredGroups)
-//                                .isEmpty())) {
-//            currentScore++;
-//        }
     }
 }

@@ -1,7 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QueryTypes;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
 import lombok.Getter;
@@ -11,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InsertQuery extends Query {
-    private final static String INSERT_ONE = "insertOne";
-    private final static String INSERT_MANY = "insertMany";
-
     @Getter
     private final List<BsonDocument> insertedDocuments;
     @Getter

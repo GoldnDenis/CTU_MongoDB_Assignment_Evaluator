@@ -2,8 +2,11 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.crite
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class CriteriaEvaluator {
     private final Map<Crit, EvaluationCriterion<? extends Query>> criteriaEvaluators;
@@ -25,22 +28,7 @@ public class CriteriaEvaluator {
                 .forEach(submission::addGradedCriteria);
     }
 
-//    public List<GradedCriteria> evaluateQueries(StudentSubmission submission) {
-//        submission.getQueryList().forEach(query -> criteriaEvaluators.values().stream()
-//                .filter(criterion -> criterion.getQueryType().isInstance(query))
-//                .forEach(criterion -> criterion.check(query))
-//        );
-//        return criteriaEvaluators.entrySet().stream()
-//                .map(e -> e.getValue().getResult(e.getKey()))
-//                .toList();
-////        return criteriaEvaluators.entrySet().stream()
-////                .map(e -> new GradedCriteria(
-////                        e.getKey().getName(),
-////                        e.getKey().getDescription(),
-////                        e.getKey().getRequiredCount(),
-////                        e.getValue().getMaxScore(),
-////                        e.getValue().getFulfilledQueries())
-////                ).sorted(Comparator.comparing(e -> e.getId))
-////                .toList();
-//    }
+    public Set<Crit> getLoadedCriteria() {
+        return criteriaEvaluators.keySet();
+    }
 }

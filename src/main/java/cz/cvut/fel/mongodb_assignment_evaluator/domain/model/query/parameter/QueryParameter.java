@@ -4,5 +4,6 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.vis
 
 public interface QueryParameter {
     void accept(QueryParameterVisitor visitor);
+
     boolean isTrivial();
 }

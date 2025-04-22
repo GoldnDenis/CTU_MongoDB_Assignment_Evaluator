@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.update;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQuery;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.service.evaluation.criteria.criteria.EvaluationCriterion;
 
 public class UpsertCriterion extends EvaluationCriterion<UpdateQuery> {
     private final boolean needPositive;

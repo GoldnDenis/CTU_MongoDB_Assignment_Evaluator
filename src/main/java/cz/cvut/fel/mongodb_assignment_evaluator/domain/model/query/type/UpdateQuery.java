@@ -43,11 +43,6 @@ public class UpdateQuery extends Query {
                 .toList();
     }
 
-
-    public boolean containsOneOfUpdates(UpdateGroups updateGroups) {
-        return updateDocuments.stream().anyMatch(d -> !BsonDocumentChecker.getAll(d, updateGroups.getOperations()).isEmpty());
-    }
-
     public boolean containsUpsert(boolean needPositive) {
         Optional<BsonValue> optUpsertValue = BsonDocumentChecker.getRecursive(options, "upsert", 1);
         if (optUpsertValue.isPresent()) {
@@ -67,6 +62,6 @@ public class UpdateQuery extends Query {
     public boolean isTrivial() {
         return updateDocuments.isEmpty() ||
                 updateDocuments.stream()
-                .allMatch(BsonDocument::isEmpty);
+                        .allMatch(BsonDocument::isEmpty);
     }
 }
