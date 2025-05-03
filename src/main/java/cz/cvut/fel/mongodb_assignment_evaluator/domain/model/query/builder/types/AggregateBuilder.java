@@ -1,9 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.PipelineParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.AggregateQuery;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.AggregateQueryToken;
 import org.bson.BsonDocument;
 
 import java.util.ArrayList;
@@ -17,11 +18,11 @@ public class AggregateBuilder extends QueryBuilder {
     }
 
     @Override
-    public AggregateQuery build() {
-        return new AggregateQuery(
+    public AggregateQueryToken build() {
+        return new AggregateQueryToken(
                 line, column,
                 comment, query, type,
-                operation,
+                operator,
                 parameters, modifiers,
                 collection,
                 aggregationPipeline
@@ -36,7 +37,7 @@ public class AggregateBuilder extends QueryBuilder {
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         if (!aggregationPipeline.isEmpty()) {
-            throw new IllegalArgumentException(); // todo exception
+            throw new IncorrectParameterSyntax("Pipeline", parameters.size() + 1, operator);
         }
         aggregationPipeline.addAll(parameter.getDocumentList());
     }

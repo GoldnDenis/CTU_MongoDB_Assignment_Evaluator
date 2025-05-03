@@ -1,9 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.EmptyParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.FindQuery;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.FindQueryToken;
 import org.bson.BsonDocument;
 
 public class FindBuilder extends QueryBuilder {
@@ -18,11 +19,11 @@ public class FindBuilder extends QueryBuilder {
     }
 
     @Override
-    public FindQuery build() {
-        return new FindQuery(
+    public FindQueryToken build() {
+        return new FindQueryToken(
                 line, column,
                 comment, query, type,
-                operation,
+                operator,
                 parameters, modifiers,
                 collection,
                 filter, projection, options
@@ -35,14 +36,14 @@ public class FindBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> projection = parameter.getDocument();
             case 2 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException(); // todo make an exception
+            default -> throw new IncorrectParameterSyntax("Document", parameters.size() + 1, operator);
         }
     }
 
     @Override
     public void visitEmptyParameter(EmptyParameter parameter) {
         if (!parameters.isEmpty()) {
-            throw new IllegalArgumentException(); // todo make an exception
+            throw new IncorrectParameterSyntax("Empty", parameters.size() + 1, operator);
         }
         filter = new BsonDocument();
     }

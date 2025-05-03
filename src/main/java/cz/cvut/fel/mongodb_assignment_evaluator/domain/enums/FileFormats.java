@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum FileFormats {
     CSV(".csv"),
     LOG(".log"),
-    JS(".js");
+    JS(".js"),
+    TXT(".txt"),
+    ;
 
     private final String fileFormat;
 

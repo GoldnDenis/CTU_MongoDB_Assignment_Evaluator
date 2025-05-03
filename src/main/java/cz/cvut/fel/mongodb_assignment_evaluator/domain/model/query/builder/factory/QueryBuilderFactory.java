@@ -15,7 +15,7 @@ public class QueryBuilderFactory {
                 return new InsertBuilder();
             }
             case REPLACE_ONE -> {
-                return new ReplaceOneBuilder();
+                return new ReplaceBuilder();
             }
             case UPDATE_ONE, UPDATE_MANY -> {
                 return new UpdateBuilder();

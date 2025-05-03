@@ -5,7 +5,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.Query
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.factory.QueryBuilderFactory;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.ModifierBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 import lombok.Setter;
 
 public class QueryTokenAssembler {
@@ -51,6 +51,10 @@ public class QueryTokenAssembler {
         }
     }
 
+    public String getRawQuery() {
+        return rawQueryAccumulator.toString();
+    }
+
     public void addModifier() {
         queryBuilder.addModifier(modifierBuilder.build());
         modifierBuilder = new ModifierBuilder();
@@ -85,8 +89,8 @@ public class QueryTokenAssembler {
         collection = "";
     }
 
-    public Query createQuery() {
-        Query query = queryBuilder.setComment(commentAccumulator.toString())
+    public QueryToken createQuery() {
+        QueryToken query = queryBuilder.setComment(commentAccumulator.toString())
                 .setQuery(rawQueryAccumulator.toString())
                 .build();
         resetAccumulators();

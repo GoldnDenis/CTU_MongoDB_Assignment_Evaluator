@@ -1,9 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.CreateCollectionQuery;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.CreateCollectionQueryToken;
 import org.bson.BsonDocument;
 
 
@@ -17,11 +18,11 @@ public class CreateCollectionBuilder extends QueryBuilder {
     }
 
     @Override
-    public CreateCollectionQuery build() {
-        return new CreateCollectionQuery(
+    public CreateCollectionQueryToken build() {
+        return new CreateCollectionQueryToken(
                 line, column,
                 comment, query, type,
-                operation, "",
+                operator, "",
                 parameters, modifiers,
                 collectionName, options
         );
@@ -30,7 +31,7 @@ public class CreateCollectionBuilder extends QueryBuilder {
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
         if (collectionName.isBlank()) {
-            throw new IllegalArgumentException(); // todo make an exception
+            throw new IncorrectParameterSyntax("'.createCollection' cannot have a blank collection name");
         }
         options = parameter.getDocument();
     }
@@ -38,7 +39,7 @@ public class CreateCollectionBuilder extends QueryBuilder {
     @Override
     public void visitStringParameter(StringParameter parameter) {
         if (!collectionName.isBlank()) {
-            throw new IllegalArgumentException(); // todo make an exception
+            throw new IncorrectParameterSyntax("String", parameters.size() + 1, operator);
         }
         collectionName = parameter.getValue();
     }

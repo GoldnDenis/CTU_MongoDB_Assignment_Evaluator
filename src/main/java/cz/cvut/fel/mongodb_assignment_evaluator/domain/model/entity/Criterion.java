@@ -1,58 +1,99 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "criteria")
-//@NotNull
+@Table(name = "criterion")
+@Getter
+@Setter
 public class Criterion extends AbstractEntity implements Cloneable {
     @Column(unique = true, nullable = false)
     private String name;
-    @NotNull
+
+    @Column(nullable = false)
     private String description;
-//    private int requiredCount;
+
+    @Column(name = "min_score", nullable = false, columnDefinition = "integer default 1")
+    private int minCount;
 
     @ManyToOne
-    private CriterionGroup criterionGroup;
+    @JoinColumn(name = "group_id")
+    private CriterionGroup group;
 
-    @OneToMany
-    private Set<CriterionFulfillment> criterionFulfillmentSet;
+    @OneToMany(mappedBy = "criterion")
+    private Set<SubmissionResult> submissionResults;
+
+    @ManyToMany
+    @JoinTable(
+            name = "fulfilledqueries",
+            joinColumns = @JoinColumn(name = "criterion_id"),
+            inverseJoinColumns = @JoinColumn(name = "query_id")
+    )
+    private Set<Query> queries;
 
     public Criterion() {
-        criterionFulfillmentSet = new HashSet<>();
+        this.submissionResults = new HashSet<>();
+        this.queries = new HashSet<>();
     }
 
-//    public Criterion(String description, int requiredCount) {
-//        this.description = description;
-//        this.requiredCount = requiredCount;
-//    }
-
-    public Criterion(String name, String description, CriterionGroup criterionGroup) {
+    public Criterion(String name, String description) {
         this.name = name;
         this.description = description;
-        this.criterionGroup = criterionGroup.clone();
-        criterionFulfillmentSet = new HashSet<>();
+        this.minCount = 1;
+        this.submissionResults = new HashSet<>();
+        this.queries = new HashSet<>();
+    }
+
+    public Criterion(String name, String description, int minCount) {
+        this.name = name;
+        this.description = description;
+        this.minCount = minCount;
+        this.submissionResults = new HashSet<>();
+        this.queries = new HashSet<>();
+    }
+
+    public Criterion(String name, String description, int minCount, CriterionGroup group) {
+        this.name = name;
+        this.description = description;
+        this.minCount = minCount;
+        this.group = group.clone();
+        this.submissionResults = new HashSet<>();
+        this.queries = new HashSet<>();
+    }
+
+    public Criterion(String name, String description, int minCount, CriterionGroup group, Set<SubmissionResult> submissionResults) {
+        this.name = name;
+        this.description = description;
+        this.minCount = minCount;
+        this.group = group.clone();
+        this.submissionResults = new HashSet<>(submissionResults);
+        this.queries = new HashSet<>();
+    }
+
+    public Criterion(String name, String description, int minCount, CriterionGroup group, Set<SubmissionResult> submissionResults, Set<Query> queries) {
+        this.name = name;
+        this.description = description;
+        this.minCount = minCount;
+        this.group = group.clone();
+        this.submissionResults = new HashSet<>(submissionResults);
+        this.queries = new HashSet<>(queries);
     }
 
     @Override
     public Criterion clone() {
         try {
             Criterion clone = (Criterion) super.clone();
-            clone.criterionGroup = criterionGroup.clone();
-            clone.criterionFulfillmentSet = new HashSet<>(criterionFulfillmentSet);
+            clone.group = group != null ? group.clone() : null;
+            clone.submissionResults = new HashSet<>(submissionResults);
+            clone.queries = new HashSet<>(queries);
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
     }
-
-//    public Criterion(String description, int requiredCount, CriterionGroup criterionGroup) {
-//        this.description = description;
-//        this.requiredCount = requiredCount;
-//        this.criterionGroup = criterionGroup;
-//    }
 }

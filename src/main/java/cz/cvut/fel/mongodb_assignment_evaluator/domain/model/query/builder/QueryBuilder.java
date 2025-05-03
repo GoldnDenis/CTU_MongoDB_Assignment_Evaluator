@@ -1,10 +1,11 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.visitor.QueryParameterVisitor;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class QueryBuilder implements QueryParameterVisitor {
     protected String comment;
     protected String query;
     protected Operators type;
-    protected String operation;
+    protected String operator;
     protected String collection;
     protected final List<QueryParameter> parameters;
     protected final List<QueryModifier> modifiers;
@@ -26,7 +27,7 @@ public class QueryBuilder implements QueryParameterVisitor {
         comment = "";
         query = "";
         type = Operators.UNRECOGNIZED;
-        operation = "";
+        operator = "";
         collection = "";
         parameters = new ArrayList<>();
         modifiers = new ArrayList<>();
@@ -54,7 +55,7 @@ public class QueryBuilder implements QueryParameterVisitor {
     }
 
     public QueryBuilder setOperator(String operator) {
-        this.operation = operator;
+        this.operator = operator;
         return this;
     }
 
@@ -76,8 +77,8 @@ public class QueryBuilder implements QueryParameterVisitor {
         return this;
     }
 
-    public Query build() {
-        return new Query(line, column, comment, query, type, operation, collection, parameters, modifiers);
+    public QueryToken build() {
+        return new QueryToken(line, column, comment, query, type, operator, collection, parameters, modifiers);
     }
 
     public int getParameterCount() {
@@ -86,26 +87,26 @@ public class QueryBuilder implements QueryParameterVisitor {
 
     @Override
     public void visitDocumentParameter(DocumentParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an document parameter"); // todo make an exception
+        throw new IncorrectParameterSyntax("Document", parameters.size() + 1, operator);
     }
 
     @Override
     public void visitStringParameter(StringParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an string parameter"); // todo make an exception
+        throw new IncorrectParameterSyntax("String", parameters.size() + 1, operator);
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an pipeline parameter"); // todo make an exception
+        throw new IncorrectParameterSyntax("Pipeline", parameters.size() + 1, operator);
     }
 
     @Override
     public void visitEmptyParameter(EmptyParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an empty parameter"); // todo make an exception
+        throw new IncorrectParameterSyntax("Empty", parameters.size() + 1, operator);
     }
 
     @Override
     public void visitFunctionParameter(FunctionParameter parameter) {
-        throw new IllegalArgumentException("Wasn't expecting an function parameter"); // todo make an exception
+        throw new IncorrectParameterSyntax("Function", parameters.size() + 1, operator);
     }
 }

@@ -1,7 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.ResultStates;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ public class GradedCriteria {
     private final String description;
     private final long requiredScore;
     private final long score;
-    private final List<Query> fulfilledQueries;
+    private final List<QueryToken> fulfilledQueries;
     private final ResultStates resultState;
 
-    public GradedCriteria(String name, String description, long requiredScore, long score, List<Query> fulfilledQueries) {
+    public GradedCriteria(String name, String description, long requiredScore, long score, List<QueryToken> fulfilledQueries) {
         this.name = name;
         this.description = description;
         this.requiredScore = requiredScore;

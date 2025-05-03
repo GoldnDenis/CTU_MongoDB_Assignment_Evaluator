@@ -1,0 +1,71 @@
+package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser;
+
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.StateMachine;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.ParserState;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.script.ScriptState;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.QueryTokenAssembler;
+import lombok.Getter;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.logging.Level;
+
+@Service
+public class ScriptParser extends StateMachine<ParserState> {
+    private StudentSubmission submission;
+    @Getter
+    private final QueryTokenAssembler assembler;
+    private int currentLine;
+
+    public ScriptParser() {
+        super();
+        transition(new ScriptState(this));
+        assembler = new QueryTokenAssembler();
+    }
+
+    public void extractQueries(StudentSubmission studentSubmission, List<String> scriptLines) {
+        submission = studentSubmission;
+        currentLine = 1;
+        for (int i = 0; i < scriptLines.size(); i++, currentLine++) {
+            LineIterator iterator = new LineIterator(scriptLines.get(i));
+            while (iterator.hasNext()) {
+                try {
+                    currentState.process(iterator);
+                } catch (Exception e) {
+                    String errorMessage = "Parsing error at "
+                            + currentLine + "r"
+                            + iterator.getCurrentIndex() + "c"
+                            + ": " + e.getMessage();
+                    submission.addLog(Level.WARNING, errorMessage);
+                    currentState = new ScriptState(this);
+                }
+            }
+        }
+    }
+
+    public void initAssembler(int currentColumn) {
+        assembler.resetAccumulators();
+        assembler.setCurrentPosition(currentLine, currentColumn);
+    }
+
+    public void appendToRawQuery(String append) {
+        assembler.appendRawQuery(append);
+    }
+
+    public String getRawQuery() {
+        return assembler.getRawQuery();
+    }
+
+    public void processAccumulatedWord(Boolean appendFlag) {
+        if (appendFlag) {
+            assembler.appendRawQuery(wordAccumulator.toString());
+        }
+        wordAccumulator.setLength(0);
+    }
+
+    public void saveQuery() {
+        submission.addQuery(assembler.createQuery());
+    }
+}

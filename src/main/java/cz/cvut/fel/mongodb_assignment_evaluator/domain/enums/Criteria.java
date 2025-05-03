@@ -43,9 +43,11 @@ public enum Criteria {
     AGGREGATOR_MIN_MAX("Use at least once $min (or $max)", 1),
     LOOKUP("Use lookup (if you have two collections)", 1), //worth mentioning that there could be only one collection
 
-    UNRECOGNIZED_QUERY("Queries were not recognized", 0),
+    COMMENT("Describe the real-world meaning of all your queries in comments", 1),
 
-    COMMENT("Describe the real-world meaning of all your queries in comments", 1);
+    UNRECOGNIZED_QUERY("Queries were not recognized", 0),
+    ;
+
 
     private final String description;
     private final int requiredCount;

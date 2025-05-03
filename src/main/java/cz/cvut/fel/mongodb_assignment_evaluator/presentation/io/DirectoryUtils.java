@@ -14,6 +14,14 @@ public class DirectoryUtils {
         return directory;
     }
 
+    public static File createFolder(String name) throws IOException {
+        File folder = new File(name);
+        if (!folder.exists() && !folder.mkdirs()) {
+            throw new IOException("Failed to create '" + name + "' folder at '" + folder.getAbsolutePath() + "'");
+        }
+        return folder;
+    }
+
     public static File createFolder(File destFolder, String name) throws IOException {
         File folder = new File(destFolder, name);
         if (!folder.exists() && !folder.mkdirs()) {

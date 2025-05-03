@@ -1,9 +1,10 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.PipelineParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQuery;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQueryToken;
 import org.bson.BsonDocument;
 
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ public class UpdateBuilder extends QueryBuilder {
     }
 
     @Override
-    public UpdateQuery build() {
-        return new UpdateQuery(
+    public UpdateQueryToken build() {
+        return new UpdateQueryToken(
                 line, column,
                 comment, query, type,
-                operation,
+                operator,
                 parameters, modifiers,
                 collection,
                 filter, updateDocuments, options
@@ -38,14 +39,14 @@ public class UpdateBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> updateDocuments.add(parameter.getDocument());
             case 2 -> options = parameter.getDocument();
-            default -> throw new IllegalArgumentException(); // todo make an exception
+            default -> throw new IncorrectParameterSyntax("Document", parameters.size() + 1, operator);
         }
     }
 
     @Override
     public void visitPipelineParameter(PipelineParameter parameter) {
         if (!updateDocuments.isEmpty()) {
-            throw new IllegalArgumentException(); // todo make an exception
+            throw new IncorrectParameterSyntax("Pipeline", parameters.size() + 1, operator);
         }
         updateDocuments.addAll(parameter.getDocumentList());
     }

@@ -1,61 +1,46 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.StudentErrorTypes;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Submission;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 import lombok.Getter;
 import lombok.extern.java.Log;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 @Log
 @Getter
-public class
-StudentSubmission {
-    private final String username;
-    private final String year;
-    private final String date;
-    private final String time;
-    private final File folder;
+public class StudentSubmission {
+    private final Submission submission;
+    private final boolean submissionPresent;
+    private final long teamCount;
 
-    private final List<String> scriptLines;
-    private final List<String> logList;
-    private final List<Query> queryList;
+    private final List<QueryToken> queryList;
+    private final List<String> evaluationLogList;
     private final List<GradedCriteria> gradedCriteria;
 
-    public StudentSubmission(String year, String username, String date, String time, File folder) {
-        this.username = username;
-        this.year = year;
-        this.date = date;
-        this.time = time;
-        this.folder = folder;
+    public StudentSubmission(Submission submission, boolean submissionPresent, long teamCount) {
+        this.submission = submission;
+        this.submissionPresent = submissionPresent;
+        this.teamCount = teamCount;
 
-        this.scriptLines = new ArrayList<>();
-        this.logList = new ArrayList<>();
         this.queryList = new ArrayList<>();
+        this.evaluationLogList = new ArrayList<>();
         this.gradedCriteria = new ArrayList<>();
     }
 
-    public void addScriptLines(List<String> lines) {
-        scriptLines.addAll(lines);
+    public String getStudentName() {
+        return submission.getStudent().getUsername();
     }
 
-    public void addLog(Level level, StudentErrorTypes type, String message) {
+    public void addLog(Level level, String message) {
         log.log(level, message);
-        logList.add(
-                level.getName() +
-                        " : " +
-                        type.getMessage() +
-                        " '" +
-                        message +
-                        "'."
-        );
+        evaluationLogList.add(level.getName() + " : " + message);
     }
 
-    public void addQuery(Query query) {
+    public void addQuery(QueryToken query) {
         queryList.add(query);
     }
 

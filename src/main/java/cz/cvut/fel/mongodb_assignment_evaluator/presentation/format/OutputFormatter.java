@@ -3,7 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.presentation.format;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.Query;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class OutputFormatter {
         return resultBuilder.toString();
     }
 
-    public String formatQueryList(List<Query> queryList) {
+    public String formatQueryList(List<QueryToken> queryList) {
         StringBuilder resultBuilder = new StringBuilder();
         for (int i = 0; i < queryList.size(); i++) {
             String queryEnd = (i + 1 < queryList.size()) ? "; " : ";";
@@ -44,8 +44,25 @@ public class OutputFormatter {
         return resultBuilder.toString().replace(";;", ";");
     }
 
-    public String formatLogs(List<String> logList) {
-        return String.join("\n", logList);
+    public String generateEvaluationLog(List<String> list) {
+        return list.isEmpty()
+                ? "No errors caught during the evaluation"
+                : String.join(System.lineSeparator(), list);
+    }
+
+    public String generateExecutionLog(List<QueryToken> queryTokens) {
+        StringBuilder resultBuilder = new StringBuilder();
+        for (QueryToken query : queryTokens) {
+            resultBuilder.append("---------| Query = '")
+                    .append(query.getQuery())
+                    .append("' |---------")
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator())
+                    .append(String.join(System.lineSeparator(), query.getExecutionLogs()))
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator());
+        }
+        return resultBuilder.toString();
     }
 
     public String generateCrossTab(List<StudentSubmission> submissions, List<String> criteriaNames) {
@@ -53,9 +70,8 @@ public class OutputFormatter {
         resultBuilder.append("Student");
         criteriaNames.forEach(name -> resultBuilder.append(",").append(name));
         for (StudentSubmission submission : submissions) {
-            String studentName = submission.getUsername();
             resultBuilder.append("\n")
-                    .append(studentName);
+                    .append(submission.getStudentName());
             submission.getGradedCriteria().forEach(criterion -> resultBuilder.append(",").append(criterion.getScore()));
         }
         resultBuilder.append("\n");
