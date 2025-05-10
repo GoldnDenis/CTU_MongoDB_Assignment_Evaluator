@@ -123,7 +123,11 @@ public class DirectoryManager {
                 studentResultFolder, studentName + "_execution", FileFormats.LOG,
                 outputFormatter.generateExecutionLog(submission.getQueryList())
         );
-//        submissionService.saveSubmission(submission); //todo uncomment
+        FileWriterUtil.createFile(
+                studentResultFolder, studentName + "_feedback", FileFormats.LOG,
+                outputFormatter.generateStudentFeedback(submission)
+        );
+        submissionService.saveSubmission(submission);
     }
 
     public void createFinalTable(List<StudentSubmission> submissions, List<String> criteriaNames) throws IOException {

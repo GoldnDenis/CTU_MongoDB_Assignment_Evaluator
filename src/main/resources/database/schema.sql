@@ -12,14 +12,19 @@ CREATE TABLE IF NOT EXISTS Criterion (
     FOREIGN KEY (group_id) REFERENCES CriterionGroup(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS Topic (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Student (
-                                       id SERIAL PRIMARY KEY,
-                                       username VARCHAR(100) NOT NULL,
-                                       study_year INT NOT NULL,
-                                       classNumber INT,
-                                       topic_id INT,
-                                       FOREIGN KEY (topic_id) REFERENCES Topic(id) ON UPDATE CASCADE ON DELETE SET NULL,
-                                       UNIQUE (username, study_year)
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    study_year INT NOT NULL,
+    classNumber INT,
+    topic_id INT,
+    FOREIGN KEY (topic_id) REFERENCES Topic(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    UNIQUE (username, study_year)
 );
 
 CREATE TABLE IF NOT EXISTS Submission (
@@ -32,22 +37,16 @@ CREATE TABLE IF NOT EXISTS Submission (
 
 CREATE TABLE IF NOT EXISTS Query (
     id SERIAL PRIMARY KEY,
-    query VARCHAR(65000) NOT NULL,
+    query TEXT NOT NULL,
     submission_id INT,
-    FOREIGN KEY (submission_id) REFERENCES Submission(id) ON UPDATE CASCADE ON DELETE SET NULL,
-    UNIQUE (query, submission_id)
+    FOREIGN KEY (submission_id) REFERENCES Submission(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Log (
     id SERIAL PRIMARY KEY,
-    output VARCHAR(65000) NOT NULL,
+    output TEXT NOT NULL,
     query_id INT,
-    FOREIGN KEY (query_id) REFERENCES Query(id) ON UPDATE CASCADE ON DELETE SET NULL
-);
-
-CREATE TABLE IF NOT EXISTS Topic (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    FOREIGN KEY (query_id) REFERENCES Query(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS SubmissionResult (

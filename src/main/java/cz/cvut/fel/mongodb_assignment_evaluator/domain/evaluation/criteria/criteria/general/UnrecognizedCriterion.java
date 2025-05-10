@@ -2,11 +2,12 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 
 public class UnrecognizedCriterion extends EvaluationCriterion<QueryToken> {
-    public UnrecognizedCriterion(int priority) {
-        super(QueryToken.class, priority);
+    public UnrecognizedCriterion(Criterion criterion, int priority) {
+        super(QueryToken.class, criterion, priority);
     }
 
     @Override

@@ -6,6 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.sta
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.QueryTokenAssembler;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +67,14 @@ public class ScriptParser extends StateMachine<ParserState> {
     }
 
     public void saveQuery() {
-        submission.addQuery(assembler.createQuery());
+        QueryToken token = assembler.createQuery();
+        if (submission.getQueryList().stream()
+                .map(QueryToken::getQuery)
+                .anyMatch(q -> q.equalsIgnoreCase(token.getQuery()))
+        ) {
+            submission.addLog(Level.WARNING,  "Duplicate query: '" + token.getQuery() + "'");
+        } else {
+            submission.addQuery(token);
+        }
     }
 }

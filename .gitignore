@@ -7,6 +7,7 @@ target/
 
 results
 scripts
+logs
 application.log
 
 ### MAVEN ###

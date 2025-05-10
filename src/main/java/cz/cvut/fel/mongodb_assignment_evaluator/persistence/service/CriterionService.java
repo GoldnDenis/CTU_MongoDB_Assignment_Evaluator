@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log
@@ -23,12 +21,12 @@ import java.util.stream.Collectors;
 public class CriterionService {
     private final CriterionRepository criterionRepository;
 
-    public Map<Criterion, EvaluationCriterion<? extends QueryToken>> loadCriteria() {
+    public List<EvaluationCriterion<? extends QueryToken>> loadCriteria() {
         CriteriaFactory factory = new CriteriaFactory();
-        Map<Criterion, EvaluationCriterion<? extends QueryToken>> criteriaEvaluators = new LinkedHashMap<>();
+        List<EvaluationCriterion<? extends QueryToken>> criteriaEvaluators = new ArrayList<>();
         for (Criterion criterion : criterionRepository.findAll()) {
             try {
-                criteriaEvaluators.put(criterion, factory.createEvaluationCriterion(criterion.getName()));
+                criteriaEvaluators.add(factory.createEvaluationCriterion(criterion));
             } catch (UnknownCriterion e) {
                 log.severe(e.getMessage());
             }
@@ -36,11 +34,30 @@ public class CriterionService {
         if (criteriaEvaluators.isEmpty()) {
             throw new CriteriaNotLoaded();
         }
-        criteriaEvaluators.put(
-                new Criterion(Criteria.UNRECOGNIZED_QUERY.name(), Criteria.UNRECOGNIZED_QUERY.getDescription(), Criteria.UNRECOGNIZED_QUERY.getRequiredCount()),
-                factory.createEvaluationCriterion(Criteria.UNRECOGNIZED_QUERY.name()));
-        return criteriaEvaluators.entrySet().stream()
-                .sorted(Comparator.comparingInt(e -> e.getValue().getPriority()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+        Criterion unrecognised = new Criterion(Criteria.UNRECOGNIZED_QUERY.name(), Criteria.UNRECOGNIZED_QUERY.getDescription(), Criteria.UNRECOGNIZED_QUERY.getRequiredCount());
+        criteriaEvaluators.add(factory.createEvaluationCriterion(unrecognised));
+        return criteriaEvaluators.stream()
+                .sorted(Comparator.comparingInt(EvaluationCriterion::getPriority))
+                .collect(Collectors.toList());
     }
+
+//    public Map<Criterion, EvaluationCriterion<? extends QueryToken>> loadCriteria() {
+//        CriteriaFactory factory = new CriteriaFactory();
+//        Map<Criterion, EvaluationCriterion<? extends QueryToken>> criteriaEvaluators = new LinkedHashMap<>();
+//        for (Criterion criterion : criterionRepository.findAll()) {
+//            try {
+//                criteriaEvaluators.put(criterion, factory.createEvaluationCriterion(criterion));
+//            } catch (UnknownCriterion e) {
+//                log.severe(e.getMessage());
+//            }
+//        }
+//        if (criteriaEvaluators.isEmpty()) {
+//            throw new CriteriaNotLoaded();
+//        }
+//        Criterion unrecognised = new Criterion(Criteria.UNRECOGNIZED_QUERY.name(), Criteria.UNRECOGNIZED_QUERY.getDescription(), Criteria.UNRECOGNIZED_QUERY.getRequiredCount());
+//        criteriaEvaluators.put(unrecognised, factory.createEvaluationCriterion(unrecognised));
+//        return criteriaEvaluators.entrySet().stream()
+//                .sorted(Comparator.comparingInt(e -> e.getValue().getPriority()))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+//    }
 }

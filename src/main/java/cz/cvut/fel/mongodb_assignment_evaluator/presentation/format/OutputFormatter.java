@@ -7,9 +7,60 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryTok
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class OutputFormatter {
+    public String generateStudentFeedback(StudentSubmission submission) {
+        StringBuilder resultBuilder = new StringBuilder();
+
+        resultBuilder.append("--------------------| Criteria fulfillment:")
+                .append(System.lineSeparator());
+        List<GradedCriteria> gradedCriteria = submission.getGradedCriteria();
+        for (GradedCriteria gradedCriterion : gradedCriteria) {
+            if (gradedCriterion.getName().equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name())) {
+                resultBuilder.append("--------------------| Number of unrecognised queries: ")
+                        .append(gradedCriterion.getScore())
+                        .append(System.lineSeparator());
+            } else {
+                resultBuilder.append(gradedCriterion.getScore()).append("/") 
+                        .append(gradedCriterion.getRequiredScore()).append(" -- ")
+                        .append("\"").append(gradedCriterion.getDescription()).append("\"")
+                        .append(System.lineSeparator());
+            }
+        }
+
+        // todo
+//        for (int i = 0; i < gradedCriteria.size(); i++) {
+//            GradedCriteria gradedCriterion = gradedCriteria.get(i);
+//            if (gradedCriterion.getName().equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name())) {
+//                resultBuilder.append("--------------------| Number of unrecognised queries: ")
+//                        .append(gradedCriterion.getScore())
+//                        .append(System.lineSeparator());
+//            } else {
+//                resultBuilder.append((i + 1)).append(") ")
+//                        .append(gradedCriterion.getDescription()).append(":").append(System.lineSeparator())
+//                        .append("STATE: ").append(gradedCriterion.getResultState()).append(" / ")
+//                        .append("SCORE: ").append(gradedCriterion.getScore())
+//                        .append(System.lineSeparator());
+//            }
+//        }
+
+        resultBuilder.append("--------------------| Encountered warnings/errors: ")
+                .append(System.lineSeparator());
+        List<String> errorLogs = submission.getErrorLogs();
+        if (errorLogs.isEmpty()) {
+            resultBuilder.append("No warnings/errors caught during the evaluation");
+        }
+        for (int i = 0; i < errorLogs.size(); i++) {
+            String errorLog = submission.getErrorLogs().get(i);
+            resultBuilder.append((i + 1)).append(") ")
+                    .append(errorLog);
+        }
+
+        return resultBuilder.toString();
+    }
+
     public String generateTable(List<GradedCriteria> criteria) {
         StringBuilder resultBuilder = new StringBuilder();
         resultBuilder.append("Criterion")
@@ -70,11 +121,11 @@ public class OutputFormatter {
         resultBuilder.append("Student");
         criteriaNames.forEach(name -> resultBuilder.append(",").append(name));
         for (StudentSubmission submission : submissions) {
-            resultBuilder.append("\n")
+            resultBuilder.append(System.lineSeparator())
                     .append(submission.getStudentName());
             submission.getGradedCriteria().forEach(criterion -> resultBuilder.append(",").append(criterion.getScore()));
         }
-        resultBuilder.append("\n");
+        resultBuilder.append(System.lineSeparator());
         return resultBuilder.toString();
     }
 }

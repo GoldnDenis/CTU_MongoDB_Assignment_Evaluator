@@ -4,6 +4,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.UpdateGroups;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.bson.BsonDocumentChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQueryToken;
 import org.bson.BsonValue;
 
@@ -14,8 +15,8 @@ public class UpdatePatternCriterion extends EvaluationCriterion<UpdateQueryToken
     private final Pattern requiredPattern;
     private final UpdateGroups requiredGroup;
 
-    public UpdatePatternCriterion(int priority, RegularExpressions regex, UpdateGroups requiredGroup) {
-        super(UpdateQueryToken.class, priority);
+    public UpdatePatternCriterion(Criterion criterion, int priority, RegularExpressions regex, UpdateGroups requiredGroup) {
+        super(UpdateQueryToken.class, criterion, priority);
         this.requiredPattern = Pattern.compile(regex.getRegex());
         this.requiredGroup = requiredGroup;
     }
@@ -27,6 +28,6 @@ public class UpdatePatternCriterion extends EvaluationCriterion<UpdateQueryToken
                 .map(BsonValue::asDocument)
                 .map(doc -> BsonDocumentChecker.findKeyMatchesPattern(doc, requiredPattern))
                 .filter(Optional::isPresent)
-                .count();
+                .toList().size();
     }
 }

@@ -2,13 +2,14 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Aggregations;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.AggregateQueryToken;
 
 public class AggregationCriterion extends EvaluationCriterion<AggregateQueryToken> {
     private final Aggregations requiredAggregations;
 
-    public AggregationCriterion(int priority, Aggregations requiredAggregations) {
-        super(AggregateQueryToken.class, priority);
+    public AggregationCriterion(Criterion criterion, int priority, Aggregations requiredAggregations) {
+        super(AggregateQueryToken.class, criterion, priority);
         this.requiredAggregations = requiredAggregations;
     }
 

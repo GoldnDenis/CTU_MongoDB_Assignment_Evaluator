@@ -1,6 +1,7 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class QueryToken {
     protected final List<QueryParameter> parameters;
     protected final List<QueryModifier> modifiers;
     protected List<String> executionLogs;
+    protected List<Criterion> fulfilledCriteria;
 
     public QueryToken(int line, int column, String comment, String query, Operators type, String operator,
                       String collection, List<QueryParameter> parameters, List<QueryModifier> modifiers) {
@@ -32,7 +34,9 @@ public class QueryToken {
         this.collection = collection;
         this.parameters = new ArrayList<>(parameters);
         this.modifiers = new ArrayList<>(modifiers);
+
         this.executionLogs = new ArrayList<>();
+        this.fulfilledCriteria = new ArrayList<>();
     }
 
     public boolean operatorEquals(String word) {
@@ -49,6 +53,10 @@ public class QueryToken {
 
     public void addExecutionLog(String log) {
         executionLogs.add(log);
+    }
+
+    public void addCriterion(Criterion criterion) {
+        fulfilledCriteria.add(criterion);
     }
 
     @Override

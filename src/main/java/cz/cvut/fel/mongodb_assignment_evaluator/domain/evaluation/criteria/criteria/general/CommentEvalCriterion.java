@@ -8,8 +8,8 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryTok
 public class CommentEvalCriterion extends EvaluationCriterion<QueryToken> {
     private int minCount;
 
-    public CommentEvalCriterion(int priority) {
-        super(QueryToken.class, priority);
+    public CommentEvalCriterion(Criterion criterion, int priority) {
+        super(QueryToken.class, criterion, priority);
         minCount = 0;
     }
 
@@ -23,8 +23,9 @@ public class CommentEvalCriterion extends EvaluationCriterion<QueryToken> {
     }
 
     @Override
-    public GradedCriteria getResult(Criterion criterion) {
-        GradedCriteria result = new GradedCriteria(criterion.getName(), criterion.getDescription(), minCount, maxScore, fulfilledQueries);
+    public GradedCriteria getResult() {
+        GradedCriteria result = new GradedCriteria(criterion, maxScore, fulfilledQueries);
+        result.setRequiredScore(minCount);
         maxScore = 0;
         minCount = 0;
         currentScore = 0;

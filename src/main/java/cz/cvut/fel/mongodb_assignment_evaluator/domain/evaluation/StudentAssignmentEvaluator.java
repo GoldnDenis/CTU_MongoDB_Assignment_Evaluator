@@ -22,14 +22,14 @@ public class StudentAssignmentEvaluator {
     private final CriteriaEvaluator criteriaEvaluator;
     private final MongoShellExecutor scriptRunner;
 
-    public void initEvaluator() throws CriteriaNotLoaded, IOException {
+    public void initEvaluator() throws CriteriaNotLoaded, IOException, InterruptedException {
         criteriaEvaluator.initCriteria();
         log.info("---------| Criteria were successfully loaded from the database |---------");
 
         scriptRunner.startMongoShell();
     }
 
-    public void evaluateStudent(StudentSubmission studentSubmission, List<String> scriptLines) throws IOException, InterruptedException {
+    public void evaluateStudent(StudentSubmission studentSubmission, List<String> scriptLines) {
         studentSubmission.addLog(Level.INFO, "-----| Started parsing student's script");
         scriptParser.extractQueries(studentSubmission, scriptLines);
         studentSubmission.addLog(Level.INFO, "-----| The script has been successfully parsed, extracted " + studentSubmission.getQueryList().size() + " queries");
@@ -39,8 +39,12 @@ public class StudentAssignmentEvaluator {
         studentSubmission.addLog(Level.INFO, "-----| Queries have been successfully checked");
 
         studentSubmission.addLog(Level.INFO, "-----| Started executing queries via MongoShell");
-        scriptRunner.executeQueries(studentSubmission);
-        studentSubmission.addLog(Level.INFO, "-----| Queries have been successfully executed");
+        try {
+            scriptRunner.executeQueries(studentSubmission);
+            studentSubmission.addLog(Level.INFO, "-----| Queries have been successfully executed");
+        } catch (Exception e) {
+            studentSubmission.addLog(Level.SEVERE, e.getMessage());
+        }
     }
 
     public void closeMongoShell() throws IOException, InterruptedException {

@@ -15,4 +15,5 @@ public class MongoProperties {
     private String database;
     private String username;
     private String password;
+    private long timeout;
 }

@@ -2,14 +2,15 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.crit
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.bson.BsonDocumentChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Criterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.FindQueryToken;
 import org.bson.BsonType;
 
 public class FindTypeCriterion extends EvaluationCriterion<FindQueryToken> {
     private final BsonType requiredType;
 
-    public FindTypeCriterion(int priority, BsonType requiredType) {
-        super(FindQueryToken.class, priority);
+    public FindTypeCriterion(Criterion criterion, int priority, BsonType requiredType) {
+        super(FindQueryToken.class, criterion, priority);
         this.requiredType = requiredType;
     }
 

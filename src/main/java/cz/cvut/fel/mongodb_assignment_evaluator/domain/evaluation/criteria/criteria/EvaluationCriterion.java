@@ -6,19 +6,23 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryTok
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 public abstract class EvaluationCriterion<Q extends QueryToken> {
     private final Class<Q> queryType;
     private final int priority;
 
-    protected long maxScore;
+    protected final Criterion criterion;
+    protected int maxScore;
     protected final List<QueryToken> fulfilledQueries;
-    protected long currentScore;
+    protected int currentScore;
 
-    public EvaluationCriterion(Class<Q> queryType, int priority) {
+    public EvaluationCriterion(Class<Q> queryType, Criterion criterion, int priority) {
         this.queryType = queryType;
+        this.criterion = criterion;
         this.priority = priority;
         this.maxScore = 0;
         this.fulfilledQueries = new ArrayList<>();
@@ -31,13 +35,14 @@ public abstract class EvaluationCriterion<Q extends QueryToken> {
         if (currentScore > 0) {
             maxScore += currentScore;
             fulfilledQueries.add(query);
+            query.addCriterion(criterion);
         }
     }
 
     protected abstract void evaluate(Q query);
 
-    public GradedCriteria getResult(Criterion criterion) {
-        GradedCriteria result = new GradedCriteria(criterion.getName(), criterion.getDescription(), criterion.getMinCount(), maxScore, fulfilledQueries);
+    public GradedCriteria getResult() {
+        GradedCriteria result = new GradedCriteria(criterion, maxScore, fulfilledQueries);
         maxScore = 0;
         currentScore = 0;
         fulfilledQueries.clear();
