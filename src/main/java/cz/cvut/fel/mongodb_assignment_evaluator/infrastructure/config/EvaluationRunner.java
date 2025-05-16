@@ -1,6 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.config;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.AssignmentEvaluator;
+import cz.cvut.fel.mongodb_assignment_evaluator.application.AssignmentEvaluator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

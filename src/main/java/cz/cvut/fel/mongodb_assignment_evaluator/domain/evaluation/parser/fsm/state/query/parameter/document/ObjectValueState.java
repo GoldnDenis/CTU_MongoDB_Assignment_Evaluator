@@ -3,9 +3,9 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.st
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.preprocessor.HexIdGenerator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.preprocessor.StringPreprocessor;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.HexIdGenerator;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.utility.StringUtility;
 
 import java.time.LocalDate;
 

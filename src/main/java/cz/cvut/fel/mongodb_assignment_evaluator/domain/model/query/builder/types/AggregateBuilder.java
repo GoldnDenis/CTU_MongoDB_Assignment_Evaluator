@@ -21,10 +21,10 @@ public class AggregateBuilder extends QueryBuilder {
     public AggregateQueryToken build() {
         return new AggregateQueryToken(
                 line, column,
-                comment, query, type,
+                precedingComment, query, type,
                 operator,
                 parameters, modifiers,
-                collection,
+                collection, innerComments,
                 aggregationPipeline
         );
     }

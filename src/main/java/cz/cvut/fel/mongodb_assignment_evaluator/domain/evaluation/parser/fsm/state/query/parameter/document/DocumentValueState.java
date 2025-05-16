@@ -8,7 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.sta
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.preprocessor.StringPreprocessor;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.utility.StringUtility;
 
 import java.util.regex.Pattern;
 

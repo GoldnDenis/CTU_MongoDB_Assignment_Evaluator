@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.UpdateGroups;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.bson.BsonDocumentChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.grader.bson.BsonDocumentChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
 import lombok.Getter;
@@ -20,10 +20,10 @@ public class UpdateQueryToken extends QueryToken {
     private final List<BsonDocument> updateDocuments;
     private final BsonDocument options;
 
-    public UpdateQueryToken(int lineNumber, int columnNumber, String comment, String query, Operators type,
-                            String operator, List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection,
+    public UpdateQueryToken(int lineNumber, int columnNumber, String precedingComment, String query, Operators type,
+                            String operator, List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection, List<String> innerComments,
                             BsonDocument filter, List<BsonDocument> updateDocuments, BsonDocument options) {
-        super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
+        super(lineNumber, columnNumber, precedingComment, query, type, operator, collection, parameters, modifiers, innerComments);
         this.filter = filter;
         this.updateDocuments = new ArrayList<>(updateDocuments);
         this.options = options;

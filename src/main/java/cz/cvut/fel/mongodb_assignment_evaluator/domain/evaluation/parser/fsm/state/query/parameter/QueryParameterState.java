@@ -7,7 +7,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.sta
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.script.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.EmptyParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.utility.StringUtility;
 
 /**
  * A state that identifies parameter type and consumes accumulated values.

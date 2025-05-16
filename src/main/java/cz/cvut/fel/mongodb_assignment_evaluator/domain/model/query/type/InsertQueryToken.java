@@ -14,10 +14,10 @@ public class InsertQueryToken extends QueryToken {
     private final List<BsonDocument> insertedDocuments;
     private final BsonDocument options;
 
-    public InsertQueryToken(int lineNumber, int columnNumber, String comment, String query, Operators type, String operator,
-                            List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection,
+    public InsertQueryToken(int lineNumber, int columnNumber, String precedingComment, String query, Operators type, String operator,
+                            List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection, List<String> innerComments,
                             List<BsonDocument> insertedDocuments, BsonDocument options) {
-        super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
+        super(lineNumber, columnNumber, precedingComment, query, type, operator, collection, parameters, modifiers, innerComments);
         this.insertedDocuments = new ArrayList<>(insertedDocuments);
         this.options = options;
     }

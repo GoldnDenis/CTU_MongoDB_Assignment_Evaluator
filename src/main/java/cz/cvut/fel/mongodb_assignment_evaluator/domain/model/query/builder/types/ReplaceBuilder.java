@@ -21,10 +21,10 @@ public class ReplaceBuilder extends QueryBuilder {
     public ReplaceQueryToken build() {
         return new ReplaceQueryToken(
                 line, column,
-                comment, query, type,
+                precedingComment, query, type,
                 operator,
                 parameters, modifiers,
-                collection,
+                collection, innerComments,
                 filter, replacement, options
         );
     }

@@ -6,6 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.Quer
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.*;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.visitor.QueryParameterVisitor;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,24 +14,27 @@ import java.util.List;
 public class QueryBuilder implements QueryParameterVisitor {
     protected int line;
     protected int column;
-    protected String comment;
+    protected String precedingComment;
     protected String query;
     protected Operators type;
+    @Getter
     protected String operator;
     protected String collection;
     protected final List<QueryParameter> parameters;
     protected final List<QueryModifier> modifiers;
+    protected final List<String> innerComments;
 
     public QueryBuilder() {
         line = -1;
         column = -1;
-        comment = "";
+        precedingComment = "";
         query = "";
         type = Operators.UNRECOGNIZED;
         operator = "";
         collection = "";
         parameters = new ArrayList<>();
         modifiers = new ArrayList<>();
+        innerComments = new ArrayList<>();
     }
 
     public QueryBuilder setPosition(int line, int column) {
@@ -39,8 +43,13 @@ public class QueryBuilder implements QueryParameterVisitor {
         return this;
     }
 
-    public QueryBuilder setComment(String comment) {
-        this.comment = comment;
+    public QueryBuilder setPrecedingComment(String precedingComment) {
+        this.precedingComment = precedingComment;
+        return this;
+    }
+
+    public QueryBuilder appendInnerComment(String innerComment) {
+        innerComments.add(innerComment);
         return this;
     }
 
@@ -78,7 +87,7 @@ public class QueryBuilder implements QueryParameterVisitor {
     }
 
     public QueryToken build() {
-        return new QueryToken(line, column, comment, query, type, operator, collection, parameters, modifiers);
+        return new QueryToken(line, column, precedingComment, query, type, operator, collection, parameters, modifiers, innerComments);
     }
 
     public int getParameterCount() {

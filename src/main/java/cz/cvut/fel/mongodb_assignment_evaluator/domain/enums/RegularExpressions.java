@@ -15,7 +15,9 @@ public enum RegularExpressions {
     ARRAY_FIELD("^[a-zA-Z]+[a-zA-Z0-9_]*(\\.[a-zA-Z]+[a-zA-Z0-9_]*)*(\\.((\\$(\\[[a-zA-Z0-9]*\\])?)|[0-9]+))+"),
     MONGO_SHELL_STDERR("^([a-zA-Z]*(Error|WARNING):)"),
     ID_FUNCTION("(ObjectId|UUID)\\([\"']?[a-zA-Z0-9-]*[\"']?\\)"),
-    ARITHMETIC_EXPRESSION("[0-9]+(\\s*[\\+\\-\\*\\/]\\s*[0-9]+)+");
+    ARITHMETIC_EXPRESSION("[0-9]+(\\s*[\\+\\-\\*\\/]\\s*[0-9]+)+"),
+    STUDENT_FOLDER("^(f[0-9]+)_([a-zA-Z0-9]+)-mongodb-([0-9]+)-([0-9]+)"),
+    ;
 
     private final String regex;
 }

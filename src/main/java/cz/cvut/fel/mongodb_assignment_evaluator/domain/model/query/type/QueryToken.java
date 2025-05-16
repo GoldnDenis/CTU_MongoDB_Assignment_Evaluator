@@ -15,27 +15,31 @@ public class QueryToken {
     protected final int column;
     protected final String query;
     protected final Operators type;
-    protected final String comment;
+    protected final String precedingComment;
     protected final String operator;
     protected final String collection;
     protected final List<QueryParameter> parameters;
     protected final List<QueryModifier> modifiers;
-    protected List<String> executionLogs;
+    protected final List<String> innerComments;
+
+    protected StringBuilder executionLogAccumulator;
     protected List<Criterion> fulfilledCriteria;
 
-    public QueryToken(int line, int column, String comment, String query, Operators type, String operator,
-                      String collection, List<QueryParameter> parameters, List<QueryModifier> modifiers) {
+    public QueryToken(int line, int column, String precedingComment, String query,
+                      Operators type, String operator, String collection,
+                      List<QueryParameter> parameters, List<QueryModifier> modifiers, List<String> innerComments) {
         this.line = line;
         this.column = column;
         this.query = query;
         this.type = type;
-        this.comment = comment;
+        this.precedingComment = precedingComment;
         this.operator = operator;
         this.collection = collection;
         this.parameters = new ArrayList<>(parameters);
         this.modifiers = new ArrayList<>(modifiers);
+        this.innerComments = new ArrayList<>(innerComments);
 
-        this.executionLogs = new ArrayList<>();
+        this.executionLogAccumulator = new StringBuilder();
         this.fulfilledCriteria = new ArrayList<>();
     }
 
@@ -51,8 +55,19 @@ public class QueryToken {
         return isTrivial() ? 0 : 1;
     }
 
+    public boolean isCommented() {
+        return !precedingComment.isEmpty() || !innerComments.isEmpty();
+    }
+
     public void addExecutionLog(String log) {
-        executionLogs.add(log);
+        executionLogAccumulator.append(log);
+        if (!log.endsWith(System.lineSeparator()) || !log.endsWith("\n")) {
+            executionLogAccumulator.append(System.lineSeparator());
+        }
+    }
+
+    public String getExecutionLog() {
+        return !executionLogAccumulator.isEmpty() ? executionLogAccumulator.toString() : "";
     }
 
     public void addCriterion(Criterion criterion) {

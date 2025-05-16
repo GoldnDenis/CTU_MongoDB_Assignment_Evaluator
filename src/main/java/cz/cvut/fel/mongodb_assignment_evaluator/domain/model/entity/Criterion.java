@@ -21,6 +21,9 @@ public class Criterion extends AbstractEntity implements Cloneable {
     @Column(name = "min_score", nullable = false, columnDefinition = "integer default 1")
     private int minCount;
 
+    @Column(nullable = false, unique = true)
+    private int priority;
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private CriterionGroup group;
@@ -41,44 +44,49 @@ public class Criterion extends AbstractEntity implements Cloneable {
         this.queries = new HashSet<>();
     }
 
-    public Criterion(String name, String description) {
+    public Criterion(String name, String description, int priority) {
         this.name = name;
         this.description = description;
         this.minCount = 1;
+        this.priority = priority;
         this.submissionResults = new HashSet<>();
         this.queries = new HashSet<>();
     }
 
-    public Criterion(String name, String description, int minCount) {
+    public Criterion(String name, String description, int priority, int minCount) {
         this.name = name;
         this.description = description;
         this.minCount = minCount;
+        this.priority = priority;
         this.submissionResults = new HashSet<>();
         this.queries = new HashSet<>();
     }
 
-    public Criterion(String name, String description, int minCount, CriterionGroup group) {
+    public Criterion(String name, String description, int priority, int minCount, CriterionGroup group) {
         this.name = name;
         this.description = description;
         this.minCount = minCount;
+        this.priority = priority;
         this.group = group.clone();
         this.submissionResults = new HashSet<>();
         this.queries = new HashSet<>();
     }
 
-    public Criterion(String name, String description, int minCount, CriterionGroup group, Set<SubmissionResult> submissionResults) {
+    public Criterion(String name, String description, int priority, int minCount, CriterionGroup group, Set<SubmissionResult> submissionResults) {
         this.name = name;
         this.description = description;
         this.minCount = minCount;
+        this.priority = priority;
         this.group = group.clone();
         this.submissionResults = new HashSet<>(submissionResults);
         this.queries = new HashSet<>();
     }
 
-    public Criterion(String name, String description, int minCount, CriterionGroup group, Set<SubmissionResult> submissionResults, Set<Query> queries) {
+    public Criterion(String name, String description, int priority, int minCount, CriterionGroup group, Set<SubmissionResult> submissionResults, Set<Query> queries) {
         this.name = name;
         this.description = description;
         this.minCount = minCount;
+        this.priority = priority;
         this.group = group.clone();
         this.submissionResults = new HashSet<>(submissionResults);
         this.queries = new HashSet<>(queries);

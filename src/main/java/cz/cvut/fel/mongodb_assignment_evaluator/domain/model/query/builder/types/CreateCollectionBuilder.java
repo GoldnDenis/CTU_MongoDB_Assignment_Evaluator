@@ -21,9 +21,9 @@ public class CreateCollectionBuilder extends QueryBuilder {
     public CreateCollectionQueryToken build() {
         return new CreateCollectionQueryToken(
                 line, column,
-                comment, query, type,
+                precedingComment, query, type,
                 operator, "",
-                parameters, modifiers,
+                parameters, modifiers, innerComments,
                 collectionName, options
         );
     }

@@ -8,7 +8,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.sta
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.PipelineParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.utility.StringUtility;
 import org.bson.BsonDocument;
 import org.bson.json.JsonParseException;
 

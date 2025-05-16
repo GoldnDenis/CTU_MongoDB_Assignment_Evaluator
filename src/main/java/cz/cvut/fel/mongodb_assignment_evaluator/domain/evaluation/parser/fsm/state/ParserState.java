@@ -3,9 +3,11 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.st
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.QueryTokenAssembler;
+import lombok.Getter;
 
 public abstract class ParserState {
     protected final ScriptParser context;
+    @Getter
     protected final ParserState previousState;
     protected final QueryTokenAssembler assembler;
 

@@ -30,13 +30,17 @@ public class QueryTokenAssembler {
     }
 
     public void appendComment(String comment) {
-        if (!lastQueryOperator.isEmpty()) {
-            commentAccumulator.setLength(0);
+        if (queryBuilder.getOperator().isBlank()) {
+            if (!lastQueryOperator.isEmpty()) {
+                commentAccumulator.setLength(0);
+            }
+            if (!commentAccumulator.isEmpty()) {
+                commentAccumulator.append("\n");
+            }
+            commentAccumulator.append(comment);
+        } else {
+            queryBuilder.appendInnerComment(comment);
         }
-        if (!commentAccumulator.isEmpty()) {
-            commentAccumulator.append("\n");
-        }
-        commentAccumulator.append(comment);
     }
 
     public void appendRawQuery(String string) {
@@ -67,7 +71,7 @@ public class QueryTokenAssembler {
 
     public void setOperator(String operator, Boolean isModifier) {
         if (!isModifier) {
-            if (!lastQueryOperator.isBlank() && !lastQueryOperator.equals(operator)) {
+            if (!lastQueryOperator.isBlank() && !lastQueryOperator.equalsIgnoreCase(operator)) {
                 commentAccumulator.setLength(0);
             }
             lastQueryOperator = operator;
@@ -90,7 +94,7 @@ public class QueryTokenAssembler {
     }
 
     public QueryToken createQuery() {
-        QueryToken query = queryBuilder.setComment(commentAccumulator.toString())
+        QueryToken query = queryBuilder.setPrecedingComment(commentAccumulator.toString())
                 .setQuery(rawQueryAccumulator.toString())
                 .build();
         resetAccumulators();

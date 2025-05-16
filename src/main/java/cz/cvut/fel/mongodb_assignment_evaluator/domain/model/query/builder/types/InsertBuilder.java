@@ -23,10 +23,11 @@ public class InsertBuilder extends QueryBuilder {
     public InsertQueryToken build() {
         return new InsertQueryToken(
                 line, column,
-                comment, query, type,
+                precedingComment, query, type,
                 operator,
                 parameters, modifiers,
-                collection, insertedDocuments, options
+                collection, innerComments,
+                insertedDocuments, options
         );
     }
 

@@ -1,0 +1,24 @@
+package cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.repository;
+
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.SubmissionResult;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.SubmissionResultId;
+import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.projection.SubmissionResultView;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
+
+public interface SubmissionResultRepository extends CrudRepository<SubmissionResult, SubmissionResultId> {
+    @Query(value = """
+            SELECT DISTINCT ON (student.id, criterion.priority)
+                student.username,
+                criterion.name,
+                submissionresult.score
+            FROM submissionresult
+                JOIN submission ON submissionresult.submission_id = submission.id
+                JOIN student ON submission.student_id = student.id
+                JOIN criterion ON criterion.id = submissionresult.criterion_id
+            ORDER BY student.id, criterion.priority, submission.upload_date DESC
+            """, nativeQuery = true)
+    List<SubmissionResultView> fetchLatestStudentCriterionScores();
+}

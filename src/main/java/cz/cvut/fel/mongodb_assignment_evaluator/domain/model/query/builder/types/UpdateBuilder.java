@@ -25,10 +25,10 @@ public class UpdateBuilder extends QueryBuilder {
     public UpdateQueryToken build() {
         return new UpdateQueryToken(
                 line, column,
-                comment, query, type,
+                precedingComment, query, type,
                 operator,
                 parameters, modifiers,
-                collection,
+                collection, innerComments,
                 filter, updateDocuments, options
         );
     }

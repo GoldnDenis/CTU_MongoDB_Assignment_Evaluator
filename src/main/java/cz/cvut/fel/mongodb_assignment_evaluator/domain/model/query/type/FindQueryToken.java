@@ -2,7 +2,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.QuerySelectors;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.criteria.bson.BsonDocumentChecker;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.grader.bson.BsonDocumentChecker;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.modifier.QueryModifier;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.QueryParameter;
 import lombok.Getter;
@@ -19,10 +19,10 @@ public class FindQueryToken extends QueryToken {
     private final BsonDocument projection;
     private final BsonDocument options;
 
-    public FindQueryToken(int lineNumber, int columnNumber, String comment, String query, Operators type, String operator,
-                          List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection,
+    public FindQueryToken(int lineNumber, int columnNumber, String precedingComment, String query, Operators type, String operator,
+                          List<QueryParameter> parameters, List<QueryModifier> modifiers, String collection, List<String> innerComments,
                           BsonDocument filter, BsonDocument projection, BsonDocument options) {
-        super(lineNumber, columnNumber, comment, query, type, operator, collection, parameters, modifiers);
+        super(lineNumber, columnNumber, precedingComment, query, type, operator, collection, parameters, modifiers, innerComments);
         this.filter = filter;
         this.projection = projection;
         this.options = options;

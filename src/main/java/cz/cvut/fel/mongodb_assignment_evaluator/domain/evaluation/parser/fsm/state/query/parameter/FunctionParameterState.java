@@ -6,7 +6,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.sta
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.script.SingleLineCommentState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.FunctionParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.utility.StringUtility;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.utility.StringUtility;
 
 public class FunctionParameterState extends ParserState {
     private final Boolean isModifier;

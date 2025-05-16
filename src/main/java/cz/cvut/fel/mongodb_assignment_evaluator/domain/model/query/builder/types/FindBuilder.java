@@ -22,10 +22,10 @@ public class FindBuilder extends QueryBuilder {
     public FindQueryToken build() {
         return new FindQueryToken(
                 line, column,
-                comment, query, type,
+                precedingComment, query, type,
                 operator,
                 parameters, modifiers,
-                collection,
+                collection, innerComments,
                 filter, projection, options
         );
     }

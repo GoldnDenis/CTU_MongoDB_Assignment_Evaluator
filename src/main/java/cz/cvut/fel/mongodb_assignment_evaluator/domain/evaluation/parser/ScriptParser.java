@@ -1,5 +1,6 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser;
 
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.StateMachine;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.ParserState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.script.ScriptState;
@@ -26,9 +27,10 @@ public class ScriptParser extends StateMachine<ParserState> {
         assembler = new QueryTokenAssembler();
     }
 
-    public void extractQueries(StudentSubmission studentSubmission, List<String> scriptLines) {
+    public void extractQueries(StudentSubmission studentSubmission, String script) {
         submission = studentSubmission;
         currentLine = 1;
+        List<String> scriptLines = script.lines().toList();
         for (int i = 0; i < scriptLines.size(); i++, currentLine++) {
             LineIterator iterator = new LineIterator(scriptLines.get(i));
             while (iterator.hasNext()) {
@@ -39,6 +41,7 @@ public class ScriptParser extends StateMachine<ParserState> {
                             + currentLine + "r"
                             + iterator.getCurrentIndex() + "c"
                             + ": " + e.getMessage();
+                    wordAccumulator.setLength(0);
                     submission.addLog(Level.WARNING, errorMessage);
                     currentState = new ScriptState(this);
                 }
@@ -48,6 +51,7 @@ public class ScriptParser extends StateMachine<ParserState> {
 
     public void initAssembler(int currentColumn) {
         assembler.resetAccumulators();
+        wordAccumulator.setLength(0);
         assembler.setCurrentPosition(currentLine, currentColumn);
     }
 
@@ -72,8 +76,11 @@ public class ScriptParser extends StateMachine<ParserState> {
                 .map(QueryToken::getQuery)
                 .anyMatch(q -> q.equalsIgnoreCase(token.getQuery()))
         ) {
-            submission.addLog(Level.WARNING,  "Duplicate query: '" + token.getQuery() + "'");
+            submission.addLog(Level.WARNING, "Duplicate query: '" + token.getQuery() + "'");
         } else {
+            if (token.getOperator().equalsIgnoreCase(Operators.INSERT.getOperator())) {
+                submission.addLog(Level.WARNING, "'.insert' is deprecated in newer versions of MongoDB");
+            }
             submission.addQuery(token);
         }
     }
