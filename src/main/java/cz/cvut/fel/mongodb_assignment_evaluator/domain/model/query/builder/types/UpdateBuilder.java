@@ -1,16 +1,16 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.MongoQueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.ArrayParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.PipelineParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.UpdateQuery;
 import org.bson.BsonDocument;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateBuilder extends QueryBuilder {
+public class UpdateBuilder extends MongoQueryBuilder {
     private BsonDocument filter;
     private final List<BsonDocument> updateDocuments;
     private BsonDocument options;
@@ -22,11 +22,11 @@ public class UpdateBuilder extends QueryBuilder {
     }
 
     @Override
-    public UpdateQueryToken build() {
-        return new UpdateQueryToken(
+    public UpdateQuery build() {
+        return new UpdateQuery(
                 line, column,
                 precedingComment, query, type,
-                operator,
+                command,
                 parameters, modifiers,
                 collection, innerComments,
                 filter, updateDocuments, options
@@ -39,14 +39,14 @@ public class UpdateBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> updateDocuments.add(parameter.getDocument());
             case 2 -> options = parameter.getDocument();
-            default -> throw new IncorrectParameterSyntax("Document", parameters.size() + 1, operator);
+            default -> throw new IncorrectParameterSyntax("Document", parameters.size() + 1, command);
         }
     }
 
     @Override
-    public void visitPipelineParameter(PipelineParameter parameter) {
+    public void visitArrayParameter(ArrayParameter parameter) {
         if (!updateDocuments.isEmpty()) {
-            throw new IncorrectParameterSyntax("Pipeline", parameters.size() + 1, operator);
+            throw new IncorrectParameterSyntax("Array", parameters.size() + 1, command);
         }
         updateDocuments.addAll(parameter.getDocumentList());
     }

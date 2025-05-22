@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * An orchestrator class that controls the process of individual student evaluation
+ */
 @Log
 @Component
 @RequiredArgsConstructor
@@ -31,11 +34,11 @@ public class StudentEvaluator {
 
     public void evaluateStudent(StudentSubmission studentSubmission, String script) {
         studentSubmission.addLog(Level.INFO, "-----| Started parsing student's script");
-        scriptParser.extractQueries(studentSubmission, script);
-        studentSubmission.addLog(Level.INFO, "The script has been successfully parsed, extracted " + studentSubmission.getQueryList().size() + " queries");
+        studentSubmission.setExtractedQueries(scriptParser.parse(studentSubmission, script));
+        studentSubmission.addLog(Level.INFO, "The script has been successfully parsed, extracted " + studentSubmission.getExtractedQueries().size() + " queries");
 
         studentSubmission.addLog(Level.INFO, "-----| Started checking queries against the criteria");
-        criteriaGrader.evaluateQueries(studentSubmission);
+        studentSubmission.setGradedCriteria(criteriaGrader.evaluateQueries(studentSubmission));
         studentSubmission.addLog(Level.INFO, "Criteria were successfully graded");
 
         studentSubmission.addLog(Level.INFO, "-----| Started executing queries via MongoShell");

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * The main orchestrator class that controls the evaluation process of the whole application
+ */
 @Log
 @Component
 @RequiredArgsConstructor
@@ -22,7 +25,7 @@ public class AssignmentEvaluator {
             studentEvaluator.initEvaluator();
 
             dataManager.initDirectory();
-            List<StudentSubmission> studentSubmissions = dataManager.readStudentSubmissions(rootDirectoryPath);
+            List<StudentSubmission> studentSubmissions = dataManager.retrieveAllStudentSubmissions(rootDirectoryPath);
             if (studentSubmissions.isEmpty()) {
                 log.info("No submissions found in the directory: " + rootDirectoryPath);
                 return;
@@ -37,7 +40,6 @@ public class AssignmentEvaluator {
         } catch (Exception e) {
             log.severe("<---------| Evaluation failed: " + e.getMessage() + " |--------->");
         }
-        System.exit(0);
     }
 
     private void processStudentFolder(StudentSubmission studentSubmission) {

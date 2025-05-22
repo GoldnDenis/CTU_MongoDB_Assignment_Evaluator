@@ -6,6 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class responsible for merging based on the defined priority
+ */
 public class ContentMerger {
     @AllArgsConstructor
     private enum ScriptPriority {
@@ -17,6 +20,11 @@ public class ContentMerger {
         private final int priority;
     }
 
+    /**
+     * Joins provided string depending on their contents
+     * @param contentsList script contents
+     * @return a merged script with all contents
+     */
     public static String mergeScriptContentsByPriority(List<String> contentsList) {
         return contentsList.stream()
                 .sorted(Comparator.comparingInt(ContentMerger::getPriority))

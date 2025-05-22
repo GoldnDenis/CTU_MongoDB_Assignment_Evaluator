@@ -1,6 +1,5 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator;
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParserSyntax;
 import lombok.Getter;
 
 import java.util.Iterator;
@@ -8,6 +7,9 @@ import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Consumes a line char by char, while also providing different methods for processing the remainder
+ */
 @Getter
 public class LineIterator implements Iterator<Character> {
     private final String line;
@@ -37,6 +39,12 @@ public class LineIterator implements Iterator<Character> {
         return line.substring(start);
     }
 
+    /**
+     * Consumes next substring that matches the substring.
+     * Starts matching from the current column, if it does not match throws NoSuchElementException
+     * @param substring
+     * @return consumed substring matching the substring
+     */
     public String nextMatch(String substring) {
         int end = line.substring(currentIndex).indexOf(substring);
         if (end == -1) {
@@ -47,6 +55,12 @@ public class LineIterator implements Iterator<Character> {
         return line.substring(start, currentIndex);
     }
 
+    /**
+     * Consumes next substring that matches the pattern.
+     * Starts matching from the current column, if it does not match throws NoSuchElementException
+     * @param pattern
+     * @return consumed substring matching the pattern
+     */
     public String nextMatch(Pattern pattern) {
         String rest = line.substring(currentIndex);
         Matcher matcher = pattern.matcher(rest);
@@ -64,7 +78,12 @@ public class LineIterator implements Iterator<Character> {
         return line.substring(start, currentIndex);
     }
 
-    // todo make a test
+    /**
+     * Consumes next string construct, i.e. {quote}{value}{quote}
+     * Starts matching from the current column, if it does not match throws NoSuchElementException
+     * If current line does not have the closing quote throws IncorrectParserSyntax
+     * @return consumed string construct
+     */
     public String nextStringConstruct() {
         if (!startsWithStringQuote() || !hasNext()) {
             throw new NoSuchElementException("Iterator did not find a string construct");
@@ -83,7 +102,7 @@ public class LineIterator implements Iterator<Character> {
                 builder.append(next());
             }
         }
-        throw new IncorrectParserSyntax("Was expecting a closing string quote ('" + quote + "')");
+        throw new IllegalArgumentException("Was expecting a closing string quote ('" + quote + "')");
     }
 
     public Character peek() {

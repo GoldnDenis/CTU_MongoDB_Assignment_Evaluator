@@ -3,7 +3,7 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.executor;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.RegularExpressions;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.MongoShellTimeOut;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.MongoQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.config.MongoProperties;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.mongo.MongoProcessBuilder;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,9 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * Class responsible for executing commands and ensuring a thread-safe communication
+ */
 @Component
 public class MongoCommandExecutor {
     private final static String QUERY_END_ACK = "<<END_OF_QUERY>>";
@@ -41,6 +43,11 @@ public class MongoCommandExecutor {
         this.outputQueue = new LinkedBlockingQueue<>();
     }
 
+    /**
+     * Retrieve and starts the process with mongo shell, checks if the database connection was successful
+     * @throws IOException was not able to read from shell
+     * @throws InterruptedException the thread's execution has been terminated unexpectedly
+     */
     public void startMongoShell() throws IOException, InterruptedException {
         process = mongoProcessBuilder.start();
         consoleWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
@@ -75,6 +82,12 @@ public class MongoCommandExecutor {
         outputQueue.clear();
     }
 
+    /**
+     * Executes queries one by one and saves their corresponding logs. Controls that the deadlock does not occur.
+     * @param submission contains the needed information and queries for the execution.
+     * @throws IOException was not able to read or write to console
+     * @throws InterruptedException the thread's execution has been terminated unexpectedly
+     */
     public void executeQueries(StudentSubmission submission) throws IOException, InterruptedException {
         if (process == null || !process.isAlive()) {
             startMongoShell();
@@ -86,9 +99,9 @@ public class MongoCommandExecutor {
         String databaseName = mongoProperties.getDatabase();
         boolean errorWarningOccurred = false;
         StringBuilder messageBuilder = new StringBuilder();
-        List<QueryToken> queryTokens = submission.getQueryList();
-        for (QueryToken query : queryTokens) {
-            String queryText = query.getQuery();
+        List<MongoQuery> queries = submission.getExtractedQueries();
+        for (MongoQuery mongoQuery : queries) {
+            String queryText = mongoQuery.getQuery();
             submission.addLog(Level.INFO, "Executing query: " + queryText);
             sendCommand(queryText);
             sendCommand("print(\"" + QUERY_END_ACK + "\")");
@@ -96,7 +109,7 @@ public class MongoCommandExecutor {
             while (true) {
                 long timeLeft = deadline - System.currentTimeMillis();
                 if (timeLeft <= 0) {
-                    query.addExecutionLog("Query has timed out (" + mongoProperties.getTimeout() + " ms)");
+                    mongoQuery.addExecutionLog("Query has timed out (" + mongoProperties.getTimeout() + " ms)");
                     submission.addLog(Level.SEVERE, "Time out (" + mongoProperties.getTimeout() + " ms) for query: " + queryText);
                     break;
                 }
@@ -105,7 +118,7 @@ public class MongoCommandExecutor {
                     if (line.contains(QUERY_END_ACK)) {
                         String message = messageBuilder.toString();
                         messageBuilder.setLength(0);
-                        query.addExecutionLog(message);
+                        mongoQuery.addExecutionLog(message);
                         if (errorWarningOccurred) {
                             submission.addLog(Level.SEVERE, queryText + ":" + System.lineSeparator() + message);
                             errorWarningOccurred = false;
@@ -127,6 +140,11 @@ public class MongoCommandExecutor {
         }
     }
 
+    /**
+     * Clears the communication channels, stops the mongo shell, disconnects from the database and joins threads.
+     * @throws IOException was not able to write to shell
+     * @throws InterruptedException the thread's execution has been terminated unexpectedly
+     */
     public void exitMongoShell() throws IOException, InterruptedException {
         sendCommand("db.getCollectionNames().forEach(function(collName) {db[collName].drop();});");
 
@@ -136,6 +154,11 @@ public class MongoCommandExecutor {
         readerThread.join();
     }
 
+    /**
+     * writes command to shell and flushes the buffer to ensure in time communication and prevent unexpected behaviors
+     * @param cmd the command
+     * @throws IOException was not able to write
+     */
     private void sendCommand(String cmd) throws IOException {
         consoleWriter.write(cmd);
         consoleWriter.newLine();

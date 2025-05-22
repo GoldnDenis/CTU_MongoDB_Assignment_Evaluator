@@ -5,7 +5,8 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.sta
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 
 /**
- * A state that consumes a multi-line comment. It expects a closing sequence to exit.
+ * A state that consumes a multi-line comment.
+ * It expects a closing sequence to exit, does not need to be on the same line.
  * On exit returns back to a previous state.
  */
 public class MultiLineCommentState extends ParserState {

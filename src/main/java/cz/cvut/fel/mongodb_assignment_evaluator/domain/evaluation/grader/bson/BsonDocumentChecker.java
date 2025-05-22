@@ -9,11 +9,27 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class for recursively validating BsonDocuments
+ */
 public class BsonDocumentChecker {
+    /**
+     * Looks through the entire document recursively to find a key that matches the pattern
+     * @param document
+     * @param pattern
+     * @return first key inside a document that matched the pattern
+     */
     public static Optional<String> findKeyMatchesPattern(BsonDocument document, Pattern pattern) {
         return findKeyMatchesPattern(document, pattern, getDepth(document));
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find a key that matches the pattern
+     * @param document
+     * @param pattern
+     * @param depth level at which it stops going deeper
+     * @return first key inside a document that matched the pattern
+     */
     public static Optional<String> findKeyMatchesPattern(BsonDocument document, Pattern pattern, int depth) {
         if (depth <= 0 || document == null) {
             return Optional.empty();
@@ -46,10 +62,23 @@ public class BsonDocumentChecker {
         return Optional.empty();
     }
 
+    /**
+     * Looks through the entire document recursively to find a string value that matches the pattern
+     * @param document
+     * @param pattern
+     * @return first string value inside a document that matched the pattern
+     */
     public static Optional<String> findValueMatchesPattern(BsonDocument document, Pattern pattern) {
         return findValueMatchesPattern(document, pattern, getDepth(document));
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find a string value that matches the pattern
+     * @param document
+     * @param pattern
+     * @param depth level at which it stops going deeper
+     * @return first string value inside a document that matched the pattern
+     */
     public static Optional<String> findValueMatchesPattern(BsonDocument document, Pattern pattern, int depth) {
         if (depth <= 0 || document == null) {
             return Optional.empty();
@@ -88,10 +117,23 @@ public class BsonDocumentChecker {
         return Optional.empty();
     }
 
+    /**
+     * Looks through the entire document recursively to find a value
+     * @param document
+     * @param value
+     * @return if value was found
+     */
     public static boolean containsValue(BsonDocument document, BsonValue value) {
         return containsValue(document, value, getDepth(document));
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find a value
+     * @param document
+     * @param value
+     * @param depth level at which it stops going deeper
+     * @return if value was found
+     */
     public static boolean containsValue(BsonDocument document, BsonValue value, int depth) {
         if (depth <= 0 || document == null) {
             return false;
@@ -126,10 +168,23 @@ public class BsonDocumentChecker {
         return false;
     }
 
+    /**
+     * Looks through the entire document recursively to find a key and retrieve its value
+     * @param document
+     * @param key
+     * @return key's value
+     */
     public static Optional<BsonValue> getRecursive(BsonDocument document, String key) {
         return getRecursive(document, key, getDepth(document));
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find a key and retrieve its value
+     * @param document
+     * @param key
+     * @param depth level at which it stops going deeper
+     * @return key's value
+     */
     public static Optional<BsonValue> getRecursive(BsonDocument document, String key, int depth) {
         if (depth <= 0 || document == null) {
             return Optional.empty();
@@ -158,10 +213,25 @@ public class BsonDocumentChecker {
         return Optional.empty();
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find a key and retrieve its value.
+     * It does not have to find all of them, it just looks to find at least something. Otherwise, the list is empty.
+     * @param document
+     * @param keySet
+     * @return A list of all values of every found key
+     */
     public static List<BsonValue> getAll(BsonDocument document, Set<String> keySet) {
         return getAll(document, keySet, getDepth(document));
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find all keys and retrieve their value.
+     * It does not have to find all of them, it just looks to find at least something. Otherwise, the list is empty.
+     * @param document
+     * @param keySet
+     * @param depth level at which it stops going deeper
+     * @return A list of all values of every found key
+     */
     public static List<BsonValue> getAll(BsonDocument document, Set<String> keySet, int depth) {
         List<BsonValue> foundValues = new ArrayList<>();
         if (depth <= 0 || document == null) {
@@ -187,10 +257,23 @@ public class BsonDocumentChecker {
         return foundValues;
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find any value that matches the type
+     * @param document
+     * @param type
+     * @return if any of type was found
+     */
     public static boolean containsValueOfType(BsonDocument document, BsonType type) {
         return containsValueOfType(document, type, getDepth(document));
     }
 
+    /**
+     * Looks through the document, but not deeper than specified, recursively to find any value that matches the type
+     * @param document
+     * @param type
+     * @param depth level at which it stops going deeper
+     * @return if any of type was found
+     */
     public static boolean containsValueOfType(BsonDocument document, BsonType type, int depth) {
         if (depth <= 0 || document == null) {
             return false;
@@ -220,6 +303,11 @@ public class BsonDocumentChecker {
         return false;
     }
 
+    /**
+     * Employs the DFS algorithm to compute the depth of a document
+     * @param document
+     * @return maximum depth
+     */
     public static int getDepth(BsonDocument document) {
         if (document == null || document.isEmpty()) {
             return 0;

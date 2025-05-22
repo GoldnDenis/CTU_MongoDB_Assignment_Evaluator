@@ -1,12 +1,12 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.service;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Criteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.grader.criteria.EvaluationCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.grader.criteria.CriterionEvaluator;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.grader.criteria.factory.CriteriaFactory;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.CriteriaNotLoaded;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.UnknownCriterion;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.Criterion;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.MongoQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.repository.CriterionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -23,9 +23,13 @@ import java.util.stream.Collectors;
 public class CriterionService {
     private final CriterionRepository criterionRepository;
 
-    public List<EvaluationCriterion<? extends QueryToken>> loadCriteria() {
+    /**
+     * Retrieves all criteria from the database and invokes the factory method to match them to concrete evaluators.
+     * @return a list of initialized criteria evaluators
+     */
+    public List<CriterionEvaluator<? extends MongoQuery>> loadCriteria() {
         CriteriaFactory factory = new CriteriaFactory();
-        List<EvaluationCriterion<? extends QueryToken>> criteriaEvaluators = new ArrayList<>();
+        List<CriterionEvaluator<? extends MongoQuery>> criteriaEvaluators = new ArrayList<>();
         for (Criterion criterion : criterionRepository.findAll()) {
             try {
                 criteriaEvaluators.add(factory.createEvaluationCriterion(criterion));

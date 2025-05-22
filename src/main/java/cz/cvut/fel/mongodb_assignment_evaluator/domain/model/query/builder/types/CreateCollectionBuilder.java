@@ -1,14 +1,14 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.MongoQueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.StringParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.CreateCollectionQueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.CreateCollectionQuery;
 import org.bson.BsonDocument;
 
 
-public class CreateCollectionBuilder extends QueryBuilder {
+public class CreateCollectionBuilder extends MongoQueryBuilder {
     private String collectionName;
     private BsonDocument options;
 
@@ -18,11 +18,11 @@ public class CreateCollectionBuilder extends QueryBuilder {
     }
 
     @Override
-    public CreateCollectionQueryToken build() {
-        return new CreateCollectionQueryToken(
+    public CreateCollectionQuery build() {
+        return new CreateCollectionQuery(
                 line, column,
                 precedingComment, query, type,
-                operator, "",
+                command, "",
                 parameters, modifiers, innerComments,
                 collectionName, options
         );
@@ -39,7 +39,7 @@ public class CreateCollectionBuilder extends QueryBuilder {
     @Override
     public void visitStringParameter(StringParameter parameter) {
         if (!collectionName.isBlank()) {
-            throw new IncorrectParameterSyntax("String", parameters.size() + 1, operator);
+            throw new IncorrectParameterSyntax("String", parameters.size() + 1, command);
         }
         collectionName = parameter.getValue();
     }

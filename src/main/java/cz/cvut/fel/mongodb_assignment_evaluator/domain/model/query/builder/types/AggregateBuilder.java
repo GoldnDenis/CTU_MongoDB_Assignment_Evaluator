@@ -1,16 +1,16 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.MongoQueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.ArrayParameter;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.PipelineParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.AggregateQueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.AggregateQuery;
 import org.bson.BsonDocument;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AggregateBuilder extends QueryBuilder {
+public class AggregateBuilder extends MongoQueryBuilder {
     private final List<BsonDocument> aggregationPipeline;
 
     public AggregateBuilder() {
@@ -18,11 +18,11 @@ public class AggregateBuilder extends QueryBuilder {
     }
 
     @Override
-    public AggregateQueryToken build() {
-        return new AggregateQueryToken(
+    public AggregateQuery build() {
+        return new AggregateQuery(
                 line, column,
                 precedingComment, query, type,
-                operator,
+                command,
                 parameters, modifiers,
                 collection, innerComments,
                 aggregationPipeline
@@ -35,9 +35,9 @@ public class AggregateBuilder extends QueryBuilder {
     }
 
     @Override
-    public void visitPipelineParameter(PipelineParameter parameter) {
+    public void visitArrayParameter(ArrayParameter parameter) {
         if (!aggregationPipeline.isEmpty()) {
-            throw new IncorrectParameterSyntax("Pipeline", parameters.size() + 1, operator);
+            throw new IncorrectParameterSyntax("Array", parameters.size() + 1, command);
         }
         aggregationPipeline.addAll(parameter.getDocumentList());
     }

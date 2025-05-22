@@ -4,7 +4,8 @@ VALUES ('GENERAL'),
        ('INSERT'),
        ('UPDATE'),
        ('FIND'),
-       ('AGGREGATE');
+       ('AGGREGATE')
+ON CONFLICT (name) DO NOTHING;;
 
 INSERT INTO Criterion(name, description, min_score, group_id, priority)
 VALUES ('CREATE_ONE_COLLECTION', 'Explicitly create one or two collections', 1, 2, 1),
@@ -47,4 +48,5 @@ VALUES ('CREATE_ONE_COLLECTION', 'Explicitly create one or two collections', 1, 
        ('AGGREGATOR_COUNT', 'Use at least once $count', 1, 6, 29),
        ('AGGREGATOR_MIN_MAX', 'Use at least once $min (or $max)', 1, 6, 30),
        ('LOOKUP', 'Use lookup (if you have two collections)', 1, 6, 31),
-       ('COMMENT', 'Describe the real-world meaning of all your queries in comments', 1, 1, 32);
+       ('COMMENT', 'Describe the real-world meaning of all your queries in comments', 1, 1, 32)
+ON CONFLICT (name) DO NOTHING;;

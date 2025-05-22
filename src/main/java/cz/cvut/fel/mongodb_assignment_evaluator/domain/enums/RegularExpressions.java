@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RegularExpressions {
-    //    MONGODB_QUERY("db\\.([._0-9a-zA-Z]+)\\(([\\s\\S]*?)(\\)(\\.[\\s\\S]*?\\)))*;"),
+    MONGODB_QUERY("db\\.([._0-9a-zA-Z]+)\\(([\\s\\S]*?)(\\)(\\.[\\s\\S]*?\\)))*;"),
     MONGODB_QUERY_START("db\\s*\\.\\s*[_0-9a-zA-Z]+(\\.\\s*[_0-9a-zA-Z]+)?"),
     NESTED_MODIFIER("\\.\\s*[_0-9a-zA-Z]+"),
     VARIABLE_CALL("[a-zA-Z0-9_-]+([\\s]*\\.[a-zA-Z0-9_-]+)*\\["),

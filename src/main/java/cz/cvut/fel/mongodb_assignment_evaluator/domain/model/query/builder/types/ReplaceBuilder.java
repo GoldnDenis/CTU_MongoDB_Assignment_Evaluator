@@ -1,12 +1,12 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.exceptions.IncorrectParameterSyntax;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.MongoQueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.DocumentParameter;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.ReplaceQueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.ReplaceQuery;
 import org.bson.BsonDocument;
 
-public class ReplaceBuilder extends QueryBuilder {
+public class ReplaceBuilder extends MongoQueryBuilder {
     private BsonDocument filter;
     private BsonDocument replacement;
     private BsonDocument options;
@@ -18,11 +18,11 @@ public class ReplaceBuilder extends QueryBuilder {
     }
 
     @Override
-    public ReplaceQueryToken build() {
-        return new ReplaceQueryToken(
+    public ReplaceQuery build() {
+        return new ReplaceQuery(
                 line, column,
                 precedingComment, query, type,
-                operator,
+                command,
                 parameters, modifiers,
                 collection, innerComments,
                 filter, replacement, options
@@ -35,7 +35,7 @@ public class ReplaceBuilder extends QueryBuilder {
             case 0 -> filter = parameter.getDocument();
             case 1 -> replacement = parameter.getDocument();
             case 2 -> options = parameter.getDocument();
-            default -> throw new IncorrectParameterSyntax("Document", parameters.size() + 1, operator);
+            default -> throw new IncorrectParameterSyntax("Document", parameters.size() + 1, command);
         }
     }
 }

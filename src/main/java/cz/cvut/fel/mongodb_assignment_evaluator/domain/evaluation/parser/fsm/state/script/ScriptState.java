@@ -2,11 +2,13 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.st
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.ScriptParser;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.ParserState;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.query.DotState;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.script.query.QueryStartState;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterator.LineIterator;
 
 /**
- * A state that represents a starting point. Its purpose to accumulate comments and initiate a query token accumulation.
+ * A starting point of parsing.
+ * A state that represents a waiting hub for new queries.
+ * Transitions to: both comment states and QueryStartState, initiating a query accumulation.
  */
 public class ScriptState extends ParserState {
     public ScriptState(ScriptParser context) {
@@ -26,7 +28,7 @@ public class ScriptState extends ParserState {
         } else if (iterator.startsWith("db")) {
             context.initAssembler(iterator.getCurrentIndex() + 1);
             context.accumulate(iterator.nextMatch("db"));
-            context.transition(new DotState(context, this));
+            context.transition(new QueryStartState(context, this));
         } else {
             iterator.next();
         }

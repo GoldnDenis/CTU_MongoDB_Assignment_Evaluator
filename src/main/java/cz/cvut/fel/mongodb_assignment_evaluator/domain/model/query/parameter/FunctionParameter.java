@@ -4,6 +4,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.vis
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Any functions defined in extended syntax of queries, e.g. JavaScript functions
+ */
 @AllArgsConstructor
 @Getter
 public class FunctionParameter implements QueryParameter {
@@ -12,10 +15,5 @@ public class FunctionParameter implements QueryParameter {
     @Override
     public void accept(QueryParameterVisitor visitor) {
         visitor.visitFunctionParameter(this);
-    }
-
-    @Override
-    public boolean isTrivial() {
-        return function.isBlank();
     }
 }

@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bson.BsonDocument;
 
+/**
+ * Represent JSON-like document in MongoDB
+ */
 @AllArgsConstructor
 @Getter
 public class DocumentParameter implements QueryParameter {
@@ -17,10 +20,5 @@ public class DocumentParameter implements QueryParameter {
     @Override
     public void accept(QueryParameterVisitor visitor) {
         visitor.visitDocumentParameter(this);
-    }
-
-    @Override
-    public boolean isTrivial() {
-        return document.isEmpty();
     }
 }

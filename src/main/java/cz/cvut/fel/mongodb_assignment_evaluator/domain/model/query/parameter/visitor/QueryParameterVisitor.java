@@ -2,6 +2,9 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.vi
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.parameter.*;
 
+/**
+ * Visitor interface for unique processing of different parameter types
+ */
 public interface QueryParameterVisitor {
     void visitDocumentParameter(DocumentParameter parameter);
 
@@ -9,7 +12,7 @@ public interface QueryParameterVisitor {
 
     void visitFunctionParameter(FunctionParameter parameter);
 
-    void visitPipelineParameter(PipelineParameter parameter);
+    void visitArrayParameter(ArrayParameter parameter);
 
     void visitStringParameter(StringParameter parameter);
 }

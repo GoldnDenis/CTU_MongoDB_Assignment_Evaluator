@@ -2,13 +2,17 @@ package cz.cvut.fel.mongodb_assignment_evaluator.observability.format;
 
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.MongoQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.projection.SubmissionResultView;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Methods specifically designed for the contents of the system.
+ * Formats the data into required human-readable string for later output generation.
+ */
 @Component
 public class OutputFormatter {
     public String generateStudentFeedback(StudentSubmission submission) {
@@ -16,8 +20,8 @@ public class OutputFormatter {
 
         resultBuilder.append("--------------------| Criteria fulfillment:")
                 .append(System.lineSeparator());
-        List<GradedCriteria> gradedCriteria = submission.getGradedCriteria();
-        for (GradedCriteria gradedCriterion : gradedCriteria) {
+        List<GradedCriterion> gradedCriteria = submission.getGradedCriteria();
+        for (GradedCriterion gradedCriterion : gradedCriteria) {
             if (!gradedCriterion.getName().equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name())) {
                 resultBuilder.append(gradedCriterion.getScore()).append("/")
                         .append(gradedCriterion.getRequiredScore()).append(" -- ")
@@ -35,27 +39,29 @@ public class OutputFormatter {
         for (int i = 0; i < errorLogs.size(); i++) {
             String errorLog = submission.getErrorLogs().get(i);
             resultBuilder.append((i + 1)).append(") ")
-                    .append(errorLog);
+                    .append(errorLog)
+                    .append(System.lineSeparator());
         }
 
         return resultBuilder.toString();
     }
 
-    public String generateTable(List<GradedCriteria> criteria) {
+    public String generateTable(List<GradedCriterion> criteria) {
         StringBuilder resultBuilder = new StringBuilder();
         resultBuilder.append("Criterion")
                 .append(",").append("Description")
                 .append(",").append("Status")
                 .append(",").append("Score")
                 .append(",").append("Fulfilled Queries");
-        for (GradedCriteria criterion : criteria) {
+        for (GradedCriterion criterion : criteria) {
             String name = criterion.getName();
             String score = String.valueOf(criterion.getScore());
             String scoreOutput = name.equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name()) ? score : score + "/" + criterion.getRequiredScore();
             String formattedQueries = name.equalsIgnoreCase(Criteria.COMMENT.name()) ? "" : formatQueryList(criterion.getFulfilledQueries());
+            String resultText = name.equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name()) ? "" : criterion.getResultState().getText();
             resultBuilder.append("\n").append(name)
                     .append(",").append(criterion.getDescription().replace("\n", " ").replace(",", ";"))
-                    .append(",").append(criterion.getResultState().getText())
+                    .append(",").append(resultText)
                     .append(",").append(scoreOutput)
                     .append(",").append(formattedQueries);
         }
@@ -63,13 +69,13 @@ public class OutputFormatter {
         return resultBuilder.toString();
     }
 
-    public String formatQueryList(List<QueryToken> queryList) {
+    public String formatQueryList(List<MongoQuery> mongoQueryList) {
         StringBuilder resultBuilder = new StringBuilder();
-        for (int i = 0; i < queryList.size(); i++) {
-            String queryEnd = (i + 1 < queryList.size()) ? "; " : ";";
+        for (int i = 0; i < mongoQueryList.size(); i++) {
+            String queryEnd = (i + 1 < mongoQueryList.size()) ? "; " : ";";
             resultBuilder.append(i + 1)
                     .append(") ")
-                    .append(queryList.get(i).getQuery().replace("\r", " ").replace("\n", " ").replace(",", ";"))
+                    .append(mongoQueryList.get(i).getQuery().replace("\r", " ").replace("\n", " ").replace(",", ";"))
                     .append(queryEnd);
         }
         return resultBuilder.toString().replace(";;", ";");
@@ -81,18 +87,18 @@ public class OutputFormatter {
                 : String.join(System.lineSeparator(), list);
     }
 
-    public String generateExecutionLog(List<QueryToken> queryTokens) {
+    public String generateExecutionLog(List<MongoQuery> queries) {
         StringBuilder resultBuilder = new StringBuilder();
-        for (QueryToken query : queryTokens) {
-            resultBuilder.append(query.getPrecedingComment())
+        for (MongoQuery mongoQuery : queries) {
+            resultBuilder.append(mongoQuery.getPrecedingComment())
                     .append(System.lineSeparator())
                     .append("---------| ")
                     .append("Query = '")
-                    .append(query.getQuery())
+                    .append(mongoQuery.getQuery())
                     .append("' |---------")
                     .append(System.lineSeparator())
                     .append(System.lineSeparator())
-                    .append(query.getExecutionLog())
+                    .append(mongoQuery.getExecutionLog())
                     .append(System.lineSeparator())
                     .append(System.lineSeparator());
         }

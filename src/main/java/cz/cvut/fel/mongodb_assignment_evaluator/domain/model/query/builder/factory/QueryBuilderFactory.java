@@ -1,12 +1,15 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.factory;
 
 
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Operators;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.QueryBuilder;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.MongoCommands;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.MongoQueryBuilder;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.builder.types.*;
 
+/**
+ * Creates a corresponding to query type concrete builder
+ */
 public class QueryBuilderFactory {
-    public static QueryBuilder create(Operators operator) {
+    public static MongoQueryBuilder create(MongoCommands operator) {
         switch (operator) {
             case CREATE_COLLECTION -> {
                 return new CreateCollectionBuilder();
@@ -27,7 +30,7 @@ public class QueryBuilderFactory {
                 return new FindBuilder();
             }
             default -> {
-                return new QueryBuilder();
+                return new MongoQueryBuilder();
             }
         }
     }

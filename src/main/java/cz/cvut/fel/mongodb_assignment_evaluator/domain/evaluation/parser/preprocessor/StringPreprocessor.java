@@ -5,6 +5,7 @@ import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.iterato
 
 import java.util.regex.Pattern;
 
+
 public class StringPreprocessor {
     public static String preprocess(String string) {
         Pattern arithmeticExpressionPattern = Pattern.compile(RegularExpressions.ARITHMETIC_EXPRESSION.getRegex());

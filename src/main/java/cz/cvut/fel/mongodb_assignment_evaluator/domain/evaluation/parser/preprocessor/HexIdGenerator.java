@@ -2,6 +2,9 @@ package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.prepro
 
 import java.security.SecureRandom;
 
+/**
+ * Generates hex-decimal id-like values
+ */
 public class HexIdGenerator {
     private final static String HEX_CHARS = "0123456789abcdef";
 

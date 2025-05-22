@@ -3,8 +3,8 @@ package cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.enums.Criteria;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.StudentSubmission;
 import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.entity.*;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriteria;
-import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.QueryToken;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.evaluation.GradedCriterion;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.model.query.type.MongoQuery;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.projection.SubmissionResultView;
 import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.persistence.sql.repository.*;
 import jakarta.transaction.Transactional;
@@ -28,6 +28,16 @@ public class SubmissionService {
     private final SubmissionResultRepository submissionResultRepository;
     private final CriterionRepository criterionRepository;
 
+    /**
+     * Maps metadata to StudentSubmission object.
+     * Initially tries to find the student, if it does not, then it inserts a new one.
+     * Then, it proceeds to retrieve a submission from the database. If it is not found, generates a new one and returns it.
+     * Otherwise, retrieves found record.
+     * @param studentName
+     * @param studyYear
+     * @param date in timestamp format "YYYYMMDDHHMMss", otherwise would throw an exception
+     * @return StudentSubmission object, which is linked to database table by Submission entity.
+     */
     public StudentSubmission getStudentSubmission(String studentName, int studyYear, String date) {
         Optional<Student> studentEntry = studentRepository.findByUsernameAndStudyYear(studentName, studyYear);
         Student student = studentEntry.orElseGet(() -> new Student(studentName, studyYear));
@@ -45,13 +55,19 @@ public class SubmissionService {
         return new StudentSubmission(submission, submissionEntry.isPresent(), teamCount);
     }
 
+    /**
+     * A transaction that saves the submission and its data into tables.
+     * The saved data: submission, extracted queries with associated execution logs,
+     * criteria evaluation results and criteria fulfillment by each query.
+     * @param studentSubmission an object that contains all information about the evaluation.
+     */
     @Transactional
     public void saveSubmission(StudentSubmission studentSubmission) {
         Submission submission = studentSubmission.getSubmission();
         submissionRepository.save(submission);
 
         Map<String, Query> savedQueriesByText = new HashMap<>();
-        for (QueryToken token : studentSubmission.getQueryList()) {
+        for (MongoQuery token : studentSubmission.getExtractedQueries()) {
             Query query = new Query(token.getQuery(), submission);
             query = queryRepository.save(query);
 
@@ -61,7 +77,7 @@ public class SubmissionService {
             savedQueriesByText.put(token.getQuery(), query);
         }
 
-        for (GradedCriteria graded : studentSubmission.getGradedCriteria()) {
+        for (GradedCriterion graded : studentSubmission.getGradedCriteria()) {
             if (graded.getName().equalsIgnoreCase(Criteria.UNRECOGNIZED_QUERY.name())) {
                 continue;
             }
@@ -71,7 +87,7 @@ public class SubmissionService {
             SubmissionResult result = new SubmissionResult(criterion, submission, graded.getScore());
             submissionResultRepository.save(result);
 
-            for (QueryToken token : graded.getFulfilledQueries()) {
+            for (MongoQuery token : graded.getFulfilledQueries()) {
                 Query relatedQuery = savedQueriesByText.get(token.getQuery());
                 criterion.getQueries().add(relatedQuery);
             }
@@ -79,6 +95,10 @@ public class SubmissionService {
         }
     }
 
+    /**
+     *
+     * @return returns all records of each student from the most recent submission
+     */
     public List<SubmissionResultView> getLatestStudentResults() {
         return submissionResultRepository.fetchLatestStudentCriterionScores();
     }

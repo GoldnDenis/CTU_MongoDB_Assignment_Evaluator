@@ -5,6 +5,9 @@ import cz.cvut.fel.mongodb_assignment_evaluator.infrastructure.config.MongoPrope
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Creates a process of mongo shell and connects it to the database by using the data from configurations - 'application.properties'
+ */
 public class MongoProcessBuilder {
     private final MongoProperties properties;
     private final ProcessBuilder processBuilder;

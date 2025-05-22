@@ -1,14 +1,20 @@
 package cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm;
 
-public abstract class StateMachine<S> {
-    protected S currentState;
+import cz.cvut.fel.mongodb_assignment_evaluator.domain.evaluation.parser.fsm.state.ParserState;
+
+/**
+ * A representation of a State Machine model.
+ * Keeps track of the current state and accumulates current word.
+ */
+public abstract class StateMachine {
+    protected ParserState currentState;
     protected final StringBuilder wordAccumulator;
 
     protected StateMachine() {
         this.wordAccumulator = new StringBuilder();
     }
 
-    public void transition(S state) {
+    public void transition(ParserState state) {
         currentState = state;
     }
 
