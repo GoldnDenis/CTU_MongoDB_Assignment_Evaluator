@@ -33,10 +33,13 @@ public class StudentEvaluator {
     }
 
     public void evaluateStudent(StudentSubmission studentSubmission, String script) {
-        studentSubmission.addLog(Level.INFO, "-----| Started parsing student's script");
-        studentSubmission.setExtractedQueries(scriptParser.parse(studentSubmission, script));
-        studentSubmission.addLog(Level.INFO, "The script has been successfully parsed, extracted " + studentSubmission.getExtractedQueries().size() + " queries");
-
+        if (script.isBlank()) {
+            studentSubmission.addLog(Level.WARNING, "The script is empty.");
+        } else {
+            studentSubmission.addLog(Level.INFO, "-----| Started parsing student's script");
+            studentSubmission.setExtractedQueries(scriptParser.parse(studentSubmission, script));
+            studentSubmission.addLog(Level.INFO, "The script has been successfully parsed, extracted " + studentSubmission.getExtractedQueries().size() + " queries");
+        }
         studentSubmission.addLog(Level.INFO, "-----| Started checking queries against the criteria");
         studentSubmission.setGradedCriteria(criteriaGrader.evaluateQueries(studentSubmission));
         studentSubmission.addLog(Level.INFO, "Criteria were successfully graded");
