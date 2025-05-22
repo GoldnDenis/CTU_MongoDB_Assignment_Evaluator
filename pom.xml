@@ -10,8 +10,8 @@
     </parent>
     <groupId>cz.cvut.fel</groupId>
     <artifactId>mongodb_assignment_evaluator</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>mongodb_assignment_evaluator</name>
+    <version>1.0.0</version>
+    <name>evaluator</name>
     <description>mongodb_assignment_evaluator</description>
     <url/>
     <licenses>
